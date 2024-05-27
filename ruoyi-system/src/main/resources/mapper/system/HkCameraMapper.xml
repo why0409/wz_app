@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.HkCameraMapper">
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.vo.HkCameraVo">
+        insert into hk_camera
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cameraIndexCode != null">camera_index_code,</if>
+            <if test="name != null">name,</if>
+            <if test="altitude != null">altitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="unitIndexCode != null">unit_index_code,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cameraIndexCode != null">#{cameraIndexCode},</if>
+            <if test="name != null">#{name},</if>
+            <if test="altitude != null">#{altitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="unitIndexCode != null">#{unitIndexCode},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteAll">
+        truncate table hk_camera
+    </delete>
+
+    <select id="queryListByName" resultType="com.ruoyi.system.domain.vo.HkCameraVo" parameterType="java.lang.String">
+        select * from hk_camera where name like concat('%',#{name},'%')
+    </select>
+
+    <select id="staticsOnline" parameterType="string" resultType="map">
+        select count(*) as totalNum, count(status = 1 or null) as onlineNum,
+        convert(count(status = 1 or null)/count(*),decimal(10,4)) as onlinePercent
+        from hk_camera
+        <where>
+            <if test="unitIndexCode != null  and unitIndexCode != ''"> and unitIndexCode = #{indexCode}</if>
+        </where>
+    </select>
+
+    <select id="staticNumByCode" parameterType="string" resultType="int">
+        select count(*) from hk_camera where camera_index_code = #{cameraIndexCode}
+    </select>
+
+    <update id="updateHkCamera" parameterType="com.ruoyi.system.domain.vo.HkCameraVo">
+        update hk_camera
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="altitude != null">altitude = #{altitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="unitIndexCode != null">unit_index_code = #{unitIndexCode},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where camera_index_code = #{cameraIndexCode}
+    </update>
+
+</mapper>

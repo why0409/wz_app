@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.HmwzVideoMapper">
+
+    <resultMap type="HmwzVideo" id="HmwzVideoResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="title"    column="title"    />
+        <result property="picture"    column="picture"    />
+        <result property="label"    column="label"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectHmwzVideoVo">
+        select id, type, title, picture, label, sort_num, content, create_time, update_time from hmwz_video
+    </sql>
+
+    <select id="selectHmwzVideoList" parameterType="HmwzVideo" resultMap="HmwzVideoResult">
+        <include refid="selectHmwzVideoVo"/>
+        <where>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="title != null  and title != ''"> and title like concat('%',#{title},'%')</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="label != null  and label != ''"> and label = #{label}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectHmwzVideoById" parameterType="Long" resultMap="HmwzVideoResult">
+        <include refid="selectHmwzVideoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHmwzVideo" parameterType="HmwzVideo" useGeneratedKeys="true" keyProperty="id">
+        insert into hmwz_video
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null">type,</if>
+            <if test="title != null">title,</if>
+            <if test="picture != null">picture,</if>
+            <if test="label != null">label,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null">#{type},</if>
+            <if test="title != null">#{title},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="label != null">#{label},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHmwzVideo" parameterType="HmwzVideo">
+        update hmwz_video
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="label != null">label = #{label},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHmwzVideoById" parameterType="Long">
+        delete from hmwz_video where id = #{id}
+    </delete>
+
+    <delete id="deleteHmwzVideoByIds" parameterType="String">
+        delete from hmwz_video where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

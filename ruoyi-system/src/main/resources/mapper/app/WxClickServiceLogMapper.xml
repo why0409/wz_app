@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.WxClickServiceLogMapper">
+
+    <resultMap type="WxClickServiceLog" id="WxClickServiceLogResult">
+        <result property="id"    column="id"    />
+        <result property="openId"    column="open_id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWxClickServiceLogVo">
+        select id, open_id, service_id, service_name, create_time, update_time from wx_click_service_log
+    </sql>
+
+    <select id="selectWxClickServiceLogList" parameterType="WxClickServiceLog" resultMap="WxClickServiceLogResult">
+        <include refid="selectWxClickServiceLogVo"/>
+        <where>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="serviceId != null  and serviceId != ''"> and service_id = #{serviceId}</if>
+            <if test="serviceName != null  and serviceName != ''"> and service_name like concat('%', #{serviceName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectWxClickServiceLogById" parameterType="Long" resultMap="WxClickServiceLogResult">
+        <include refid="selectWxClickServiceLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWxClickServiceLog" parameterType="WxClickServiceLog" useGeneratedKeys="true" keyProperty="id">
+        insert into wx_click_service_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="openId != null">open_id,</if>
+            <if test="serviceId != null">service_id,</if>
+            <if test="serviceName != null">service_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="openId != null">#{openId},</if>
+            <if test="serviceId != null">#{serviceId},</if>
+            <if test="serviceName != null">#{serviceName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWxClickServiceLog" parameterType="WxClickServiceLog">
+        update wx_click_service_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="openId != null">open_id = #{openId},</if>
+            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="serviceName != null">service_name = #{serviceName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWxClickServiceLogById" parameterType="Long">
+        delete from wx_click_service_log where id = #{id}
+    </delete>
+
+    <delete id="deleteWxClickServiceLogByIds" parameterType="String">
+        delete from wx_click_service_log where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="staticsCountByAllByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT T.pv as pv,
+               T.uv as uv,
+               T.time as time,
+               sc.name as name
+        FROM
+        (
+            SELECT service_id,
+                   count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   null as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+            GROUP BY time
+        ) T
+        LEFT JOIN
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                       MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        ON T.service_id = sc.uuid
+    </select>
+
+    <select id="staticsCountByDayByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT T.pv as pv,
+               T.uv as uv,
+               T.time as time,
+               sc.name as name
+        FROM
+        (
+            SELECT service_id,
+                   count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   DATE_FORMAT(create_time,'%Y-%m-%d') as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+            <if test="time != null and time != ''">
+                and DATE_FORMAT(create_time,'%Y-%m-%d') = #{time}
+            </if>
+            GROUP BY time
+        ) T
+        LEFT JOIN
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        ON T.service_id = sc.uuid
+    </select>
+
+    <select id="staticsCountByMonthByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT T.pv as pv,
+               T.uv as uv,
+               T.time as time,
+               sc.name as name
+        FROM
+        (
+            SELECT service_id,
+                   count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   DATE_FORMAT(create_time,'%Y-%m') as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+            <if test="time != null  and time != ''">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{time}
+            </if>
+            GROUP BY time
+        ) T
+        LEFT JOIN
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                       MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        ON T.service_id = sc.uuid
+    </select>
+
+    <select id="staticsCountByYearByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT T.pv as pv,
+               T.uv as uv,
+               T.time as time,
+               sc.name as name
+        FROM
+        (
+            SELECT service_id,
+                   count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   DATE_FORMAT(create_time,'%Y') as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+            <if test="time != null  and time != ''">
+                and DATE_FORMAT(create_time,'%Y') = #{time}
+            </if>
+            GROUP BY time
+        ) T
+        LEFT JOIN
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+            SELECT uuid,
+                   MIN(id) AS min_id
+            FROM service_config
+            WHERE is_deactivated = 0
+            GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        ON T.service_id = sc.uuid
+    </select>
+
+    <select id="trendCountByDayByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT hours.hour_of_day as time,
+               IFNULL(wcl.count,0) as count
+        FROM (
+            SELECT 0 AS hour_of_day
+            UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5
+            UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+            UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15
+            UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+            UNION SELECT 21 UNION SELECT 22 UNION SELECT 23
+        ) AS hours
+        LEFT JOIN
+        (
+            SELECT <if test="type != null and type == 'pv'">count(*) as count,</if>
+                   <if test="type != null and type == 'uv'">count(DISTINCT open_id) as count,</if>
+                   HOUR(create_time) as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+                  AND DATE_FORMAT(create_time,'%Y-%m-%d') = #{time}
+            GROUP BY time
+        ) AS wcl
+        ON hours.hour_of_day = wcl.time
+        ORDER BY hours.hour_of_day
+    </select>
+
+    <select id="trendCountByMonthByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT months.day_of_month as time,
+               IFNULL(wcl.count,0) as count
+        FROM (
+            SELECT 1 AS day_of_month
+            UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5
+            UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+            UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15
+            UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+            UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25
+            UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+            UNION SELECT 31
+        ) AS months
+        LEFT JOIN
+        (
+            SELECT <if test="type != null and type == 'pv'">count(*) as count,</if>
+                   <if test="type != null and type == 'uv'">count(DISTINCT open_id) as count,</if>
+                   DAY(create_time) as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+                  AND DATE_FORMAT(create_time,'%Y-%m') = #{time}
+            GROUP BY time
+        ) AS wcl
+        ON months.day_of_month = wcl.time
+        ORDER BY months.day_of_month
+    </select>
+
+    <select id="trendCountByYearByServiceId" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT years.year_of_month as time,
+               IFNULL(wcl.count,0) as count
+        FROM (
+            SELECT 1 AS year_of_month
+            UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6
+            UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11
+            UNION SELECT 12
+        ) AS years
+        LEFT JOIN
+        (
+            SELECT <if test="type != null and type == 'pv'">count(*) as count,</if>
+                   <if test="type != null and type == 'uv'">count(DISTINCT open_id) as count,</if>
+                   MONTH(create_time) as time
+            FROM wx_click_service_log
+            WHERE service_id = #{serviceId}
+                  AND DATE_FORMAT(create_time,'%Y') = #{time}
+            GROUP BY time
+        ) AS wcl
+        ON years.year_of_month = wcl.time
+        ORDER BY years.year_of_month
+    </select>
+
+    <select id="staticsCountByAll" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT COALESCE(T.pv, 0) as pv,
+               COALESCE(T.uv, 0) as uv,
+               T.time as time,
+               sc.name as name
+        FROM
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                       MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        LEFT JOIN
+        (
+            SELECT count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   '' as time,
+                   service_id
+            FROM wx_click_service_log
+            WHERE service_id is not null
+            GROUP BY time,service_id
+        ) T
+        ON T.service_id = sc.uuid
+        ORDER BY pv DESC
+    </select>
+
+    <select id="staticsCountByDay" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT COALESCE(T.pv, 0) as pv,
+               COALESCE(T.uv, 0) as uv,
+               COALESCE(T.time, #{time}) as time,
+               sc.name as name
+        FROM
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                       MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        LEFT JOIN
+        (
+            SELECT count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   DATE_FORMAT(create_time,'%Y-%m-%d') as time,
+                   service_id
+            FROM wx_click_service_log
+            WHERE service_id is not null
+            <if test="time != null  and time != ''">
+                and DATE_FORMAT(create_time,'%Y-%m-%d') = #{time}
+            </if>
+            GROUP BY time,service_id
+        ) T
+        ON T.service_id = sc.uuid
+        ORDER BY pv DESC
+    </select>
+
+    <select id="staticsCountByMonth" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT COALESCE(T.pv, 0) as pv,
+               COALESCE(T.uv, 0) as uv,
+               COALESCE(T.time, #{time}) as time,
+               sc.name as name
+        FROM
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                       MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        LEFT JOIN
+        (
+            SELECT count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   DATE_FORMAT(create_time,'%Y-%m') as time,
+                   service_id
+            FROM wx_click_service_log
+            WHERE service_id is not null
+            <if test="time != null  and time != ''">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{time}
+            </if>
+        GROUP BY time,service_id
+        ) T
+        ON T.service_id = sc.uuid
+        ORDER BY pv DESC
+    </select>
+
+    <select id="staticsCountByYear" parameterType="String" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT COALESCE(T.pv, 0) as pv,
+               COALESCE(T.uv, 0) as uv,
+               COALESCE(T.time, #{time}) as time,
+               sc.name as name
+        FROM
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT uuid,
+                       MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        LEFT JOIN
+        (
+            SELECT count(*) as pv,
+                   count(DISTINCT open_id) as uv,
+                   DATE_FORMAT(create_time,'%Y') as time,
+                   service_id
+            FROM wx_click_service_log
+            WHERE service_id is not null
+            <if test="time != null  and time != ''">
+                and DATE_FORMAT(create_time,'%Y') = #{time}
+            </if>
+            GROUP BY time,service_id
+        ) T
+        ON T.service_id = sc.uuid
+        ORDER BY pv DESC
+    </select>
+
+</mapper>

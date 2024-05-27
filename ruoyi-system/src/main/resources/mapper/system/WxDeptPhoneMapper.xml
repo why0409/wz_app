@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxDeptPhoneMapper">
+
+    <resultMap type="WxDeptPhone" id="WxDeptPhoneResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="sortNum"    column="sort_num"    />
+    </resultMap>
+
+    <sql id="selectWxDeptPhoneVo">
+        select uuid, dept_name, phone, create_time, sort_num from wx_dept_phone
+    </sql>
+
+    <select id="selectWxDeptPhoneList" parameterType="WxDeptPhone" resultMap="WxDeptPhoneResult">
+        <include refid="selectWxDeptPhoneVo"/>
+        <where>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectWxDeptPhoneByUuid" parameterType="String" resultMap="WxDeptPhoneResult">
+        <include refid="selectWxDeptPhoneVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertWxDeptPhone" parameterType="WxDeptPhone">
+        insert into wx_dept_phone
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="sortNum != null">sort_num,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWxDeptPhone" parameterType="WxDeptPhone">
+        update wx_dept_phone
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteWxDeptPhoneByUuid" parameterType="String">
+        delete from wx_dept_phone where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteWxDeptPhoneByUuids" parameterType="String">
+        delete from wx_dept_phone where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+    <select id="checkSortNum" parameterType="integer" resultType="integer">
+        select count(*) from wx_dept_phone where sort_num = #{sortNum}
+    </select>
+</mapper>

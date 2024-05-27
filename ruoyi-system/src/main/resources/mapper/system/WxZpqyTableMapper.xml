@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxZpqyTableMapper">
+    
+    <resultMap type="WxZpqyTable" id="WxZpqyTableResult">
+        <result property="id"    column="id"    />
+        <result property="qymc"    column="qymc"    />
+        <result property="tyxydm"    column="tyxydm"    />
+        <result property="qydz"    column="qydz"    />
+        <result property="qyxz"    column="qyxz"    />
+        <result property="qygm"    column="qygm"    />
+        <result property="qyfc"    column="qyfc"    />
+        <result property="zpid"    column="zpid"    />
+        <result property="gw"    column="gw"    />
+        <result property="rs"    column="rs"    />
+        <result property="sex"    column="sex"    />
+        <result property="gwyq"    column="gwyq"    />
+        <result property="xzdyUp"    column="xzdy_up"    />
+        <result property="xzdyDown"    column="xzdy_down"    />
+        <result property="qtdy"    column="qtdy"    />
+        <result property="lxr"    column="lxr"    />
+        <result property="lxdh"    column="lxdh"    />
+        <result property="ifPublic"    column="if_public"    />
+        <result property="publicTime"    column="public_time"    />
+        <result property="qzrPhone"    column="qzr_phone"    />
+        <result property="syrPhone"    column="syr_phone"    />
+    </resultMap>
+
+    <sql id="selectWxZpqyTableVo">
+        select id, qymc, tyxydm, qydz, qyxz, qygm, qyfc, zpid, gw, rs, sex, gwyq, xzdy_up, xzdy_down, qtdy, lxr, lxdh, if_public, public_time, qzr_phone, syr_phone from wx_zpqy_table
+    </sql>
+
+    <select id="selectWxZpqyTableList" parameterType="WxZpqyTable" resultMap="WxZpqyTableResult">
+        <include refid="selectWxZpqyTableVo"/>
+        <where>  
+            <if test="qymc != null  and qymc != ''"> and qymc = #{qymc}</if>
+            <if test="qydz != null  and qydz != ''"> and qydz like concat('%', #{qydz}, '%')</if>
+            <if test="qyxz != null  and qyxz != ''"> and qyxz like concat('%', #{qyxz}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectWxZpqyTableById" parameterType="Long" resultMap="WxZpqyTableResult">
+        <include refid="selectWxZpqyTableVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWxZpqyTable" parameterType="WxZpqyTable" useGeneratedKeys="true" keyProperty="id">
+        insert into wx_zpqy_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="qymc != null">qymc,</if>
+            <if test="tyxydm != null">tyxydm,</if>
+            <if test="qydz != null">qydz,</if>
+            <if test="qyxz != null">qyxz,</if>
+            <if test="qygm != null">qygm,</if>
+            <if test="qyfc != null">qyfc,</if>
+            <if test="zpid != null">zpid,</if>
+            <if test="gw != null">gw,</if>
+            <if test="rs != null">rs,</if>
+            <if test="sex != null">sex,</if>
+            <if test="gwyq != null">gwyq,</if>
+            <if test="xzdyUp != null">xzdy_up,</if>
+            <if test="xzdyDown != null">xzdy_down,</if>
+            <if test="qtdy != null">qtdy,</if>
+            <if test="lxr != null">lxr,</if>
+            <if test="lxdh != null">lxdh,</if>
+            <if test="ifPublic != null">if_public,</if>
+            <if test="publicTime != null">public_time,</if>
+            <if test="qzrPhone != null">qzr_phone,</if>
+            <if test="syrPhone != null">syr_phone,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="qymc != null">#{qymc},</if>
+            <if test="tyxydm != null">#{tyxydm},</if>
+            <if test="qydz != null">#{qydz},</if>
+            <if test="qyxz != null">#{qyxz},</if>
+            <if test="qygm != null">#{qygm},</if>
+            <if test="qyfc != null">#{qyfc},</if>
+            <if test="zpid != null">#{zpid},</if>
+            <if test="gw != null">#{gw},</if>
+            <if test="rs != null">#{rs},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="gwyq != null">#{gwyq},</if>
+            <if test="xzdyUp != null">#{xzdyUp},</if>
+            <if test="xzdyDown != null">#{xzdyDown},</if>
+            <if test="qtdy != null">#{qtdy},</if>
+            <if test="lxr != null">#{lxr},</if>
+            <if test="lxdh != null">#{lxdh},</if>
+            <if test="ifPublic != null">#{ifPublic},</if>
+            <if test="publicTime != null">#{publicTime},</if>
+            <if test="qzrPhone != null">#{qzrPhone},</if>
+            <if test="syrPhone != null">#{syrPhone},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxZpqyTable" parameterType="WxZpqyTable">
+        update wx_zpqy_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="qymc != null">qymc = #{qymc},</if>
+            <if test="tyxydm != null">tyxydm = #{tyxydm},</if>
+            <if test="qydz != null">qydz = #{qydz},</if>
+            <if test="qyxz != null">qyxz = #{qyxz},</if>
+            <if test="qygm != null">qygm = #{qygm},</if>
+            <if test="qyfc != null">qyfc = #{qyfc},</if>
+            <if test="zpid != null">zpid = #{zpid},</if>
+            <if test="gw != null">gw = #{gw},</if>
+            <if test="rs != null">rs = #{rs},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="gwyq != null">gwyq = #{gwyq},</if>
+            <if test="xzdyUp != null">xzdy_up = #{xzdyUp},</if>
+            <if test="xzdyDown != null">xzdy_down = #{xzdyDown},</if>
+            <if test="qtdy != null">qtdy = #{qtdy},</if>
+            <if test="lxr != null">lxr = #{lxr},</if>
+            <if test="lxdh != null">lxdh = #{lxdh},</if>
+            <if test="ifPublic != null">if_public = #{ifPublic},</if>
+            <if test="publicTime != null">public_time = #{publicTime},</if>
+            <if test="qzrPhone != null">qzr_phone = #{qzrPhone},</if>
+            <if test="syrPhone != null">syr_phone = #{syrPhone},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWxZpqyTableById" parameterType="Long">
+        delete from wx_zpqy_table where id = #{id}
+    </delete>
+
+    <delete id="deleteWxZpqyTableByIds" parameterType="String">
+        delete from wx_zpqy_table where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxInvestmentPromotionMapper">
+    
+    <resultMap type="WxInvestmentPromotion" id="WxInvestmentPromotionResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="title"    column="title"    />
+        <result property="pictureName"    column="picture_name"    />
+        <result property="publishTime"    column="publish_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="isShow"    column="is_show"    />
+        <result property="link"    column="link"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="label"    column="label"    />
+    </resultMap>
+
+    <sql id="selectWxInvestmentPromotionVo">
+        select uuid, title, picture_name, publish_time, remark, sort_num, is_show, link, update_time, label from wx_investment_promotion
+    </sql>
+
+    <select id="selectWxInvestmentPromotionList" parameterType="WxInvestmentPromotion" resultMap="WxInvestmentPromotionResult">
+        <include refid="selectWxInvestmentPromotionVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="pictureName != null  and pictureName != ''"> and picture_name like concat('%', #{pictureName}, '%')</if>
+            <if test="publishTime != null "> and publish_time = #{publishTime}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="isShow != null "> and is_show = #{isShow}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="label != null  and label != ''"> and label = #{label}</if>
+        </where>
+        order by sort_num desc, publish_time desc
+    </select>
+    
+    <select id="selectWxInvestmentPromotionByUuid" parameterType="String" resultMap="WxInvestmentPromotionResult">
+        <include refid="selectWxInvestmentPromotionVo"/>
+        where uuid = #{uuid}
+    </select>
+        
+    <insert id="insertWxInvestmentPromotion" parameterType="WxInvestmentPromotion">
+        insert into wx_investment_promotion
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="title != null">title,</if>
+            <if test="pictureName != null">picture_name,</if>
+            <if test="publishTime != null">publish_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="isShow != null">is_show,</if>
+            <if test="link != null">link,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="label != null">label,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="title != null">#{title},</if>
+            <if test="pictureName != null">#{pictureName},</if>
+            <if test="publishTime != null">#{publishTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="isShow != null">#{isShow},</if>
+            <if test="link != null">#{link},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="label != null">#{label},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxInvestmentPromotion" parameterType="WxInvestmentPromotion">
+        update wx_investment_promotion
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="pictureName != null">picture_name = #{pictureName},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="label != null">label = #{label},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteWxInvestmentPromotionByUuid" parameterType="String">
+        delete from wx_investment_promotion where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteWxInvestmentPromotionByUuids" parameterType="String">
+        delete from wx_investment_promotion where uuid in 
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+    <select id="checkSortNum" parameterType="integer" resultType="integer">
+        select count(*) from wx_investment_promotion where sort_num = #{sortNum}
+    </select>
+</mapper>

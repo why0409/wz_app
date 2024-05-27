@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxZsyzTableMapper">
+    
+    <resultMap type="WxZsyzTable" id="WxZsyzTableResult">
+        <result property="id"    column="id"    />
+        <result property="xmmc"    column="xmmc"    />
+        <result property="sbdw"    column="sbdw"    />
+        <result property="xmgk"    column="xmgk"    />
+        <result property="phone"    column="phone"    />
+        <result property="creatTime"    column="creat_time"    />
+    </resultMap>
+
+    <sql id="selectWxZsyzTableVo">
+        select id, xmmc, sbdw, xmgk, phone, creat_time from wx_zsyz_table
+    </sql>
+
+    <select id="selectWxZsyzTableList" parameterType="WxZsyzTable" resultMap="WxZsyzTableResult">
+        <include refid="selectWxZsyzTableVo"/>
+        <where>  
+            <if test="xmmc != null  and xmmc != ''"> and xmmc = #{xmmc}</if>
+            <if test="sbdw != null  and sbdw != ''"> and sbdw = #{sbdw}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+        </where>
+    </select>
+    
+    <select id="selectWxZsyzTableById" parameterType="Long" resultMap="WxZsyzTableResult">
+        <include refid="selectWxZsyzTableVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWxZsyzTable" parameterType="WxZsyzTable" useGeneratedKeys="true" keyProperty="id">
+        insert into wx_zsyz_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="xmmc != null">xmmc,</if>
+            <if test="sbdw != null">sbdw,</if>
+            <if test="xmgk != null">xmgk,</if>
+            <if test="phone != null">phone,</if>
+            <if test="creatTime != null">creat_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="xmmc != null">#{xmmc},</if>
+            <if test="sbdw != null">#{sbdw},</if>
+            <if test="xmgk != null">#{xmgk},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="creatTime != null">#{creatTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxZsyzTable" parameterType="WxZsyzTable">
+        update wx_zsyz_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="xmmc != null">xmmc = #{xmmc},</if>
+            <if test="sbdw != null">sbdw = #{sbdw},</if>
+            <if test="xmgk != null">xmgk = #{xmgk},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="creatTime != null">creat_time = #{creatTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWxZsyzTableById" parameterType="Long">
+        delete from wx_zsyz_table where id = #{id}
+    </delete>
+
+    <delete id="deleteWxZsyzTableByIds" parameterType="String">
+        delete from wx_zsyz_table where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

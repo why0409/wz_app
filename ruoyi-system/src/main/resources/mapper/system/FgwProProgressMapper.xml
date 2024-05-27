@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FgwProProgressMapper">
+    
+    <resultMap type="FgwProProgress" id="FgwProProgressResult">
+        <result property="id"    column="id"    />
+        <result property="belongtodept"    column="belongToDept"    />
+        <result property="cateType"    column="cate_type"    />
+        <result property="proType"    column="pro_type"    />
+        <result property="proName"    column="pro_name"    />
+        <result property="proContent"    column="pro_content"    />
+        <result property="yPlanTz"    column="y_plan_tz"    />
+        <result property="year"    column="year"    />
+        <result property="sumTz"    column="sum_tz"    />
+        <result property="proFinish"    column="pro_finish"    />
+        <result property="existsProblem"    column="exists_problem"    />
+        <result property="nextPlan"    column="next_plan"    />
+        <result property="qsTarget"    column="qs_target"    />
+        <result property="djjProblem"    column="djj_problem"    />
+        <result property="payFrom"    column="pay_from"    />
+        <result property="workTarget"    column="work_target"    />
+        <result property="leader"    column="leader"    />
+        <result property="hhlType"    column="hhl_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark1"    column="remark1"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="remark3"    column="remark3"    />
+        <result property="remark4"    column="remark4"    />
+        <result property="remark5"    column="remark5"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.system.domain.vo.FgwProProgressDto" id="FgwProProgressDtoResult">
+        <result property="id"    column="id"    />
+        <result property="belongtodept"    column="belongToDept"    />
+        <result property="cateType"    column="cate_type"    />
+        <result property="proType"    column="pro_type"    />
+        <result property="proName"    column="pro_name"    />
+        <result property="proContent"    column="pro_content"    />
+        <result property="yPlanTz"    column="y_plan_tz"    />
+        <result property="year"    column="year"    />
+        <result property="sumTz"    column="sum_tz"    />
+        <result property="proFinish"    column="pro_finish"    />
+        <result property="existsProblem"    column="exists_problem"    />
+        <result property="nextPlan"    column="next_plan"    />
+        <result property="qsTarget"    column="qs_target"    />
+        <result property="djjProblem"    column="djj_problem"    />
+        <result property="payFrom"    column="pay_from"    />
+        <result property="workTarget"    column="work_target"    />
+        <result property="leader"    column="leader"    />
+        <result property="hhlType"    column="hhl_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark1"    column="remark1"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="remark3"    column="remark3"    />
+        <result property="remark4"    column="remark4"    />
+        <result property="remark5"    column="remark5"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deptNames"    column="deptNames"    />
+        <result property="deptIds"    column="deptIds"    />
+
+    </resultMap>
+
+    <sql id="selectFgwProProgressVo">
+        select id, belongToDept, cate_type, pro_type, pro_name, pro_content, y_plan_tz, year, sum_tz, pro_finish, exists_problem, next_plan, qs_target, djj_problem, pay_from, work_target, leader, hhl_type, remark, remark1, remark2, remark3, remark4, remark5, create_by, create_time, update_by, update_time from fgw_pro_progress
+    </sql>
+
+    <select id="selectFgwProProgressList" parameterType="FgwProProgress" resultMap="FgwProProgressResult">
+        <include refid="selectFgwProProgressVo"/>
+        <where>  
+            <if test="belongtodept != null "> and belongToDept = #{belongtodept}</if>
+            <if test="cateType != null  and cateType != ''"> and cate_type = #{cateType}</if>
+            <if test="proType != null  and proType != ''"> and pro_type = #{proType}</if>
+            <if test="proName != null  and proName != ''"> and pro_name like concat('%', #{proName}, '%')</if>
+            <if test="proContent != null  and proContent != ''"> and pro_content = #{proContent}</if>
+            <if test="yPlanTz != null  and yPlanTz != ''"> and y_plan_tz = #{yPlanTz}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="sumTz != null  and sumTz != ''"> and sum_tz = #{sumTz}</if>
+            <if test="proFinish != null  and proFinish != ''"> and pro_finish = #{proFinish}</if>
+            <if test="existsProblem != null  and existsProblem != ''"> and exists_problem = #{existsProblem}</if>
+            <if test="nextPlan != null  and nextPlan != ''"> and next_plan = #{nextPlan}</if>
+            <if test="qsTarget != null  and qsTarget != ''"> and qs_target = #{qsTarget}</if>
+            <if test="djjProblem != null  and djjProblem != ''"> and djj_problem = #{djjProblem}</if>
+            <if test="payFrom != null  and payFrom != ''"> and pay_from = #{payFrom}</if>
+            <if test="workTarget != null  and workTarget != ''"> and work_target = #{workTarget}</if>
+            <if test="leader != null  and leader != ''"> and leader = #{leader}</if>
+            <if test="hhlType != null  and hhlType != ''"> and hhl_type = #{hhlType}</if>
+            <if test="remark1 != null  and remark1 != ''"> and remark1 = #{remark1}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
+            <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
+            <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
+        </where>
+    </select>
+    
+    <select id="selectFgwProProgressById" parameterType="Long" resultMap="FgwProProgressDtoResult">
+         select id, belongToDept, cate_type, pro_type, pro_name, pro_content, y_plan_tz, year, sum_tz, pro_finish,
+        exists_problem, next_plan, qs_target, djj_problem, pay_from, work_target, leader, hhl_type, remark, remark1,
+        remark2, remark3, remark4, remark5, create_by, create_time, update_by, update_time,
+        (SELECT group_concat( k.dept_name ) FROM fgw_dept j,sys_dept k WHERE j.dept_id = k.dept_id     AND j.p_id = a.id   ) as deptNames,
+        (SELECT group_concat( k.dept_id ) FROM fgw_dept j,sys_dept k WHERE j.dept_id = k.dept_id     AND j.p_id = a.id   ) as deptIds
+        from fgw_pro_progress a
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFgwProProgress" parameterType="FgwProProgress" useGeneratedKeys="true" keyProperty="id">
+        insert into fgw_pro_progress
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="belongtodept != null">belongToDept,</if>
+            <if test="cateType != null">cate_type,</if>
+            <if test="proType != null">pro_type,</if>
+            <if test="proName != null">pro_name,</if>
+            <if test="proContent != null">pro_content,</if>
+            <if test="yPlanTz != null">y_plan_tz,</if>
+            <if test="year != null">year,</if>
+            <if test="sumTz != null">sum_tz,</if>
+            <if test="proFinish != null">pro_finish,</if>
+            <if test="existsProblem != null">exists_problem,</if>
+            <if test="nextPlan != null">next_plan,</if>
+            <if test="qsTarget != null">qs_target,</if>
+            <if test="djjProblem != null">djj_problem,</if>
+            <if test="payFrom != null">pay_from,</if>
+            <if test="workTarget != null">work_target,</if>
+            <if test="leader != null">leader,</if>
+            <if test="hhlType != null">hhl_type,</if>
+            <if test="remark != null">remark,</if>
+            <if test="remark1 != null">remark1,</if>
+            <if test="remark2 != null">remark2,</if>
+            <if test="remark3 != null">remark3,</if>
+            <if test="remark4 != null">remark4,</if>
+            <if test="remark5 != null">remark5,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="belongtodept != null">#{belongtodept},</if>
+            <if test="cateType != null">#{cateType},</if>
+            <if test="proType != null">#{proType},</if>
+            <if test="proName != null">#{proName},</if>
+            <if test="proContent != null">#{proContent},</if>
+            <if test="yPlanTz != null">#{yPlanTz},</if>
+            <if test="year != null">#{year},</if>
+            <if test="sumTz != null">#{sumTz},</if>
+            <if test="proFinish != null">#{proFinish},</if>
+            <if test="existsProblem != null">#{existsProblem},</if>
+            <if test="nextPlan != null">#{nextPlan},</if>
+            <if test="qsTarget != null">#{qsTarget},</if>
+            <if test="djjProblem != null">#{djjProblem},</if>
+            <if test="payFrom != null">#{payFrom},</if>
+            <if test="workTarget != null">#{workTarget},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="hhlType != null">#{hhlType},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="remark1 != null">#{remark1},</if>
+            <if test="remark2 != null">#{remark2},</if>
+            <if test="remark3 != null">#{remark3},</if>
+            <if test="remark4 != null">#{remark4},</if>
+            <if test="remark5 != null">#{remark5},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFgwProProgress" parameterType="FgwProProgress">
+        update fgw_pro_progress
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="belongtodept != null">belongToDept = #{belongtodept},</if>
+            <if test="cateType != null">cate_type = #{cateType},</if>
+            pro_type = #{proType},
+            <if test="proName != null">pro_name = #{proName},</if>
+            <if test="proContent != null">pro_content = #{proContent},</if>
+            <if test="yPlanTz != null">y_plan_tz = #{yPlanTz},</if>
+            <if test="year != null">year = #{year},</if>
+            <if test="sumTz != null">sum_tz = #{sumTz},</if>
+            <if test="proFinish != null">pro_finish = #{proFinish},</if>
+            <if test="existsProblem != null">exists_problem = #{existsProblem},</if>
+            <if test="nextPlan != null">next_plan = #{nextPlan},</if>
+            <if test="qsTarget != null">qs_target = #{qsTarget},</if>
+            <if test="djjProblem != null">djj_problem = #{djjProblem},</if>
+            <if test="payFrom != null">pay_from = #{payFrom},</if>
+            <if test="workTarget != null">work_target = #{workTarget},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="hhlType != null">hhl_type = #{hhlType},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="remark1 != null">remark1 = #{remark1},</if>
+            <if test="remark2 != null">remark2 = #{remark2},</if>
+            <if test="remark3 != null">remark3 = #{remark3},</if>
+            <if test="remark4 != null">remark4 = #{remark4},</if>
+            <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFgwProProgressById" parameterType="Long">
+        delete from fgw_pro_progress where id = #{id}
+    </delete>
+
+    <delete id="deleteFgwProProgressByIds" parameterType="String">
+        delete from fgw_pro_progress where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateHhlTypeById" parameterType="FgwProProgress">
+        update fgw_pro_progress SET hhl_type = #{hhlType} where id = #{id}
+    </update>
+
+    <select id="selectFgwProProgressDtoList" parameterType="FgwProProgress" resultMap="FgwProProgressDtoResult">
+
+        select id, belongToDept, cate_type, pro_type, pro_name, pro_content, y_plan_tz, year, sum_tz, pro_finish,
+        exists_problem, next_plan, qs_target, djj_problem, pay_from, work_target, leader, hhl_type, remark, remark1,
+        remark2, remark3, remark4, remark5, create_by, create_time, update_by, update_time,
+        (SELECT group_concat( k.dept_name ) FROM fgw_dept j,sys_dept k WHERE j.dept_id = k.dept_id     AND j.p_id = a.id   ) as deptNames,
+        (SELECT group_concat( k.dept_id ) FROM fgw_dept j,sys_dept k WHERE j.dept_id = k.dept_id     AND j.p_id = a.id   ) as deptIds
+        from fgw_pro_progress a
+        <where>
+            <if test="belongtodept != null "> and belongToDept = #{belongtodept}</if>
+            <if test="cateType != null  and cateType != ''"> and cate_type = #{cateType}</if>
+            <if test="proType != null  and proType != ''"> and pro_type = #{proType}</if>
+            <if test="proName != null  and proName != ''"> and pro_name like concat('%', #{proName}, '%')</if>
+            <if test="proContent != null  and proContent != ''"> and pro_content = #{proContent}</if>
+            <if test="yPlanTz != null  and yPlanTz != ''"> and y_plan_tz = #{yPlanTz}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="sumTz != null  and sumTz != ''"> and sum_tz = #{sumTz}</if>
+            <if test="proFinish != null  and proFinish != ''"> and pro_finish = #{proFinish}</if>
+            <if test="existsProblem != null  and existsProblem != ''"> and exists_problem = #{existsProblem}</if>
+            <if test="nextPlan != null  and nextPlan != ''"> and next_plan = #{nextPlan}</if>
+            <if test="qsTarget != null  and qsTarget != ''"> and qs_target = #{qsTarget}</if>
+            <if test="djjProblem != null  and djjProblem != ''"> and djj_problem = #{djjProblem}</if>
+            <if test="payFrom != null  and payFrom != ''"> and pay_from = #{payFrom}</if>
+            <if test="workTarget != null  and workTarget != ''"> and work_target = #{workTarget}</if>
+            <if test="leader != null  and leader != ''"> and leader = #{leader}</if>
+            <if test="hhlType != null  and hhlType != ''"> and hhl_type = #{hhlType}</if>
+            <if test="remark1 != null  and remark1 != ''"> and remark1 = #{remark1}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
+            <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
+            <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
+        </where>
+    </select>
+
+    <select id="selectListByMap" parameterType="java.util.Map" resultMap="FgwProProgressDtoResult">
+
+        select id, belongToDept, cate_type, pro_type, pro_name, pro_content, y_plan_tz, year, sum_tz, pro_finish,
+        exists_problem, next_plan, qs_target, djj_problem, pay_from, work_target, leader, hhl_type, remark, remark1,
+        remark2, remark3, remark4, remark5, create_by, create_time, update_by, update_time,
+        (SELECT group_concat( k.dept_name ) FROM fgw_dept j,sys_dept k WHERE j.dept_id = k.dept_id     AND j.p_id = a.id   ) as deptNames,
+        (SELECT group_concat( k.dept_id ) FROM fgw_dept j,sys_dept k WHERE j.dept_id = k.dept_id     AND j.p_id = a.id   ) as deptIds
+        from fgw_pro_progress a
+        where ${condition}
+    </select>
+
+</mapper>

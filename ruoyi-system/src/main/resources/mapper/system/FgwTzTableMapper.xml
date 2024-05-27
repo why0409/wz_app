@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FgwTzTableMapper">
+    
+    <resultMap type="FgwTzTable" id="FgwTzTableResult">
+        <result property="id"    column="id"    />
+        <result property="serialno"    column="serialno"    />
+        <result property="proType"    column="pro_type"    />
+        <result property="proName"    column="pro_name"    />
+        <result property="proYear"    column="pro_year"    />
+        <result property="proContent"    column="pro_content"    />
+        <result property="sumSubtotal"    column="sum_subtotal"    />
+        <result property="sumSjbz"    column="sum_sjbz"    />
+        <result property="sumQbj"    column="sum_qbj"    />
+        <result property="sumOther"    column="sum_other"    />
+        <result property="yearSubtotal"    column="year_subtotal"    />
+        <result property="yearSjbz"    column="year_sjbz"    />
+        <result property="yearQbj"    column="year_qbj"    />
+        <result property="yearOther"    column="year_other"    />
+        <result property="curProgress"    column="cur_progress"    />
+        <result property="yearJsmb"    column="year_jsmb"    />
+        <result property="nextPlan"    column="next_plan"    />
+        <result property="areaLeader"    column="area_leader"    />
+        <result property="dutyOrgan"    column="duty_organ"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="extend1"    column="extend1"    />
+        <result property="extend2"    column="extend2"    />
+        <result property="extend3"    column="extend3"    />
+        <result property="extend4"    column="extend4"    />
+        <result property="extend5"    column="extend5"    />
+    </resultMap>
+
+    <sql id="selectFgwTzTableVo">
+        select id, serialno, pro_type, pro_name, pro_year, pro_content, sum_subtotal, sum_sjbz, sum_qbj, sum_other, year_subtotal, year_sjbz, year_qbj, year_other, cur_progress, year_jsmb, next_plan, area_leader, duty_organ, remark, create_by, create_time, update_by, update_time, extend1, extend2, extend3, extend4, extend5 from fgw_tz_table
+    </sql>
+
+    <select id="selectFgwTzTableList" parameterType="FgwTzTable" resultMap="FgwTzTableResult">
+        <include refid="selectFgwTzTableVo"/>
+        <where>  
+            <if test="serialno != null "> and serialno = #{serialno}</if>
+            <if test="proType != null  and proType != ''"> and pro_type = #{proType}</if>
+            <if test="proName != null  and proName != ''"> and pro_name like concat('%', #{proName}, '%')</if>
+            <if test="proYear != null  and proYear != ''"> and pro_year = #{proYear}</if>
+            <if test="proContent != null  and proContent != ''"> and pro_content = #{proContent}</if>
+            <if test="sumSubtotal != null "> and sum_subtotal = #{sumSubtotal}</if>
+            <if test="sumSjbz != null "> and sum_sjbz = #{sumSjbz}</if>
+            <if test="sumQbj != null "> and sum_qbj = #{sumQbj}</if>
+            <if test="sumOther != null "> and sum_other = #{sumOther}</if>
+            <if test="yearSubtotal != null "> and year_subtotal = #{yearSubtotal}</if>
+            <if test="yearSjbz != null "> and year_sjbz = #{yearSjbz}</if>
+            <if test="yearQbj != null "> and year_qbj = #{yearQbj}</if>
+            <if test="yearOther != null "> and year_other = #{yearOther}</if>
+            <if test="curProgress != null  and curProgress != ''"> and cur_progress = #{curProgress}</if>
+            <if test="yearJsmb != null  and yearJsmb != ''"> and year_jsmb = #{yearJsmb}</if>
+            <if test="nextPlan != null  and nextPlan != ''"> and next_plan = #{nextPlan}</if>
+            <if test="areaLeader != null  and areaLeader != ''"> and area_leader = #{areaLeader}</if>
+            <if test="dutyOrgan != null  and dutyOrgan != ''"> and duty_organ = #{dutyOrgan}</if>
+        </where>
+    </select>
+    
+    <select id="selectFgwTzTableById" parameterType="Long" resultMap="FgwTzTableResult">
+        <include refid="selectFgwTzTableVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFgwTzTable" parameterType="FgwTzTable" useGeneratedKeys="true" keyProperty="id">
+        insert into fgw_tz_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serialno != null">serialno,</if>
+            <if test="proType != null">pro_type,</if>
+            <if test="proName != null">pro_name,</if>
+            <if test="proYear != null">pro_year,</if>
+            <if test="proContent != null">pro_content,</if>
+            <if test="sumSubtotal != null">sum_subtotal,</if>
+            <if test="sumSjbz != null">sum_sjbz,</if>
+            <if test="sumQbj != null">sum_qbj,</if>
+            <if test="sumOther != null">sum_other,</if>
+            <if test="yearSubtotal != null">year_subtotal,</if>
+            <if test="yearSjbz != null">year_sjbz,</if>
+            <if test="yearQbj != null">year_qbj,</if>
+            <if test="yearOther != null">year_other,</if>
+            <if test="curProgress != null">cur_progress,</if>
+            <if test="yearJsmb != null">year_jsmb,</if>
+            <if test="nextPlan != null">next_plan,</if>
+            <if test="areaLeader != null">area_leader,</if>
+            <if test="dutyOrgan != null">duty_organ,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="extend1 != null">extend1,</if>
+            <if test="extend2 != null">extend2,</if>
+            <if test="extend3 != null">extend3,</if>
+            <if test="extend4 != null">extend4,</if>
+            <if test="extend5 != null">extend5,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serialno != null">#{serialno},</if>
+            <if test="proType != null">#{proType},</if>
+            <if test="proName != null">#{proName},</if>
+            <if test="proYear != null">#{proYear},</if>
+            <if test="proContent != null">#{proContent},</if>
+            <if test="sumSubtotal != null">#{sumSubtotal},</if>
+            <if test="sumSjbz != null">#{sumSjbz},</if>
+            <if test="sumQbj != null">#{sumQbj},</if>
+            <if test="sumOther != null">#{sumOther},</if>
+            <if test="yearSubtotal != null">#{yearSubtotal},</if>
+            <if test="yearSjbz != null">#{yearSjbz},</if>
+            <if test="yearQbj != null">#{yearQbj},</if>
+            <if test="yearOther != null">#{yearOther},</if>
+            <if test="curProgress != null">#{curProgress},</if>
+            <if test="yearJsmb != null">#{yearJsmb},</if>
+            <if test="nextPlan != null">#{nextPlan},</if>
+            <if test="areaLeader != null">#{areaLeader},</if>
+            <if test="dutyOrgan != null">#{dutyOrgan},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="extend1 != null">#{extend1},</if>
+            <if test="extend2 != null">#{extend2},</if>
+            <if test="extend3 != null">#{extend3},</if>
+            <if test="extend4 != null">#{extend4},</if>
+            <if test="extend5 != null">#{extend5},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFgwTzTable" parameterType="FgwTzTable">
+        update fgw_tz_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serialno != null">serialno = #{serialno},</if>
+            <if test="proType != null">pro_type = #{proType},</if>
+            <if test="proName != null">pro_name = #{proName},</if>
+            <if test="proYear != null">pro_year = #{proYear},</if>
+            <if test="proContent != null">pro_content = #{proContent},</if>
+            <if test="sumSubtotal != null">sum_subtotal = #{sumSubtotal},</if>
+            <if test="sumSjbz != null">sum_sjbz = #{sumSjbz},</if>
+            <if test="sumQbj != null">sum_qbj = #{sumQbj},</if>
+            <if test="sumOther != null">sum_other = #{sumOther},</if>
+            <if test="yearSubtotal != null">year_subtotal = #{yearSubtotal},</if>
+            <if test="yearSjbz != null">year_sjbz = #{yearSjbz},</if>
+            <if test="yearQbj != null">year_qbj = #{yearQbj},</if>
+            <if test="yearOther != null">year_other = #{yearOther},</if>
+            <if test="curProgress != null">cur_progress = #{curProgress},</if>
+            <if test="yearJsmb != null">year_jsmb = #{yearJsmb},</if>
+            <if test="nextPlan != null">next_plan = #{nextPlan},</if>
+            <if test="areaLeader != null">area_leader = #{areaLeader},</if>
+            <if test="dutyOrgan != null">duty_organ = #{dutyOrgan},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="extend1 != null">extend1 = #{extend1},</if>
+            <if test="extend2 != null">extend2 = #{extend2},</if>
+            <if test="extend3 != null">extend3 = #{extend3},</if>
+            <if test="extend4 != null">extend4 = #{extend4},</if>
+            <if test="extend5 != null">extend5 = #{extend5},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFgwTzTableById" parameterType="Long">
+        delete from fgw_tz_table where id = #{id}
+    </delete>
+
+    <delete id="deleteFgwTzTableByIds" parameterType="String">
+        delete from fgw_tz_table where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

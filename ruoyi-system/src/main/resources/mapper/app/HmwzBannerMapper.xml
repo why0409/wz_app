@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.HmwzBannerMapper">
+
+    <resultMap type="HmwzBanner" id="HmwzBannerResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="url"    column="url"    />
+        <result property="picture"    column="picture"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isShow"    column="is_show"    />
+    </resultMap>
+
+    <sql id="selectHmwzBannerVo">
+        select id, title, url, picture, sort_num, create_time, update_time, is_show from hmwz_banner
+    </sql>
+
+    <select id="selectHmwzBannerList" parameterType="HmwzBanner" resultMap="HmwzBannerResult">
+        <include refid="selectHmwzBannerVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title like concat('%',#{title},'%')</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="isShow != null "> and is_show = #{isShow}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectHmwzBannerById" parameterType="Long" resultMap="HmwzBannerResult">
+        <include refid="selectHmwzBannerVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHmwzBanner" parameterType="HmwzBanner" useGeneratedKeys="true" keyProperty="id">
+        insert into hmwz_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="url != null">url,</if>
+            <if test="picture != null">picture,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isShow != null">is_show,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="url != null">#{url},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isShow != null">#{isShow},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHmwzBanner" parameterType="HmwzBanner">
+        update hmwz_banner
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHmwzBannerById" parameterType="Long">
+        delete from hmwz_banner where id = #{id}
+    </delete>
+
+    <delete id="deleteHmwzBannerByIds" parameterType="String">
+        delete from hmwz_banner where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

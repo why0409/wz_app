@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.ServiceBannerMapper">
+
+    <resultMap type="ServiceBanner" id="ServiceBannerResult">
+        <result property="id"    column="id"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="title"    column="title"    />
+        <result property="type"    column="type"    />
+        <result property="appId"    column="app_id"    />
+        <result property="appUrl"    column="app_url"    />
+        <result property="h5Url"    column="h5_url"    />
+        <result property="picture"    column="picture"    />
+        <result property="isDeactivated"    column="is_deactivated"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectServiceBannerVo">
+        select id, sort_num, title, type, app_id, app_url, h5_url, picture, is_deactivated, create_time, update_time from service_banner
+    </sql>
+
+    <select id="selectServiceBannerList" parameterType="ServiceBanner" resultMap="ServiceBannerResult">
+        <include refid="selectServiceBannerVo"/>
+        <where>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="title != null  and title != ''"> and title like concat('%',#{title},'%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="appId != null  and appId != ''"> and app_id = #{appId}</if>
+            <if test="appUrl != null  and appUrl != ''"> and app_url = #{appUrl}</if>
+            <if test="h5Url != null  and h5Url != ''"> and h5_url = #{h5Url}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="isDeactivated != null "> and is_deactivated = #{isDeactivated}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectServiceBannerById" parameterType="Long" resultMap="ServiceBannerResult">
+        <include refid="selectServiceBannerVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertServiceBanner" parameterType="ServiceBanner" useGeneratedKeys="true" keyProperty="id">
+        insert into service_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sortNum != null">sort_num,</if>
+            <if test="title != null">title,</if>
+            <if test="type != null">type,</if>
+            <if test="appId != null">app_id,</if>
+            <if test="appUrl != null">app_url,</if>
+            <if test="h5Url != null">h5_url,</if>
+            <if test="picture != null">picture,</if>
+            <if test="isDeactivated != null">is_deactivated,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="title != null">#{title},</if>
+            <if test="type != null">#{type},</if>
+            <if test="appId != null">#{appId},</if>
+            <if test="appUrl != null">#{appUrl},</if>
+            <if test="h5Url != null">#{h5Url},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="isDeactivated != null">#{isDeactivated},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateServiceBanner" parameterType="ServiceBanner">
+        update service_banner
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="appId != null">app_id = #{appId},</if>
+            <if test="appUrl != null">app_url = #{appUrl},</if>
+            <if test="h5Url != null">h5_url = #{h5Url},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="isDeactivated != null">is_deactivated = #{isDeactivated},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteServiceBannerById" parameterType="Long">
+        delete from service_banner where id = #{id}
+    </delete>
+
+    <delete id="deleteServiceBannerByIds" parameterType="String">
+        delete from service_banner where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

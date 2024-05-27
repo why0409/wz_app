@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.HkxcEnterpriseListMapper">
+
+    <resultMap type="HkxcEnterpriseList" id="HkxcEnterpriseListResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="type"    column="type"    />
+        <result property="picture"    column="picture"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="lon"    column="lon"    />
+        <result property="lat"    column="lat"    />
+        <result property="link"    column="link"    />
+        <result property="isShow"    column="is_show"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectHkxcEnterpriseListVo">
+        select id, title, type, picture, sort_num, lon, lat, link, is_show, content, create_time, update_time from hkxc_enterprise_list
+    </sql>
+
+    <select id="selectHkxcEnterpriseListList" parameterType="HkxcEnterpriseList" resultMap="HkxcEnterpriseListResult">
+        <include refid="selectHkxcEnterpriseListVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title like concat('%',#{title},'%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="lon != null "> and lon = #{lon}</if>
+            <if test="lat != null "> and lat = #{lat}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="isShow != null "> and is_show = #{isShow}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectHkxcEnterpriseListById" parameterType="Long" resultMap="HkxcEnterpriseListResult">
+        <include refid="selectHkxcEnterpriseListVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHkxcEnterpriseList" parameterType="HkxcEnterpriseList">
+        insert into hkxc_enterprise_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="title != null">title,</if>
+            <if test="type != null">type,</if>
+            <if test="picture != null">picture,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="lon != null">lon,</if>
+            <if test="lat != null">lat,</if>
+            <if test="link != null">link,</if>
+            <if test="isShow != null">is_show,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="title != null">#{title},</if>
+            <if test="type != null">#{type},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="lon != null">#{lon},</if>
+            <if test="lat != null">#{lat},</if>
+            <if test="link != null">#{link},</if>
+            <if test="isShow != null">#{isShow},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHkxcEnterpriseList" parameterType="HkxcEnterpriseList">
+        update hkxc_enterprise_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="lon != null">lon = #{lon},</if>
+            <if test="lat != null">lat = #{lat},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHkxcEnterpriseListById" parameterType="Long">
+        delete from hkxc_enterprise_list where id = #{id}
+    </delete>
+
+    <delete id="deleteHkxcEnterpriseListByIds" parameterType="String">
+        delete from hkxc_enterprise_list where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

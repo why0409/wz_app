@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.CszyCameraTypeMapper">
+
+    <resultMap type="CszyCameraType" id="CszyCameraTypeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="picture"    column="picture"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="sortNum"    column="sort_num"    />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.app.domain.vo.CszyCameraTypeVo" id="CszyCameraTypeVoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="picture"    column="picture"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="phone"    column="phone"    />
+    </resultMap>
+
+    <sql id="selectCszyCameraTypeVo">
+        select id, name, picture, create_time, update_time, sort_num from cszy_camera_type
+    </sql>
+
+    <select id="selectCszyCameraTypeList" parameterType="CszyCameraType" resultMap="CszyCameraTypeResult">
+        <include refid="selectCszyCameraTypeVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectCszyCameraTypeById" parameterType="Long" resultMap="CszyCameraTypeResult">
+        <include refid="selectCszyCameraTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCszyCameraType" parameterType="CszyCameraType" useGeneratedKeys="true" keyProperty="id">
+        insert into cszy_camera_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="picture != null">picture,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="sortNum != null">sort_num,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCszyCameraType" parameterType="CszyCameraType">
+        update cszy_camera_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCszyCameraTypeById" parameterType="Long">
+        delete from cszy_camera_type where id = #{id}
+    </delete>
+
+    <delete id="deleteCszyCameraTypeByIds" parameterType="String">
+        delete from cszy_camera_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getPermissionsByPhone" parameterType="String" resultMap="CszyCameraTypeVoResult">
+        select A.*,
+               B.phone
+        from cszy_camera_type A
+        left join
+        (
+            select distinct phone, type_id from cszy_permissions where phone = #{phone}
+        ) B
+        on A.id = B.type_id
+        order by A.sort_num desc, A.create_time desc
+    </select>
+
+</mapper>

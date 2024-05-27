@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxUserMenuMapper">
+
+    <resultMap type="WxUserMenu" id="WxUserMenuResult">
+        <result property="id"    column="id"    />
+        <result property="phone"    column="phone"    />
+        <result property="menuId"    column="menu_id"    />
+    </resultMap>
+
+    <sql id="selectWxUserMenuVo">
+        select id, phone, menu_id from wx_user_menu
+    </sql>
+
+    <select id="selectWxUserMenuList" parameterType="WxUserMenu" resultMap="WxUserMenuResult">
+        <include refid="selectWxUserMenuVo"/>
+        <where>
+            <if test="phone != null and phone != ''"> and phone = #{phone}</if>
+            <if test="menuId != null "> and menu_id = #{menuId} and phone is not null</if>
+        </where>
+    </select>
+
+    <select id="selectWxUserMenuById" parameterType="Long" resultMap="WxUserMenuResult">
+        <include refid="selectWxUserMenuVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWxUserMenu" parameterType="WxUserMenu" useGeneratedKeys="true" keyProperty="id">
+        insert into wx_user_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phone != null">phone,</if>
+            <if test="menuId != null">menu_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="phone != null">#{phone},</if>
+            <if test="menuId != null">#{menuId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxUserMenu" parameterType="WxUserMenu">
+        update wx_user_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="menuId != null">menu_id = #{menuId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWxUserMenuById" parameterType="Long">
+        delete from wx_user_menu where id = #{id}
+    </delete>
+
+    <delete id="deleteWxUserMenuByIds" parameterType="String">
+        delete from wx_user_menu where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWxUserMenuByPhone">
+        delete from wx_user_menu where phone = #{phone}
+    </delete>
+
+    <insert id="addWxUserMenu">
+        insert into wx_user_menu(phone, menu_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.phone},#{item.menuId})
+        </foreach>
+    </insert>
+
+    <select id="getMenuByPhone" resultType="com.ruoyi.system.domain.vo.WxUserMenuVo">
+<!--        select a.*,b.menu_name as menuName,b.menu_mark as menuMark,b.menu_order as menuOrder,b.menu_status as menuStatus-->
+<!--        from wx_user_menu a-->
+<!--        left join wx_sys_menu b on a.menu_id = b.id-->
+<!--        where a.phone = #{phone}-->
+<!--        and b.menu_status = '0'-->
+<!--        ORDER BY CONVERT(b.menu_order, SIGNED)-->
+
+        select b.menu_name as menuName,
+               b.menu_mark as menuMark,
+               b.menu_order as menuOrder,
+               b.menu_status as menuStatus,
+               b.id as menuId,
+               a.id as id,
+               a.phone as phone
+        from wx_sys_menu b
+        left join wx_user_menu a on a.menu_id = b.id and a.phone = #{phone}
+        where b.menu_status = '0'
+        ORDER BY CONVERT(b.menu_order, SIGNED)
+    </select>
+
+    <delete id="deleteWxUserMenu">
+        delete from wx_user_menu where menu_id = #{menuId} and phone = #{phone}
+    </delete>
+
+    <delete id="deleteWxUserMenuByPhoneNew">
+        delete from wx_user_menu_new where phone = #{phone}
+    </delete>
+
+    <insert id="addWxUserMenuNew">
+        insert into wx_user_menu_new(phone, menu_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.phone},#{item.menuId})
+        </foreach>
+    </insert>
+
+</mapper>

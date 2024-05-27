@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.screen.mapper.WzBenefitEnterpriseMapper">
+
+    <resultMap type="WzBenefitEnterprise" id="WzBenefitEnterpriseResult">
+        <result property="id"    column="id"    />
+        <result property="payEnterprise"    column="pay_enterprise"    />
+        <result property="policyName"    column="policy_name"    />
+        <result property="type"    column="type"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="payFrequency"    column="pay_frequency"    />
+        <result property="payFrequencyPerson"    column="pay_frequency_person"    />
+        <result property="payFrequencyEnterprise"    column="pay_frequency_enterprise"    />
+        <result property="payAmount"    column="pay_amount"    />
+        <result property="payAmountPerson"    column="pay_amount_person"    />
+        <result property="payAmountEnterprise"    column="pay_amount_enterprise"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWzBenefitEnterpriseVo">
+        select id, pay_enterprise, policy_name, type, pay_time, pay_frequency, pay_frequency_person, pay_frequency_enterprise, pay_amount, pay_amount_person, pay_amount_enterprise, create_time, update_time from wz_benefit_enterprise
+    </sql>
+
+    <select id="selectWzBenefitEnterpriseList" parameterType="WzBenefitEnterprise" resultMap="WzBenefitEnterpriseResult">
+        <include refid="selectWzBenefitEnterpriseVo"/>
+        <where>
+            <if test="payEnterprise != null  and payEnterprise != ''"> and pay_enterprise = #{payEnterprise}</if>
+            <if test="policyName != null  and policyName != ''"> and policy_name like concat('%', #{policyName}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="payTime != null  and payTime != ''"> and pay_time = #{payTime}</if>
+            <if test="payFrequency != null  and payFrequency != ''"> and pay_frequency = #{payFrequency}</if>
+            <if test="payFrequencyPerson != null  and payFrequencyPerson != ''"> and pay_frequency_person = #{payFrequencyPerson}</if>
+            <if test="payFrequencyEnterprise != null  and payFrequencyEnterprise != ''"> and pay_frequency_enterprise = #{payFrequencyEnterprise}</if>
+            <if test="payAmount != null  and payAmount != ''"> and pay_amount = #{payAmount}</if>
+            <if test="payAmountPerson != null  and payAmountPerson != ''"> and pay_amount_person = #{payAmountPerson}</if>
+            <if test="payAmountEnterprise != null  and payAmountEnterprise != ''"> and pay_amount_enterprise = #{payAmountEnterprise}</if>
+        </where>
+        order by pay_time
+    </select>
+
+    <select id="selectWzBenefitEnterpriseById" parameterType="Long" resultMap="WzBenefitEnterpriseResult">
+        <include refid="selectWzBenefitEnterpriseVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWzBenefitEnterprise" parameterType="WzBenefitEnterprise" useGeneratedKeys="true" keyProperty="id">
+        insert into wz_benefit_enterprise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="payEnterprise != null">pay_enterprise,</if>
+            <if test="policyName != null">policy_name,</if>
+            <if test="type != null">type,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="payFrequency != null">pay_frequency,</if>
+            <if test="payFrequencyPerson != null">pay_frequency_person,</if>
+            <if test="payFrequencyEnterprise != null">pay_frequency_enterprise,</if>
+            <if test="payAmount != null">pay_amount,</if>
+            <if test="payAmountPerson != null">pay_amount_person,</if>
+            <if test="payAmountEnterprise != null">pay_amount_enterprise,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="payEnterprise != null">#{payEnterprise},</if>
+            <if test="policyName != null">#{policyName},</if>
+            <if test="type != null">#{type},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="payFrequency != null">#{payFrequency},</if>
+            <if test="payFrequencyPerson != null">#{payFrequencyPerson},</if>
+            <if test="payFrequencyEnterprise != null">#{payFrequencyEnterprise},</if>
+            <if test="payAmount != null">#{payAmount},</if>
+            <if test="payAmountPerson != null">#{payAmountPerson},</if>
+            <if test="payAmountEnterprise != null">#{payAmountEnterprise},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWzBenefitEnterprise" parameterType="WzBenefitEnterprise">
+        update wz_benefit_enterprise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="payEnterprise != null">pay_enterprise = #{payEnterprise},</if>
+            <if test="policyName != null">policy_name = #{policyName},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="payFrequency != null">pay_frequency = #{payFrequency},</if>
+            <if test="payFrequencyPerson != null">pay_frequency_person = #{payFrequencyPerson},</if>
+            <if test="payFrequencyEnterprise != null">pay_frequency_enterprise = #{payFrequencyEnterprise},</if>
+            <if test="payAmount != null">pay_amount = #{payAmount},</if>
+            <if test="payAmountPerson != null">pay_amount_person = #{payAmountPerson},</if>
+            <if test="payAmountEnterprise != null">pay_amount_enterprise = #{payAmountEnterprise},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWzBenefitEnterpriseById" parameterType="Long">
+        delete from wz_benefit_enterprise where id = #{id}
+    </delete>
+
+    <delete id="deleteWzBenefitEnterpriseByIds" parameterType="String">
+        delete from wz_benefit_enterprise where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateSum" parameterType="integer">
+        update wz_benefit_enterprise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="payFrequencyPerson != null">pay_frequency_person = #{payFrequencyPerson},</if>
+            <if test="payFrequencyEnterprise != null">pay_frequency_enterprise = #{payFrequencyEnterprise},</if>
+            <if test="payAmountPerson != null">pay_amount_person = #{payAmountPerson},</if>
+            <if test="payAmountEnterprise != null">pay_amount_enterprise = #{payAmountEnterprise},</if>
+        </trim>
+    </update>
+
+    <select id="selectOne"  resultMap="WzBenefitEnterpriseResult">
+        <include refid="selectWzBenefitEnterpriseVo"/>
+        limit 1
+    </select>
+</mapper>

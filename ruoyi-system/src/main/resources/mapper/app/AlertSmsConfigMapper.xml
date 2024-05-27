@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.AlertSmsConfigMapper">
+
+    <resultMap type="AlertSmsConfig" id="AlertSmsConfigResult">
+        <result property="id"    column="id"    />
+        <result property="warningLevel"    column="warning_level"    />
+        <result property="recipients"    column="recipients"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectAlertSmsConfigVo">
+        select id, warning_level, recipients, create_time, update_time from alert_sms_config
+    </sql>
+
+    <select id="selectAlertSmsConfigList" parameterType="AlertSmsConfig" resultMap="AlertSmsConfigResult">
+        <include refid="selectAlertSmsConfigVo"/>
+        <where>
+            <if test="warningLevel != null  and warningLevel != ''"> and warning_level = #{warningLevel}</if>
+            <if test="recipients != null  and recipients != ''"> and recipients like concat('%',#{recipients},'%')</if>
+        </where>
+    </select>
+
+    <select id="selectAlertSmsConfigById" parameterType="Long" resultMap="AlertSmsConfigResult">
+        <include refid="selectAlertSmsConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAlertSmsConfig" parameterType="AlertSmsConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into alert_sms_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warningLevel != null">warning_level,</if>
+            <if test="recipients != null">recipients,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warningLevel != null">#{warningLevel},</if>
+            <if test="recipients != null">#{recipients},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAlertSmsConfig" parameterType="AlertSmsConfig">
+        update alert_sms_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warningLevel != null">warning_level = #{warningLevel},</if>
+            <if test="recipients != null">recipients = #{recipients},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAlertSmsConfigById" parameterType="Long">
+        delete from alert_sms_config where id = #{id}
+    </delete>
+
+    <delete id="deleteAlertSmsConfigByIds" parameterType="String">
+        delete from alert_sms_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

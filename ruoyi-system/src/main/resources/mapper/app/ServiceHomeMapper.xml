@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.ServiceHomeMapper">
+
+    <resultMap type="ServiceHome" id="ServiceHomeResult">
+        <result property="id"    column="id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectServiceHomeVo">
+        select id, service_id, service_name, sort_num, create_time, update_time from service_home
+    </sql>
+
+    <select id="selectServiceHomeList" parameterType="ServiceHome" resultMap="ServiceHomeResult">
+        <include refid="selectServiceHomeVo"/>
+        <where>
+            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="serviceName != null  and serviceName != ''"> and service_name like concat('%', #{serviceName}, '%')</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectServiceHomeById" parameterType="Long" resultMap="ServiceHomeResult">
+        <include refid="selectServiceHomeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertServiceHome" parameterType="ServiceHome" useGeneratedKeys="true" keyProperty="id">
+        insert into service_home
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serviceId != null">service_id,</if>
+            <if test="serviceName != null">service_name,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serviceId != null">#{serviceId},</if>
+            <if test="serviceName != null">#{serviceName},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateServiceHome" parameterType="ServiceHome">
+        update service_home
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="serviceName != null">service_name = #{serviceName},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteServiceHomeById" parameterType="Long">
+        delete from service_home where id = #{id}
+    </delete>
+
+    <delete id="deleteServiceHomeByIds" parameterType="String">
+        delete from service_home where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <resultMap type="com.ruoyi.app.domain.vo.ServiceHomeInfo" id="ServiceHomeInfoResult">
+        <result property="id"    column="id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <association property="info" resultMap="ServiceConfigResult" columnPrefix="sc_"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.app.domain.ServiceConfig" id="ServiceConfigResult">
+        <result property="id"    column="id"    />
+        <result property="uuid"    column="uuid"    />
+        <result property="name"    column="name"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="isLogin"    column="is_login"    />
+        <result property="isPermission"    column="is_permission"    />
+        <result property="type"    column="type"    />
+        <result property="appId"    column="app_id"    />
+        <result property="h5Url"    column="h5_url"    />
+        <result property="icon"    column="icon"    />
+        <result property="description"    column="description"    />
+        <result property="isDeactivated"    column="is_deactivated"    />
+        <result property="isPersonal"    column="is_personal"    />
+        <result property="category"    column="category"    />
+        <result property="subCategory"    column="sub_category"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <select id="getServiceHomeInfoList" parameterType="ServiceHome" resultMap="ServiceHomeInfoResult">
+        select sh.id,
+               sh.service_id,
+               sh.service_name,
+               sh.sort_num,
+               sh.create_time,
+               sh.update_time,
+               sc.id as sc_id,
+               sc.uuid as sc_uuid,
+               sc.name as sc_name,
+               sc.sort_num as sc_sort_num,
+               sc.is_login as sc_is_login,
+               sc.is_permission as sc_is_permission,
+               sc.type as sc_type,
+               sc.app_id as sc_app_id,
+               sc.h5_url as sc_h5_url,
+               sc.icon as sc_icon,
+               sc.description as sc_description,
+               sc.is_deactivated as sc_is_deactivated,
+               sc.is_personal as sc_is_personal,
+               sc.category as sc_category,
+               sc.sub_category as sc_sub_category,
+               sc.create_time as sc_create_time,
+               sc.update_time as sc_update_time
+        from service_home sh
+        left join service_config sc on sh.service_id = sc.id
+        where sc.is_deactivated = 0
+        order by sh.sort_num desc, sh.create_time desc
+    </select>
+
+
+</mapper>

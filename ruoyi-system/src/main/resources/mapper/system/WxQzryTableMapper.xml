@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxQzryTableMapper">
+    
+    <resultMap type="WxQzryTable" id="WxQzryTableResult">
+        <result property="id"    column="id"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="name"    column="name"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="age"    column="age"    />
+        <result property="sex"    column="sex"    />
+        <result property="maritalStatus"    column="marital_status"    />
+        <result property="hjAddress"    column="hj_address"    />
+        <result property="jzAddress"    column="jz_address"    />
+        <result property="jobId"    column="job_id"    />
+        <result property="post"    column="post"    />
+        <result property="xl"    column="xl"    />
+        <result property="school"    column="school"    />
+        <result property="jnzc"    column="jnzc"    />
+        <result property="qwdyUp"    column="qwdy_up"    />
+        <result property="qwdyDown"    column="qwdy_down"    />
+        <result property="ifNightShift"    column="if_night_shift"    />
+        <result property="ifZs"    column="if_zs"    />
+        <result property="learningExperience"    column="learning_experience"    />
+        <result property="jobResume"    column="job_resume"    />
+        <result property="ifPublish"    column="if_publish"    />
+        <result property="publishTime"    column="publish_time"    />
+    </resultMap>
+
+    <sql id="selectWxQzryTableVo">
+        select id, mobile, name, id_number, age, sex, marital_status, hj_address, jz_address, job_id, post, xl, school, jnzc, qwdy_up, qwdy_down, if_night_shift, if_zs, learning_experience, job_resume, if_publish, publish_time from wx_qzry_table
+    </sql>
+
+    <select id="selectWxQzryTableList" parameterType="WxQzryTable" resultMap="WxQzryTableResult">
+        <include refid="selectWxQzryTableVo"/>
+        <where>  
+            <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectWxQzryTableById" parameterType="Long" resultMap="WxQzryTableResult">
+        <include refid="selectWxQzryTableVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWxQzryTable" parameterType="WxQzryTable" useGeneratedKeys="true" keyProperty="id">
+        insert into wx_qzry_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mobile != null">mobile,</if>
+            <if test="name != null">name,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="age != null">age,</if>
+            <if test="sex != null">sex,</if>
+            <if test="maritalStatus != null">marital_status,</if>
+            <if test="hjAddress != null">hj_address,</if>
+            <if test="jzAddress != null">jz_address,</if>
+            <if test="jobId != null">job_id,</if>
+            <if test="post != null">post,</if>
+            <if test="xl != null">xl,</if>
+            <if test="school != null">school,</if>
+            <if test="jnzc != null">jnzc,</if>
+            <if test="qwdyUp != null">qwdy_up,</if>
+            <if test="qwdyDown != null">qwdy_down,</if>
+            <if test="ifNightShift != null">if_night_shift,</if>
+            <if test="ifZs != null">if_zs,</if>
+            <if test="learningExperience != null">learning_experience,</if>
+            <if test="jobResume != null">job_resume,</if>
+            <if test="ifPublish != null">if_publish,</if>
+            <if test="publishTime != null">publish_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mobile != null">#{mobile},</if>
+            <if test="name != null">#{name},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="age != null">#{age},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="maritalStatus != null">#{maritalStatus},</if>
+            <if test="hjAddress != null">#{hjAddress},</if>
+            <if test="jzAddress != null">#{jzAddress},</if>
+            <if test="jobId != null">#{jobId},</if>
+            <if test="post != null">#{post},</if>
+            <if test="xl != null">#{xl},</if>
+            <if test="school != null">#{school},</if>
+            <if test="jnzc != null">#{jnzc},</if>
+            <if test="qwdyUp != null">#{qwdyUp},</if>
+            <if test="qwdyDown != null">#{qwdyDown},</if>
+            <if test="ifNightShift != null">#{ifNightShift},</if>
+            <if test="ifZs != null">#{ifZs},</if>
+            <if test="learningExperience != null">#{learningExperience},</if>
+            <if test="jobResume != null">#{jobResume},</if>
+            <if test="ifPublish != null">#{ifPublish},</if>
+            <if test="publishTime != null">#{publishTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxQzryTable" parameterType="WxQzryTable">
+        update wx_qzry_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="maritalStatus != null">marital_status = #{maritalStatus},</if>
+            <if test="hjAddress != null">hj_address = #{hjAddress},</if>
+            <if test="jzAddress != null">jz_address = #{jzAddress},</if>
+            <if test="jobId != null">job_id = #{jobId},</if>
+            <if test="post != null">post = #{post},</if>
+            <if test="xl != null">xl = #{xl},</if>
+            <if test="school != null">school = #{school},</if>
+            <if test="jnzc != null">jnzc = #{jnzc},</if>
+            <if test="qwdyUp != null">qwdy_up = #{qwdyUp},</if>
+            <if test="qwdyDown != null">qwdy_down = #{qwdyDown},</if>
+            <if test="ifNightShift != null">if_night_shift = #{ifNightShift},</if>
+            <if test="ifZs != null">if_zs = #{ifZs},</if>
+            <if test="learningExperience != null">learning_experience = #{learningExperience},</if>
+            <if test="jobResume != null">job_resume = #{jobResume},</if>
+            <if test="ifPublish != null">if_publish = #{ifPublish},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWxQzryTableById" parameterType="Long">
+        delete from wx_qzry_table where id = #{id}
+    </delete>
+
+    <delete id="deleteWxQzryTableByIds" parameterType="String">
+        delete from wx_qzry_table where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

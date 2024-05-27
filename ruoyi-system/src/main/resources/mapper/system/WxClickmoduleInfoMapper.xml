@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxClickmoduleInfoMapper">
+
+	<resultMap type="WxClickmoduleInfo" id="WxClickmoduleInfoResult">
+		<id     property="id"     column="id"     />
+		<result property="phone"   column="phone"   />
+		<result property="wxName"   column="wxName"   />
+		<result property="moduleName"  column="moduleName"   />
+		<result property="clickTime"   column="clickTime"   />
+		<result property="clickCount"   column="clickCount"   />
+	</resultMap>
+
+	<insert id="insertWxClickmoduleInfo" parameterType="WxClickmoduleInfo">
+		insert into wx_clickmodule_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="phone != null">phone,</if>
+			<if test="wxName != null">wxName,</if>
+			<if test="moduleName != null">moduleName,</if>
+			<if test="clickTime != null">clickTime,</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="phone != null">#{phone},</if>
+			<if test="wxName != null">#{wxName},</if>
+			<if test="moduleName != null">#{moduleName},</if>
+			<if test="clickTime != null">#{clickTime},</if>
+		</trim>
+	</insert>
+
+    <delete id="deletetWxClickmoduleInfoExpireDate">
+		DELETE FROM  wx_clickmodule_info  WHERE DATEDIFF(NOW(),clickTime) >#{expireDate}
+	</delete>
+
+    <select id="selectWxClickmoduleInfo" parameterType="WxClickmoduleInfo" resultMap="WxClickmoduleInfoResult">
+		SELECT id,phone,wxName,moduleName,clickTime from wx_clickmodule_info
+		<where>
+			<if test="phone != null  and phone != ''"> and phone like concat('%', #{phone}, '%')</if>
+			<if test="wxName != null  and wxName != ''"> and wxName like concat('%', #{wxName}, '%')</if>
+			<if test="moduleName != null  and moduleName != ''"> and moduleName like concat('%', #{moduleName}, '%')</if>
+			<if test="clickTime != null  and clickTime != ''"> and clickTime like concat('%', #{clickTime}, '%')</if>
+		</where>
+	</select>
+
+	<select id="selectWxClickmoduleInfoCount" parameterType="WxClickmoduleInfoDto" resultMap="WxClickmoduleInfoResult">
+		select *
+		from
+		(
+			select l.*,
+				   r.real_name as wxName
+			FROM
+			(
+				select phone,
+					   GROUP_CONCAT(t.clickCount) clickCount
+				from
+				(
+					select phone,
+						   CONCAT(moduleName,':',count(0)) as clickCount
+				    from wx_clickmodule_info
+					where moduleName != 'undefined'
+					AND moduleName != ''
+					AND moduleName is not null
+					<if test="phone != null  and phone != ''">
+						and phone like concat('%', #{phone}, '%')
+					</if>
+					<if test="moduleName != null  and moduleName != ''">
+						and moduleName like concat('%', #{moduleName}, '%')
+					</if>
+					<if test="clickTime != null  and clickTime != ''"> and
+						clickTime like concat('%', #{clickTime}, '%')
+					</if>
+					<if test="startTime != null and startTime !='' ">
+						<![CDATA[ and DATE_FORMAT(clickTime, '%Y-%m-%d') >= #{startTime} ]]>
+					</if>
+					<if test="endTime  != null and endTime  !='' ">
+						<![CDATA[ and DATE_FORMAT(clickTime, '%Y-%m-%d') <= #{endTime} ]]>
+					</if>
+					GROUP BY phone,moduleName ORDER BY phone
+				) t GROUP BY phone
+			) l
+			LEFT JOIN wx_user_logininfo r ON l.phone = r.phone
+		)g
+		<where>
+			<if test="wxName != null  and wxName != ''">
+				and wxName like concat('%', #{wxName}, '%')
+			</if>
+		</where>
+	</select>
+
+	<select id="selectWxClickmoduleInfoRecord" parameterType="WxClickmoduleInfoDto" resultMap="WxClickmoduleInfoResult">
+		select a.phone,
+			   a.moduleName,
+			   a.clickTime,
+			   b.real_name as wxName
+		from wx_clickmodule_info a
+		LEFT JOIN wx_user_logininfo b on a.phone = b.phone
+		where moduleName != 'undefined'
+		AND moduleName != ''
+		AND moduleName is not null
+		<if test="phone != null  and phone != ''">
+			and a.phone like concat('%', #{phone}, '%')
+		</if>
+		<if test="moduleName != null  and moduleName != ''">
+			and a.moduleName like concat('%', #{moduleName}, '%')
+		</if>
+		<if test="clickTime != null  and clickTime != ''">
+			and a.clickTime like concat('%', #{clickTime}, '%')
+		</if>
+		<if test="startTime != null and startTime !='' ">
+			<![CDATA[ and DATE_FORMAT(a.clickTime, '%Y-%m-%d') >= #{startTime} ]]>
+		</if>
+		<if test="endTime  != null and endTime  !='' ">
+			<![CDATA[ and DATE_FORMAT(a.clickTime, '%Y-%m-%d') <= #{endTime} ]]>
+		</if>
+		order by a.clickTime desc
+	</select>
+
+</mapper>

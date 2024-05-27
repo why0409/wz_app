@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TempleFairInfoMapper">
+
+    <resultMap type="TempleFairInfo" id="TempleFairInfoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="phone"    column="phone"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="region"    column="region"    />
+        <result property="saleId"    column="sale_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTempleFairInfoVo">
+        select id, name, phone, province, city, region, sale_id, create_time, update_time from temple_fair_info
+    </sql>
+
+    <select id="selectTempleFairInfoList" parameterType="TempleFairInfo" resultMap="TempleFairInfoResult">
+        <include refid="selectTempleFairInfoVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="province != null  and province != ''"> and province = #{province}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="region != null  and region != ''"> and region = #{region}</if>
+            <if test="saleId != null "> and sale_id = #{saleId}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectTempleFairInfoById" parameterType="Long" resultMap="TempleFairInfoResult">
+        <include refid="selectTempleFairInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTempleFairInfo" parameterType="TempleFairInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into temple_fair_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="region != null">region,</if>
+            <if test="saleId != null">sale_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="region != null">#{region},</if>
+            <if test="saleId != null">#{saleId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTempleFairInfo" parameterType="TempleFairInfo">
+        update temple_fair_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="region != null">region = #{region},</if>
+            <if test="saleId != null">sale_id = #{saleId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTempleFairInfoById" parameterType="Long">
+        delete from temple_fair_info where id = #{id}
+    </delete>
+
+    <delete id="deleteTempleFairInfoByIds" parameterType="String">
+        delete from temple_fair_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getSaleTypeList" resultType="com.alibaba.fastjson2.JSONObject">
+        select id as saleId, sale_type as saleType from temple_sale_dic
+    </select>
+
+    <select id="staticsBySaleType" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT
+            td.id as saleId,
+            td.sale_type as saleType,
+            COALESCE(COUNT(tf.sale_id), 0) AS count
+        FROM temple_sale_dic td
+        LEFT JOIN temple_fair_info tf ON td.id = tf.sale_id
+        GROUP BY td.sale_type
+    </select>
+
+    <select id="staticsByArea" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT
+            count(province = '安徽省' and city = '芜湖市' and region = '湾沚区' or null) as wanzhi,
+            count(province = '安徽省' and city = '芜湖市' and region != '湾沚区' or null) as bswq,
+            count(province = '安徽省' and city != '芜湖市' or null) as bsws,
+            count(province != '安徽省' or null) as ws
+        FROM temple_fair_info
+    </select>
+
+</mapper>

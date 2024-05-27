@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxMarathonMapper">
+
+    <resultMap type="WxMarathon" id="WxMarathonResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="title"    column="title"    />
+        <result property="subtitle"    column="subtitle"    />
+        <result property="label"    column="label"    />
+        <result property="link"    column="link"    />
+        <result property="pictureName"    column="picture_name"    />
+        <result property="publishTime"    column="publish_time"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWxMarathonVo">
+        select uuid, title, subtitle, label, link, picture_name, publish_time, sort_num, update_time from wx_marathon
+    </sql>
+
+    <select id="selectWxMarathonList" parameterType="WxMarathon" resultMap="WxMarathonResult">
+        <include refid="selectWxMarathonVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="subtitle != null  and subtitle != ''"> and subtitle = #{subtitle}</if>
+            <if test="label != null  and label != ''"> and label = #{label}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="pictureName != null  and pictureName != ''"> and picture_name like concat('%', #{pictureName}, '%')</if>
+            <if test="publishTime != null "> and publish_time = #{publishTime}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+        </where>
+        order by sort_num desc, publish_time desc
+    </select>
+
+    <select id="selectWxMarathonByUuid" parameterType="String" resultMap="WxMarathonResult">
+        <include refid="selectWxMarathonVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertWxMarathon" parameterType="WxMarathon">
+        insert into wx_marathon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="title != null">title,</if>
+            <if test="subtitle != null">subtitle,</if>
+            <if test="label != null">label,</if>
+            <if test="link != null">link,</if>
+            <if test="pictureName != null">picture_name,</if>
+            <if test="publishTime != null">publish_time,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="title != null">#{title},</if>
+            <if test="subtitle != null">#{subtitle},</if>
+            <if test="label != null">#{label},</if>
+            <if test="link != null">#{link},</if>
+            <if test="pictureName != null">#{pictureName},</if>
+            <if test="publishTime != null">#{publishTime},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWxMarathon" parameterType="WxMarathon">
+        update wx_marathon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="subtitle != null">subtitle = #{subtitle},</if>
+            <if test="label != null">label = #{label},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="pictureName != null">picture_name = #{pictureName},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteWxMarathonByUuid" parameterType="String">
+        delete from wx_marathon where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteWxMarathonByUuids" parameterType="String">
+        delete from wx_marathon where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+    <select id="checkSortNum" parameterType="integer" resultType="integer">
+        select count(*) from wx_marathon where sort_num = #{sortNum}
+    </select>
+</mapper>

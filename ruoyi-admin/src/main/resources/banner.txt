@@ -1,0 +1,18 @@
+Application Version: ${ruoyi.version}
+Spring Boot Version: ${spring-boot.version}
+         tttt                              iiii                                               iiii
+      ttt:::t                             i::::i                                             i::::i
+      t:::::t                              iiii                                               iiii
+      t:::::t
+ttttttt:::::ttttttt      aaaaaaaaaaaaa   iiiiiii      rrrrr   rrrrrrrrr   uuuuuu    uuuuuu  iiiiiii
+t:::::::::::::::::t      a::::::::::::a  i:::::i      r::::rrr:::::::::r  u::::u    u::::u  i:::::i
+t:::::::::::::::::t      aaaaaaaaa:::::a  i::::i      r:::::::::::::::::r u::::u    u::::u   i::::i
+tttttt:::::::tttttt               a::::a  i::::i      rr::::::rrrrr::::::ru::::u    u::::u   i::::i
+      t:::::t              aaaaaaa:::::a  i::::i       r:::::r     r:::::ru::::u    u::::u   i::::i
+      t:::::t            aa::::::::::::a  i::::i       r:::::r     rrrrrrru::::u    u::::u   i::::i
+      t:::::t           a::::aaaa::::::a  i::::i       r:::::r            u::::u    u::::u   i::::i
+      t:::::t    tttttta::::a    a:::::a  i::::i       r:::::r            u:::::uuuu:::::u   i::::i
+      t::::::tttt:::::ta::::a    a:::::a i::::::i      r:::::r            u:::::::::::::::uui::::::i
+      tt::::::::::::::ta:::::aaaa::::::a i::::::i      r:::::r             u:::::::::::::::ui::::::i
+        tt:::::::::::tt a::::::::::aa:::ai::::::i      r:::::r              uu::::::::uu:::ui::::::i
+          ttttttttttt    aaaaaaaaaa  aaaaiiiiiiii      rrrrrrr                uuuuuuuu  uuuuiiiiiiii

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FgwProgressTypeMapper">
+    
+    <resultMap type="FgwProgressType" id="FgwProgressTypeResult">
+        <result property="id"    column="id"    />
+        <result property="pId"    column="p_id"    />
+        <result property="progressType"    column="progress_type"    />
+        <result property="content"    column="content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFgwProgressTypeVo">
+        select id, p_id, progress_type, content, create_by, create_time, update_by, update_time from fgw_progress_type
+    </sql>
+
+    <select id="selectFgwProgressTypeList" parameterType="FgwProgressType" resultMap="FgwProgressTypeResult">
+        <include refid="selectFgwProgressTypeVo"/>
+        <where>  
+            <if test="pId != null "> and p_id = #{pId}</if>
+            <if test="progressType != null  and progressType != ''"> and progress_type = #{progressType}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+    
+    <select id="selectFgwProgressTypeById" parameterType="Long" resultMap="FgwProgressTypeResult">
+        <include refid="selectFgwProgressTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFgwProgressType" parameterType="FgwProgressType" useGeneratedKeys="true" keyProperty="id">
+        insert into fgw_progress_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pId != null">p_id,</if>
+            <if test="progressType != null">progress_type,</if>
+            <if test="content != null">content,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pId != null">#{pId},</if>
+            <if test="progressType != null">#{progressType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFgwProgressType" parameterType="FgwProgressType">
+        update fgw_progress_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null">p_id = #{pId},</if>
+            <if test="progressType != null">progress_type = #{progressType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFgwProgressTypeById" parameterType="Long">
+        delete from fgw_progress_type where id = #{id}
+    </delete>
+    <!--根据父键删除进度类型信息-->
+    <delete id="deleteInfoByPId" parameterType="Long">
+        delete from fgw_progress_type where p_id = #{pId}
+    </delete>
+    <delete id="deleteFgwProgressTypeByIds" parameterType="String">
+        delete from fgw_progress_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

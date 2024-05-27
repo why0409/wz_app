@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.ServiceConfigMapper">
+
+    <resultMap type="ServiceConfig" id="ServiceConfigResult">
+        <result property="id"    column="id"    />
+        <result property="uuid"    column="uuid"    />
+        <result property="name"    column="name"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="isLogin"    column="is_login"    />
+        <result property="isPermission"    column="is_permission"    />
+        <result property="type"    column="type"    />
+        <result property="appId"    column="app_id"    />
+        <result property="h5Url"    column="h5_url"    />
+        <result property="icon"    column="icon"    />
+        <result property="description"    column="description"    />
+        <result property="isDeactivated"    column="is_deactivated"    />
+        <result property="isPersonal"    column="is_personal"    />
+        <result property="category"    column="category"    />
+        <result property="subCategory"    column="sub_category"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="subName"    column="sub_name"    />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.app.domain.vo.ServiceConfigVo" extends="ServiceConfigResult" id="ServiceConfigResultVo">
+        <result property="isHome"    column="is_home"    />
+        <result property="clickCount"    column="click_count"    />
+        <result property="latestClickTime"    column="latest_click_time"    />
+    </resultMap>
+
+    <sql id="selectServiceConfigVo">
+        select id, uuid, name, sort_num, is_login, is_permission, type, app_id, h5_url, icon, description, is_deactivated, is_personal, category, sub_category, create_time, update_time, sub_name from service_config
+    </sql>
+
+    <select id="selectServiceConfigList" parameterType="ServiceConfig" resultMap="ServiceConfigResult">
+        <include refid="selectServiceConfigVo"/>
+        <where>
+            <if test="uuid != null  and uuid != ''"> and uuid = #{uuid}</if>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="isLogin != null "> and is_login = #{isLogin}</if>
+            <if test="isPermission != null "> and is_permission = #{isPermission}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="appId != null  and appId != ''"> and app_id = #{appId}</if>
+            <if test="h5Url != null  and h5Url != ''"> and h5_url = #{h5Url}</if>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+            <if test="description != null  and description != ''"> and description like concat('%', #{description} ,'%')</if>
+            <if test="isDeactivated != null "> and is_deactivated = #{isDeactivated}</if>
+            <if test="isPersonal != null "> and is_personal = #{isPersonal}</if>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="subCategory != null  and subCategory != ''"> and sub_category = #{subCategory}</if>
+            <if test="subName != null  and subName != ''"> and sub_name = #{subName}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectServiceConfigById" parameterType="Long" resultMap="ServiceConfigResult">
+        <include refid="selectServiceConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertServiceConfig" parameterType="ServiceConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into service_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="name != null">name,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="isLogin != null">is_login,</if>
+            <if test="isPermission != null">is_permission,</if>
+            <if test="type != null">type,</if>
+            <if test="appId != null">app_id,</if>
+            <if test="h5Url != null">h5_url,</if>
+            <if test="icon != null">icon,</if>
+            <if test="description != null">description,</if>
+            <if test="isDeactivated != null">is_deactivated,</if>
+            <if test="isPersonal != null">is_personal,</if>
+            <if test="category != null">category,</if>
+            <if test="subCategory != null">sub_category,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="subName != null">sub_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="name != null">#{name},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="isLogin != null">#{isLogin},</if>
+            <if test="isPermission != null">#{isPermission},</if>
+            <if test="type != null">#{type},</if>
+            <if test="appId != null">#{appId},</if>
+            <if test="h5Url != null">#{h5Url},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="description != null">#{description},</if>
+            <if test="isDeactivated != null">#{isDeactivated},</if>
+            <if test="isPersonal != null">#{isPersonal},</if>
+            <if test="category != null">#{category},</if>
+            <if test="subCategory != null">#{subCategory},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="subName != null">#{subName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateServiceConfig" parameterType="ServiceConfig">
+        update service_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uuid != null">uuid = #{uuid},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="isLogin != null">is_login = #{isLogin},</if>
+            <if test="isPermission != null">is_permission = #{isPermission},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="appId != null">app_id = #{appId},</if>
+            <if test="h5Url != null">h5_url = #{h5Url},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="isDeactivated != null">is_deactivated = #{isDeactivated},</if>
+            <if test="isPersonal != null">is_personal = #{isPersonal},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="subCategory != null">sub_category = #{subCategory},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="subName != null">sub_name = #{subName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteServiceConfigById" parameterType="Long">
+        delete from service_config where id = #{id}
+    </delete>
+
+    <delete id="deleteServiceConfigByIds" parameterType="String">
+        delete from service_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="searchDescriptionList" parameterType="String" resultMap="ServiceConfigResult">
+        select sc.*
+        from service_config sc
+        left join wx_user_menu_new wmn on sc.id = wmn.menu_id and wmn.phone = #{phone}
+        where sc.is_deactivated = 0
+        and
+        (
+        sc.category != '政府服务'
+        OR (sc.category = '政府服务' AND wmn.phone IS NOT NULL)
+        OR (sc.category = '政府服务' AND sc.is_permission = 1)
+        )
+        <if test="description != null  and description != ''">
+            and sc.description like concat('%', #{description} ,'%')
+        </if>
+        order by sc.sort_num desc, sc.create_time desc
+    </select>
+
+    <select id="selectServiceConfigVoList" parameterType="ServiceConfig" resultMap="ServiceConfigResultVo">
+        select sc.*,
+               sh.service_id as is_home
+        from service_config sc
+        left join service_home sh on sc.id = sh.service_id
+        <where>
+            <if test="uuid != null  and uuid != ''"> and sc.uuid = #{uuid}</if>
+            <if test="name != null  and name != ''"> and sc.name like concat('%', #{name} ,'%')</if>
+            <if test="sortNum != null "> and sc.sort_num = #{sortNum}</if>
+            <if test="isLogin != null "> and sc.is_login = #{isLogin}</if>
+            <if test="isPermission != null "> and sc.is_permission = #{isPermission}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="appId != null  and appId != ''"> and sc.app_id = #{appId}</if>
+            <if test="h5Url != null  and h5Url != ''"> and sc.h5_url = #{h5Url}</if>
+            <if test="icon != null  and icon != ''"> and sc.icon = #{icon}</if>
+            <if test="description != null  and description != ''"> and sc.description like concat('%', #{description} ,'%')</if>
+            <if test="isDeactivated != null  and isDeactivated != ''"> and sc.is_deactivated = #{isDeactivated}</if>
+            <if test="isPersonal != null "> and sc.is_personal = #{isPersonal}</if>
+            <if test="category != null  and category != ''"> and sc.category = #{category}</if>
+            <if test="subCategory != null  and subCategory != ''"> and sc.sub_category = #{subCategory}</if>
+            <if test="subName != null  and subName != ''"> and sub_name like concat('%', #{subName} ,'%')</if>
+        </where>
+        order by sc.sort_num desc, sc.create_time desc
+    </select>
+
+    <select id="getFrequenceListByOpenid" parameterType="String" resultMap="ServiceConfigResultVo">
+        select sc.*, T.count as click_count from
+        (
+            SELECT count(*) as count, service_id
+            FROM wx_click_service_log
+            <where>
+                <if test="openid != null and openid !='' ">
+                    and open_id = #{openid}
+                </if>
+            </where>
+            GROUP BY service_id
+        ) T
+        left join service_config sc on T.service_id = sc.id and sc.is_deactivated = 0
+        ORDER BY click_count DESC
+    </select>
+
+    <select id="getMenuByPhoneNew" resultMap="ServiceConfigResult">
+        SELECT * FROM
+        (
+            SELECT b.*
+            FROM wx_user_menu_new a
+            LEFT JOIN service_config b ON a.menu_id = b.id AND b.category = '政府服务' and b.is_deactivated = 0
+            WHERE a.phone = #{phone}
+            AND b.id is not null
+            UNION ALL
+            SELECT *
+            from service_config
+            WHERE category = '政府服务' and is_permission = 1
+        ) T
+        ORDER BY T.sort_num DESC
+    </select>
+
+    <select id="queryWxUserMenuByPhoneNew" resultMap="ServiceConfigResultVo">
+        select A.*,
+               B.phone
+        from service_config A
+        left join
+        (
+            select distinct phone, menu_id from wx_user_menu_new where phone = #{phone}
+        ) B
+        on A.id = B.menu_id
+        where A.is_deactivated = 0 AND category = '政府服务'
+        ORDER BY A.sort_num
+    </select>
+
+    <select id="getRecentlyUsedListByOpenid" parameterType="String" resultMap="ServiceConfigResultVo">
+        select sc.*,
+               T.latest_click_time as latest_click_time
+        from
+        (
+            SELECT service_id, MAX(create_time) AS latest_click_time
+            FROM wx_click_service_log
+            where service_id is not null
+            <if test="openid != null and openid !='' ">
+                and open_id = #{openid}
+            </if>
+            GROUP BY service_id
+            ORDER BY latest_click_time DESC
+            LIMIT 5
+        ) T
+        LEFT JOIN
+        (
+            SELECT all_sc.*
+            FROM service_config all_sc
+            JOIN
+            (
+                SELECT
+                    uuid,
+                    MIN(id) AS min_id
+                FROM service_config
+                WHERE is_deactivated = 0
+                GROUP BY uuid
+            ) min_sc
+            ON all_sc.uuid = min_sc.uuid AND all_sc.id = min_sc.min_id
+            WHERE all_sc.is_deactivated = 0
+        ) sc
+        ON T.service_id = sc.uuid;
+    </select>
+
+    <select id="getSmAndTjList" resultMap="ServiceConfigResult">
+        <include refid="selectServiceConfigVo"/>
+        where is_deactivated = 0
+        and category in ('市民服务','推荐关注')
+        order by sort_num desc, create_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.ServiceCategoryConfigMapper">
+
+    <resultMap type="com.ruoyi.app.domain.ServiceCategoryConfig" id="ServiceCategoryConfigResult">
+        <result property="id"    column="id"    />
+        <result property="category"    column="category"    />
+        <result property="subCategory"    column="sub_category"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.app.domain.vo.ServiceCategoryConfigVo" id="ServiceCategoryConfigVoResult">
+        <result property="id"    column="id"    />
+        <result property="category"    column="category"    />
+        <result property="subCategory"    column="sub_category"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectServiceCategoryConfigVo">
+        select id, category, sub_category, sort_num, create_time, update_time from service_category_config
+    </sql>
+
+    <select id="selectServiceCategoryConfigList" parameterType="ServiceCategoryConfig" resultMap="ServiceCategoryConfigResult">
+        <include refid="selectServiceCategoryConfigVo"/>
+        <where>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="subCategory != null  and subCategory != ''"> and sub_category = #{subCategory}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectVoList" parameterType="ServiceCategoryConfig" resultMap="ServiceCategoryConfigVoResult">
+        <include refid="selectServiceCategoryConfigVo"/>
+        <where>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="subCategory != null  and subCategory != ''"> and sub_category = #{subCategory}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+        </where>
+        order by sort_num desc, create_time desc
+    </select>
+
+    <select id="selectServiceCategoryConfigById" parameterType="Long" resultMap="ServiceCategoryConfigResult">
+        <include refid="selectServiceCategoryConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertServiceCategoryConfig" parameterType="ServiceCategoryConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into service_category_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="category != null">category,</if>
+            <if test="subCategory != null">sub_category,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="category != null">#{category},</if>
+            <if test="subCategory != null">#{subCategory},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateServiceCategoryConfig" parameterType="ServiceCategoryConfig">
+        update service_category_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="category != null">category = #{category},</if>
+            <if test="subCategory != null">sub_category = #{subCategory},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteServiceCategoryConfigById" parameterType="Long">
+        delete from service_category_config where id = #{id}
+    </delete>
+
+    <delete id="deleteServiceCategoryConfigByIds" parameterType="String">
+        delete from service_category_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

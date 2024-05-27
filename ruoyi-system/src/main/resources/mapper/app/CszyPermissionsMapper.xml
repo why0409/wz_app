@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.CszyPermissionsMapper">
+
+    <resultMap type="CszyPermissions" id="CszyPermissionsResult">
+        <result property="id"    column="id"    />
+        <result property="phone"    column="phone"    />
+        <result property="typeId"    column="type_id"    />
+    </resultMap>
+
+    <sql id="selectCszyPermissionsVo">
+        select id, phone, type_id from cszy_permissions
+    </sql>
+
+    <select id="selectCszyPermissionsList" parameterType="CszyPermissions" resultMap="CszyPermissionsResult">
+        <include refid="selectCszyPermissionsVo"/>
+        <where>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="typeId != null "> and type_id = #{typeId}</if>
+        </where>
+    </select>
+
+    <select id="selectCszyPermissionsById" parameterType="Long" resultMap="CszyPermissionsResult">
+        <include refid="selectCszyPermissionsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCszyPermissions" parameterType="CszyPermissions">
+        insert into cszy_permissions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="typeId != null">type_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="typeId != null">#{typeId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCszyPermissions" parameterType="CszyPermissions">
+        update cszy_permissions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="typeId != null">type_id = #{typeId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCszyPermissionsById" parameterType="Long">
+        delete from cszy_permissions where id = #{id}
+    </delete>
+
+    <delete id="deleteCszyPermissionsByIds" parameterType="String">
+        delete from cszy_permissions where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteCszyPermissionsByPhone">
+        delete from cszy_permissions where phone = #{phone}
+    </delete>
+
+    <insert id="addBatchPermissions">
+        insert into cszy_permissions(phone, type_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.phone},#{item.typeId})
+        </foreach>
+    </insert>
+</mapper>

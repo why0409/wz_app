@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.xcx.mapper.XcxModuleCoverMapper">
+
+    <resultMap type="XcxModuleCover" id="XcxModuleCoverResult">
+        <result property="id"    column="id"    />
+        <result property="icon"    column="icon"    />
+        <result property="module"    column="module"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectXcxModuleCoverVo">
+        select id, icon, module, create_time, update_time, remark from xcx_module_cover
+    </sql>
+
+    <select id="selectXcxModuleCoverList" parameterType="XcxModuleCover" resultMap="XcxModuleCoverResult">
+        <include refid="selectXcxModuleCoverVo"/>
+        <where>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+            <if test="module != null  and module != ''"> and module = #{module}</if>
+        </where>
+    </select>
+
+    <select id="selectXcxModuleCoverById" parameterType="Long" resultMap="XcxModuleCoverResult">
+        <include refid="selectXcxModuleCoverVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectXcxModuleCoverByModule" parameterType="string" resultMap="XcxModuleCoverResult">
+        <include refid="selectXcxModuleCoverVo"/>
+        where module = #{module}
+        limit 1
+    </select>
+
+    <insert id="insertXcxModuleCover" parameterType="XcxModuleCover" useGeneratedKeys="true" keyProperty="id">
+        insert into xcx_module_cover
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="icon != null">icon,</if>
+            <if test="module != null">module,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="icon != null">#{icon},</if>
+            <if test="module != null">#{module},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXcxModuleCover" parameterType="XcxModuleCover">
+        update xcx_module_cover
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="module != null">module = #{module},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateXcxModuleCoverByModule" parameterType="XcxModuleCover">
+        update xcx_module_cover
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where module = #{module}
+    </update>
+
+    <delete id="deleteXcxModuleCoverById" parameterType="Long">
+        delete from xcx_module_cover where id = #{id}
+    </delete>
+
+    <delete id="deleteXcxModuleCoverByIds" parameterType="String">
+        delete from xcx_module_cover where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WxServePeopleMapper">
+
+    <resultMap type="WxServePeople" id="WxServePeopleResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="title"    column="title"    />
+        <result property="pictureName"    column="picture_name"    />
+        <result property="publishTime"    column="publish_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="isShow"    column="is_show"    />
+        <result property="link"    column="link"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="label"    column="label"    />
+    </resultMap>
+
+    <sql id="selectWxServePeopleVo">
+        select uuid, title, picture_name, publish_time, remark, sort_num, is_show, link, update_time, label from wx_serve_people
+    </sql>
+
+    <select id="selectWxServePeopleList" parameterType="WxServePeople" resultMap="WxServePeopleResult">
+        <include refid="selectWxServePeopleVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="pictureName != null  and pictureName != ''"> and picture_name like concat('%', #{pictureName}, '%')</if>
+            <if test="publishTime != null "> and publish_time = #{publishTime}</if>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="isShow != null "> and is_show = #{isShow}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="label != null  and label != ''"> and label = #{label}</if>
+        </where>
+        order by sort_num desc, publish_time desc
+    </select>
+
+    <select id="selectWxServePeopleByUuid" parameterType="String" resultMap="WxServePeopleResult">
+        <include refid="selectWxServePeopleVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertWxServePeople" parameterType="WxServePeople">
+        insert into wx_serve_people
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="title != null">title,</if>
+            <if test="pictureName != null">picture_name,</if>
+            <if test="publishTime != null">publish_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="isShow != null">is_show,</if>
+            <if test="link != null">link,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="label != null">label,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="title != null">#{title},</if>
+            <if test="pictureName != null">#{pictureName},</if>
+            <if test="publishTime != null">#{publishTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="isShow != null">#{isShow},</if>
+            <if test="link != null">#{link},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="label != null">#{label},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWxServePeople" parameterType="WxServePeople">
+        update wx_serve_people
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="pictureName != null">picture_name = #{pictureName},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="label != null">label = #{label},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteWxServePeopleByUuid" parameterType="String">
+        delete from wx_serve_people where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteWxServePeopleByUuids" parameterType="String">
+        delete from wx_serve_people where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+    <select id="checkSortNum" parameterType="integer" resultType="integer">
+        select count(*) from wx_serve_people where sort_num = #{sortNum}
+    </select>
+</mapper>

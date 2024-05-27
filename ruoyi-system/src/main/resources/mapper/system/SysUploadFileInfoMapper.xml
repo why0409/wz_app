@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUploadFileInfoMapper">
+    
+    <resultMap type="SysUploadFileInfo" id="SysUploadFileInfoResult">
+        <result property="id"    column="id"    />
+        <result property="fname"    column="fName"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="furl"    column="furl"    />
+        <result property="ftype"    column="fType"    />
+        <result property="fremark"    column="fRemark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysUploadFileInfoVo">
+        select id, fName, parent_id, furl, fType, fRemark, create_by, create_time, update_by, update_time from sys_uploadFile_info
+    </sql>
+
+    <select id="selectSysUploadFileInfoList" parameterType="SysUploadFileInfo" resultMap="SysUploadFileInfoResult">
+        <include refid="selectSysUploadFileInfoVo"/>
+        <where>  
+            <if test="fname != null  and fname != ''"> and fName = #{fname}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="furl != null  and furl != ''"> and furl = #{furl}</if>
+            <if test="ftype != null  and ftype != ''"> and fType = #{ftype}</if>
+            <if test="fremark != null  and fremark != ''"> and fRemark = #{fremark}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysUploadFileInfoById" parameterType="Long" resultMap="SysUploadFileInfoResult">
+        <include refid="selectSysUploadFileInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysUploadFileInfo" parameterType="SysUploadFileInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_uploadFile_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fname != null">fName,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="furl != null">furl,</if>
+            <if test="ftype != null">fType,</if>
+            <if test="fremark != null">fRemark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fname != null">#{fname},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="furl != null">#{furl},</if>
+            <if test="ftype != null">#{ftype},</if>
+            <if test="fremark != null">#{fremark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysUploadFileInfo" parameterType="SysUploadFileInfo">
+        update sys_uploadFile_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fname != null">fName = #{fname},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="furl != null">furl = #{furl},</if>
+            <if test="ftype != null">fType = #{ftype},</if>
+            <if test="fremark != null">fRemark = #{fremark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysUploadFileInfoById" parameterType="Long">
+        delete from sys_uploadFile_info where id = #{id}
+    </delete>
+
+    <delete id="deleteSysUploadFileInfoByIds" parameterType="Long">
+        delete from sys_uploadFile_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--根据父键删除信息-->
+    <delete id="deleteInfoByparentId" parameterType="Long">
+        delete from sys_uploadFile_info where parent_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--根据条件查询信息-->
+    <select id="selectByCondition" parameterType="java.util.Map" resultMap="SysUploadFileInfoResult">
+        <include refid="selectSysUploadFileInfoVo"/>
+         where ${condition}
+    </select>
+    <!--根据父键查询-->
+    <select id="selectSysUploadFileInfoByIds" parameterType="Long" resultMap="SysUploadFileInfoResult">
+        <include refid="selectSysUploadFileInfoVo"/>
+        where parent_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

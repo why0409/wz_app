@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WzMorningMapper">
+
+    <resultMap type="WzMorning" id="WzMorningResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="date"    column="date"    />
+        <result property="weather"    column="weather"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWzMorningVo">
+        select id, title, date, weather, content, create_time, update_time, remark from wz_morning
+    </sql>
+
+    <select id="selectWzMorningList" parameterType="WzMorning" resultMap="WzMorningResult">
+        <include refid="selectWzMorningVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title like concat('%',#{title},'%')</if>
+            <if test="date != null "> and date = #{date}</if>
+            <if test="weather != null  and weather != ''"> and weather = #{weather}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+        order by date desc
+    </select>
+
+    <select id="selectWzMorningById" parameterType="Long" resultMap="WzMorningResult">
+        <include refid="selectWzMorningVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWzMorning" parameterType="WzMorning" useGeneratedKeys="true" keyProperty="id">
+        insert into wz_morning
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="date != null">date,</if>
+            <if test="weather != null">weather,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="date != null">#{date},</if>
+            <if test="weather != null">#{weather},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWzMorning" parameterType="WzMorning">
+        update wz_morning
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="weather != null">weather = #{weather},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWzMorningById" parameterType="Long">
+        delete from wz_morning where id = #{id}
+    </delete>
+
+    <delete id="deleteWzMorningByIds" parameterType="String">
+        delete from wz_morning where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
