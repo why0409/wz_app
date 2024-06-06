@@ -269,10 +269,11 @@ public class NewVersionController extends BaseController {
      * 和美湾沚-视频管理列表
      */
     @GetMapping("/getHmwzVideoList")
-    public AjaxResult getHmwzVideoList(HmwzVideo hmwzVideo)
+    public TableDataInfo getHmwzVideoList(HmwzVideo hmwzVideo)
     {
+        startPage();
         List<HmwzVideo> list = hmwzVideoService.selectHmwzVideoList(hmwzVideo);
-        return AjaxResult.success(list);
+        return getDataTable(list);
     }
 
     /**
