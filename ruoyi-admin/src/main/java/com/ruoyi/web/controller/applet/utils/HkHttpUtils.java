@@ -49,7 +49,6 @@ public class HkHttpUtils {
      */
     public String getHkUrlResult(String apiPath, String body) {
 
-
         /**
          * STEP1：设置平台参数，根据实际情况,设置host appkey appsecret 三个参数.
          */

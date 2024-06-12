@@ -73,4 +73,6 @@ public interface IServiceConfigService
     public List<ServiceConfigVo> getRecentlyUsedListByOpenid(String openid);
 
     public List<ServiceConfig> getSmAndTjList();
+
+    public int countByUuid(String uuid);
 }

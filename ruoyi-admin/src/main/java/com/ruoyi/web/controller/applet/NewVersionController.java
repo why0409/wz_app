@@ -12,6 +12,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.WxNews;
 import com.ruoyi.system.service.IWxNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,7 +192,7 @@ public class NewVersionController extends BaseController {
     @PostMapping("/addWxClickServiceLog")
     public AjaxResult addWxClickServiceLog(@RequestBody WxClickServiceLog wxClickServiceLog)
     {
-        if (wxClickServiceLog.getServiceId() == null) {
+        if (StringUtils.isEmpty(wxClickServiceLog.getServiceId())) {
             return AjaxResult.error("服务uuid不能为空");
         } else {
             //查询服务uuid

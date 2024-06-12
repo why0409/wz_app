@@ -129,4 +129,9 @@ public class ServiceConfigServiceImpl implements IServiceConfigService
     public List<ServiceConfig> getSmAndTjList(){
         return serviceConfigMapper.getSmAndTjList();
     }
+
+    @Override
+    public int countByUuid(String uuid){
+        return serviceConfigMapper.countByUuid(uuid);
+    }
 }

@@ -237,6 +237,18 @@
             <if test="openid != null and openid !='' ">
                 and open_id = #{openid}
             </if>
+            AND service_id IN
+            (
+                SELECT min_sc.uuid
+                FROM
+                (
+                    SELECT uuid,
+                           MIN(id) AS min_id
+                    FROM service_config
+                    WHERE is_deactivated = 0
+                    GROUP BY uuid
+                ) min_sc
+            )
             GROUP BY service_id
             ORDER BY latest_click_time DESC
             LIMIT 5
@@ -265,6 +277,10 @@
         where is_deactivated = 0
         and category in ('市民服务','推荐关注')
         order by sort_num desc, create_time desc
+    </select>
+
+    <select id="countByUuid"  resultType="int">
+        select count(*) from service_config where uuid = #{uuid}
     </select>
 
 </mapper>

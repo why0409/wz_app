@@ -79,7 +79,14 @@ public class ServiceConfigController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody ServiceConfig serviceConfig)
     {
-        return toAjax(serviceConfigService.insertServiceConfig(serviceConfig));
+        int count = serviceConfigService.countByUuid(serviceConfig.getUuid());
+
+        if (count > 0) {
+            return error("已存在重复uuid！");
+        }else {
+            return toAjax(serviceConfigService.insertServiceConfig(serviceConfig));
+        }
+
     }
 
     /**
