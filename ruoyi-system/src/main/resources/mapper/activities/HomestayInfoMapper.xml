@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.activities.mapper.HomestayInfoMapper">
+
+    <resultMap type="HomestayInfo" id="HomestayInfoResult">
+        <result property="id"    column="id"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="name"    column="name"    />
+        <result property="introduction"    column="introduction"    />
+        <result property="contactName"    column="contact_name"    />
+        <result property="contactPhones"    column="contact_phones"    />
+        <result property="address"    column="address"    />
+        <result property="picture"    column="picture"    />
+        <result property="cover"    column="cover"    />
+        <result property="verifyPhones"    column="verify_phones"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="HomestayInfoVo" extends="HomestayInfoResult" id="HomestayInfoVoResult">
+        <result property="passengerNum"    column="passenger_num"    />
+    </resultMap>
+
+    <sql id="selectHomestayInfoVo">
+        select id, sort_num, name, introduction, contact_name, contact_phones, address, picture, cover, verify_phones, create_time, update_time from homestay_info
+    </sql>
+
+    <select id="selectHomestayInfoList" parameterType="HomestayInfo" resultMap="HomestayInfoResult">
+        <include refid="selectHomestayInfoVo"/>
+        <where>
+            <if test="sortNum != null "> and sort_num = #{sortNum}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="introduction != null  and introduction != ''"> and introduction = #{introduction}</if>
+            <if test="contactName != null  and contactName != ''"> and contact_name like concat('%', #{contactName}, '%')</if>
+            <if test="contactPhones != null  and contactPhones != ''"> and contact_phones = #{contactPhones}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="cover != null  and cover != ''"> and cover = #{cover}</if>
+            <if test="verifyPhones != null  and verifyPhones != ''"> and verify_phones = #{verifyPhones}</if>
+        </where>
+        order by sort_num desc
+    </select>
+
+    <select id="selectHomestayInfoById" parameterType="Long" resultMap="HomestayInfoResult">
+        <include refid="selectHomestayInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHomestayInfo" parameterType="HomestayInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into homestay_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sortNum != null">sort_num,</if>
+            <if test="name != null">name,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="contactName != null">contact_name,</if>
+            <if test="contactPhones != null">contact_phones,</if>
+            <if test="address != null">address,</if>
+            <if test="picture != null">picture,</if>
+            <if test="cover != null">cover,</if>
+            <if test="verifyPhones != null">verify_phones,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="name != null">#{name},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="contactName != null">#{contactName},</if>
+            <if test="contactPhones != null">#{contactPhones},</if>
+            <if test="address != null">#{address},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="cover != null">#{cover},</if>
+            <if test="verifyPhones != null">#{verifyPhones},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHomestayInfo" parameterType="HomestayInfo">
+        update homestay_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="contactName != null">contact_name = #{contactName},</if>
+            <if test="contactPhones != null">contact_phones = #{contactPhones},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="cover != null">cover = #{cover},</if>
+            <if test="verifyPhones != null">verify_phones = #{verifyPhones},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHomestayInfoById" parameterType="Long">
+        delete from homestay_info where id = #{id}
+    </delete>
+
+    <delete id="deleteHomestayInfoByIds" parameterType="String">
+        delete from homestay_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkVerifyPermission" resultType="int">
+        select count(*) from homestay_info
+        where FIND_IN_SET(#{phone}, verify_phones)
+        AND FIND_IN_SET(id, ( SELECT homestay_ids FROM activities_info ai WHERE id = #{activitiesId} ) )
+    </select>
+
+    <select id="getHomestayInfoListByVerifyPhone" resultMap="HomestayInfoResult">
+        select * from homestay_info
+        where FIND_IN_SET(#{phone}, verify_phones)
+        AND FIND_IN_SET(id, ( SELECT homestay_ids FROM activities_info ai WHERE id = #{activitiesId} ) )
+    </select>
+
+    <select id="getHomestayInfoByIds"  resultMap="HomestayInfoResult">
+        select * from homestay_info where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by sort_num desc
+    </select>
+
+    <select id="getHomestayListOrderByWinstatus" resultMap="HomestayInfoVoResult">
+        SELECT hi.*,
+               IFNULL(T.count, 0) as passenger_num
+        FROM homestay_info hi
+        LEFT JOIN
+        (
+            SELECT COUNT(*) as count, homestay_id
+            FROM homestay_registered_info
+            WHERE win_status = 1 and activities_id = #{activitiesId}
+            GROUP BY homestay_id
+        ) T
+        ON hi.id = T.homestay_id
+        WHERE FIND_IN_SET(hi.id, ( SELECT homestay_ids FROM activities_info ai WHERE id = #{activitiesId} ) )
+        ORDER BY passenger_num DESC
+    </select>
+
+</mapper>

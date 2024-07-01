@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.activities.mapper.ActivitiesInfoMapper">
+
+    <resultMap type="ActivitiesInfo" id="ActivitiesInfoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="content"    column="content"    />
+        <result property="securitiesTotalNumber"    column="securities_total_number"    />
+        <result property="securitiesRestNumber"    column="securities_rest_number"    />
+        <result property="securitiesAmount"    column="securities_amount"    />
+        <result property="registrationTime"    column="registration_time"    />
+        <result property="releaseTime"    column="release_time"    />
+        <result property="releaseCycle"    column="release_cycle"    />
+        <result property="consumptionTime"    column="consumption_time"    />
+        <result property="homestayIds"    column="homestay_ids"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="ActivitiesInfoHomestayVo" extends="ActivitiesInfoResult" id="ActivitiesInfoHomestayVoResult">
+        <result property="useNum"    column="use_num"    />
+    </resultMap>
+
+    <sql id="selectActivitiesInfoVo">
+        select id, name, content, securities_total_number, securities_rest_number, securities_amount, registration_time, release_time, release_cycle, consumption_time, homestay_ids, status, create_time, update_time from activities_info
+    </sql>
+
+    <select id="selectActivitiesInfoList" parameterType="ActivitiesInfo" resultMap="ActivitiesInfoResult">
+        <include refid="selectActivitiesInfoVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="securitiesTotalNumber != null "> and securities_total_number = #{securitiesTotalNumber}</if>
+            <if test="securitiesRestNumber != null "> and securities_rest_number = #{securitiesRestNumber}</if>
+            <if test="securitiesAmount != null "> and securities_amount = #{securitiesAmount}</if>
+            <if test="registrationTime != null  and registrationTime != ''"> and registration_time = #{registrationTime}</if>
+            <if test="releaseTime != null  and releaseTime != ''"> and release_time = #{releaseTime}</if>
+            <if test="releaseCycle != null "> and release_cycle = #{releaseCycle}</if>
+            <if test="consumptionTime != null  and consumptionTime != ''"> and consumption_time = #{consumptionTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectActivitiesInfoById" parameterType="Long" resultMap="ActivitiesInfoResult">
+        <include refid="selectActivitiesInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertActivitiesInfo" parameterType="ActivitiesInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into activities_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="content != null">content,</if>
+            <if test="securitiesTotalNumber != null">securities_total_number,</if>
+            <if test="securitiesRestNumber != null">securities_rest_number,</if>
+            <if test="securitiesAmount != null">securities_amount,</if>
+            <if test="registrationTime != null">registration_time,</if>
+            <if test="releaseTime != null">release_time,</if>
+            <if test="releaseCycle != null">release_cycle,</if>
+            <if test="consumptionTime != null">consumption_time,</if>
+            <if test="homestayIds != null">homestay_ids,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="content != null">#{content},</if>
+            <if test="securitiesTotalNumber != null">#{securitiesTotalNumber},</if>
+            <if test="securitiesRestNumber != null">#{securitiesRestNumber},</if>
+            <if test="securitiesAmount != null">#{securitiesAmount},</if>
+            <if test="registrationTime != null">#{registrationTime},</if>
+            <if test="releaseTime != null">#{releaseTime},</if>
+            <if test="releaseCycle != null">#{releaseCycle},</if>
+            <if test="consumptionTime != null">#{consumptionTime},</if>
+            <if test="homestayIds != null">#{homestayIds},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateActivitiesInfo" parameterType="ActivitiesInfo">
+        update activities_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="securitiesTotalNumber != null">securities_total_number = #{securitiesTotalNumber},</if>
+            <if test="securitiesRestNumber != null">securities_rest_number = #{securitiesRestNumber},</if>
+            <if test="securitiesAmount != null">securities_amount = #{securitiesAmount},</if>
+            <if test="registrationTime != null">registration_time = #{registrationTime},</if>
+            <if test="releaseTime != null">release_time = #{releaseTime},</if>
+            <if test="releaseCycle != null">release_cycle = #{releaseCycle},</if>
+            <if test="consumptionTime != null">consumption_time = #{consumptionTime},</if>
+            <if test="homestayIds != null">homestay_ids = #{homestayIds},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActivitiesInfoById" parameterType="Long">
+        delete from activities_info where id = #{id}
+    </delete>
+
+    <delete id="deleteActivitiesInfoByIds" parameterType="String">
+        delete from activities_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectNormalActivitiesInfo" parameterType="String" resultMap="ActivitiesInfoResult">
+        select * from activities_info
+        where status = #{status}
+        order by create_time desc
+        limit 1
+    </select>
+
+    <select id="getActivitiesListByHomestayId" resultMap="ActivitiesInfoHomestayVoResult">
+        select ai.*,
+               (
+                   select count(*) from homestay_registered_info
+                   where homestay_id = #{homestayId}
+                   and activities_id = ai.id
+               ) as use_num
+        from activities_info ai
+        where FIND_IN_SET(#{homestayId}, homestay_ids);
+    </select>
+
+</mapper>

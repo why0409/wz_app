@@ -99,9 +99,9 @@ spring:
     druid:
         # 主库数据源
         master:
-            url: jdbc:mysql://183.162.245.49:10117/wz_app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            url: jdbc:mysql://localhost:3306/wz_app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
             username: root
-            password: terra
+            password: root
         # 从库数据源
         slave:
             # 从数据源开关/默认关闭
@@ -111,14 +111,14 @@ spring:
             password:
         mydb:
             enabled: true
-            url: jdbc:mysql://183.162.245.49:10117/wx_wz?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            url: jdbc:mysql://localhost:3306/wx_wz?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
             username: root
-            password: terra
+            password: root
         gisdb:
           enabled: true
-          url: jdbc:mysql://183.162.245.49:10117/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+          url: jdbc:mysql://localhost:3306/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
           username: root
-          password: terra
+          password: root
         # 初始连接数
         initialSize: 5
         # 最小连接池数量
@@ -256,4 +256,12 @@ uccp:
     url: /v2/user/getUserInfo
   servic:
      url: http://60.166.52.177:8081/uccp-service
+
+#短信
+zhwz:
+  secretKey: WZlt!@#123456
+  apId: wz_ltjyd
+  sign: YmQNQMpTK
+  ecName: 芜湖市湾沚区数据资源管理局（政务服务管理局）
+  url: https://112.35.10.201:28888/sms/submit
 

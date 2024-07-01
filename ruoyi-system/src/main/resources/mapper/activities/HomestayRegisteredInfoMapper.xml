@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.activities.mapper.HomestayRegisteredInfoMapper">
+
+    <resultMap type="HomestayRegisteredInfo" id="HomestayRegisteredInfoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="wxPhone"    column="wx_phone"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="isWin"    column="is_win"    />
+        <result property="winStatus"    column="win_status"    />
+        <result property="activitiesId"    column="activities_id"    />
+        <result property="homestayId"    column="homestay_id"    />
+        <result property="verifyPhone"    column="verify_phone"    />
+        <result property="verifyTime"    column="verify_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isLotteryingShow"    column="is_lotterying_show"    />
+    </resultMap>
+
+    <resultMap type="HomestayRegisteredInfoVo" extends="HomestayRegisteredInfoResult" id="HomestayRegisteredInfoVoResult">
+    </resultMap>
+
+    <resultMap type="HomestayRegisteredInfoUseVo" extends="HomestayRegisteredInfoResult" id="HomestayRegisteredInfoUseVoResult">
+    </resultMap>
+
+    <resultMap type="RegisteredInfoVoByGovernment" extends="HomestayRegisteredInfoResult" id="RegisteredInfoVoByGovernmentResult">
+    </resultMap>
+
+    <sql id="selectHomestayRegisteredInfoVo">
+        select id, name, wx_phone, contact_phone, id_number, is_win, win_status, activities_id, homestay_id, verify_phone, verify_time, create_time, update_time, is_lotterying_show from homestay_registered_info
+    </sql>
+
+    <select id="selectHomestayRegisteredInfoList" parameterType="HomestayRegisteredInfo" resultMap="HomestayRegisteredInfoResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="wxPhone != null  and wxPhone != ''"> and wx_phone = #{wxPhone}</if>
+            <if test="contactPhone != null  and contactPhone != ''"> and contact_phone = #{contactPhone}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="isWin != null  and isWin != ''"> and is_win = #{isWin}</if>
+            <if test="winStatus != null  and winStatus != ''"> and win_status = #{winStatus}</if>
+            <if test="activitiesId != null "> and activities_id = #{activitiesId}</if>
+            <if test="homestayId != null "> and homestay_id = #{homestayId}</if>
+            <if test="verifyPhone != null  and verifyPhone != ''"> and verify_phone = #{verifyPhone}</if>
+            <if test="verifyTime != null "> and verify_time = #{verifyTime}</if>
+            <if test="isLotteryingShow != null  and isLotteryingShow != ''"> and is_lotterying_show = #{isLotteryingShow}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectHomestayRegisteredInfoVoList" parameterType="HomestayRegisteredInfo" resultMap="HomestayRegisteredInfoVoResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="wxPhone != null  and wxPhone != ''"> and wx_phone = #{wxPhone}</if>
+            <if test="contactPhone != null  and contactPhone != ''"> and contact_phone = #{contactPhone}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="isWin != null  and isWin != ''"> and is_win = #{isWin}</if>
+            <if test="winStatus != null  and winStatus != ''"> and win_status = #{winStatus}</if>
+            <if test="activitiesId != null "> and activities_id = #{activitiesId}</if>
+            <if test="homestayId != null "> and homestay_id = #{homestayId}</if>
+            <if test="verifyPhone != null  and verifyPhone != ''"> and verify_phone = #{verifyPhone}</if>
+            <if test="verifyTime != null "> and verify_time = #{verifyTime}</if>
+            <if test="isLotteryingShow != null  and isLotteryingShow != ''"> and is_lotterying_show = #{isLotteryingShow}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRegisteredInfoVoByGovernmentList" parameterType="HomestayRegisteredInfo" resultMap="RegisteredInfoVoByGovernmentResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="wxPhone != null  and wxPhone != ''"> and wx_phone = #{wxPhone}</if>
+            <if test="contactPhone != null  and contactPhone != ''"> and contact_phone = #{contactPhone}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="isWin != null  and isWin != ''"> and is_win = #{isWin}</if>
+            <if test="winStatus != null  and winStatus != ''"> and win_status = #{winStatus}</if>
+            <if test="activitiesId != null "> and activities_id = #{activitiesId}</if>
+            <if test="homestayId != null "> and homestay_id = #{homestayId}</if>
+            <if test="verifyPhone != null  and verifyPhone != ''"> and verify_phone = #{verifyPhone}</if>
+            <if test="verifyTime != null "> and verify_time = #{verifyTime}</if>
+            <if test="isLotteryingShow != null  and isLotteryingShow != ''"> and is_lotterying_show = #{isLotteryingShow}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectHomestayRegisteredInfoUseVoList" resultMap="HomestayRegisteredInfoUseVoResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        where homestay_id = #{homestayId}
+        and activities_id = #{activitiesId}
+        and win_status = '1'
+        order by verify_time desc
+    </select>
+
+    <select id="selectHomestayRegisteredInfoById" parameterType="Long" resultMap="HomestayRegisteredInfoResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        where id = #{id}
+    </select>
+
+
+    <select id="selectHomestayRegisteredInfoVoById" parameterType="Long" resultMap="HomestayRegisteredInfoVoResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHomestayRegisteredInfo" parameterType="HomestayRegisteredInfo">
+        insert into homestay_registered_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="wxPhone != null">wx_phone,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="isWin != null">is_win,</if>
+            <if test="winStatus != null">win_status,</if>
+            <if test="activitiesId != null">activities_id,</if>
+            <if test="homestayId != null">homestay_id,</if>
+            <if test="verifyPhone != null">verify_phone,</if>
+            <if test="verifyTime != null">verify_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isLotteryingShow != null">is_lotterying_show,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="wxPhone != null">#{wxPhone},</if>
+            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="isWin != null">#{isWin},</if>
+            <if test="winStatus != null">#{winStatus},</if>
+            <if test="activitiesId != null">#{activitiesId},</if>
+            <if test="homestayId != null">#{homestayId},</if>
+            <if test="verifyPhone != null">#{verifyPhone},</if>
+            <if test="verifyTime != null">#{verifyTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isLotteryingShow != null">#{isLotteryingShow},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHomestayRegisteredInfo" parameterType="HomestayRegisteredInfo">
+        update homestay_registered_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="wxPhone != null">wx_phone = #{wxPhone},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="isWin != null">is_win = #{isWin},</if>
+            <if test="winStatus != null">win_status = #{winStatus},</if>
+            <if test="activitiesId != null">activities_id = #{activitiesId},</if>
+            <if test="homestayId != null">homestay_id = #{homestayId},</if>
+            <if test="verifyPhone != null">verify_phone = #{verifyPhone},</if>
+            <if test="verifyTime != null">verify_time = #{verifyTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isLotteryingShow != null">is_lotterying_show = #{isLotteryingShow},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateHomestayRegisteredInfoByWxPhone" parameterType="HomestayRegisteredInfo">
+        update homestay_registered_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="isWin != null">is_win = #{isWin},</if>
+            <if test="winStatus != null">win_status = #{winStatus},</if>
+            <if test="activitiesId != null">activities_id = #{activitiesId},</if>
+            <if test="homestayId != null">homestay_id = #{homestayId},</if>
+            <if test="verifyPhone != null">verify_phone = #{verifyPhone},</if>
+            <if test="verifyTime != null">verify_time = #{verifyTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where wx_phone = #{wxPhone}
+    </update>
+
+    <delete id="deleteHomestayRegisteredInfoById" parameterType="Long">
+        delete from homestay_registered_info where id = #{id}
+    </delete>
+
+    <delete id="deleteHomestayRegisteredInfoByIds" parameterType="String">
+        delete from homestay_registered_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkCountByWxPhone" resultType="int">
+        select count(*) from homestay_registered_info
+        where wx_phone is not null and wx_phone != ''
+        and wx_phone = #{phone} and activities_id = #{activitiesId}
+    </select>
+
+    <select id="checkCountByIdNumber" resultType="int">
+        select count(*) from homestay_registered_info
+        where id_number = #{idNumber} and activities_id = #{activitiesId}
+    </select>
+
+    <select id="selectHomestayRegisteredInfoByWxPhone" resultMap="HomestayRegisteredInfoResult">
+        <include refid="selectHomestayRegisteredInfoVo"/>
+        where wx_phone = #{phone} and activities_id = #{activitiesId}
+        limit 1;
+    </select>
+
+    <update id="updateIsWinByIds" >
+        update homestay_registered_info
+        set is_win = #{isWin}, win_status = #{winStatus}
+        where 1=1
+        <if test="ids != null and ids.size > 0">
+            and id in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="updateIsLotteryingShowByIds" >
+        update homestay_registered_info
+        set is_lotterying_show = #{isLotteryingShow}
+        where 1=1
+        <if test="ids != null and ids.size > 0">
+            and id in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="selectNotWinIdsByWz" resultType="Long">
+        SELECT id
+        FROM homestay_registered_info
+        WHERE id IN
+        (
+            SELECT MIN(id)
+            FROM homestay_registered_info
+            WHERE wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
+            AND activities_id = #{activitiesId}
+            GROUP BY id_number
+        )
+        AND is_win = '0'
+        AND id_number like '340221%'
+    </select>
+
+    <select id="selectNotWinIdsByWhNotWz" resultType="Long">
+        SELECT id
+        FROM homestay_registered_info
+        WHERE id IN
+              (
+                  SELECT MIN(id)
+                  FROM homestay_registered_info
+                  WHERE wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
+                    AND activities_id = #{activitiesId}
+                  GROUP BY id_number
+              )
+        AND is_win = '0'
+        AND id_number like '3402%'
+        AND id_number not like '340221%'
+    </select>
+
+    <select id="selectNotWinIdsByOther" resultType="Long">
+        SELECT id
+        FROM homestay_registered_info
+        WHERE id IN
+              (
+                  SELECT MIN(id)
+                  FROM homestay_registered_info
+                  WHERE wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
+                    AND activities_id = #{activitiesId}
+                  GROUP BY id_number
+              )
+        AND is_win = '0'
+        AND id_number not like '3402%'
+    </select>
+
+    <select id="selectNotWinIdsByWxPhones" resultType="Long">
+        select id from homestay_registered_info
+        where wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
+        AND is_win = '0'
+        AND activities_id = #{activitiesId}
+        AND wx_phone in
+        <foreach item="phone" collection="list" open="(" separator="," close=")">
+            #{phone}
+        </foreach>
+    </select>
+
+    <select id="selectHomestayRegisteredInfoVoByIds" resultMap="HomestayRegisteredInfoVoResult">
+        select * from homestay_registered_info where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectHomestayRegisteredInfoByIds" resultMap="HomestayRegisteredInfoResult">
+        select * from homestay_registered_info where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getStaticsCountByProvince" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT T.*,
+               ini.title
+        FROM
+        (
+            SELECT count(*) as count, CONCAT(SUBSTR(id_number,1,2),'0000') as code FROM `homestay_registered_info`
+            WHERE wx_phone is not null AND wx_phone != '' AND activities_id is NOT NULL
+            AND activities_id = #{activitiesId}
+            GROUP BY code
+        ) T
+        LEFT JOIN id_number_info ini ON T.code = ini.code
+        ORDER BY T.count DESC
+    </select>
+
+    <select id="getStaticsCount" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT COUNT(*) as registerCount,
+               COUNT(is_win = 1 OR NULL) as winCount,
+               COUNT(win_status = 1 OR NULL) as useCount,
+               (
+                   SELECT LENGTH(homestay_ids) - LENGTH(REPLACE(homestay_ids, ',', '')) + 1
+                   FROM activities_info
+                   WHERE id = #{activitiesId}
+               ) as homestayCount
+        FROM homestay_registered_info
+        where activities_id = #{activitiesId}
+    </select>
+
+    <select id="getStaticsCountByXzqh" resultType="int">
+        SELECT count(*)
+        FROM homestay_registered_info
+        where activities_id = #{activitiesId} and
+        <foreach collection="list" item="idNumberPrefix" open="(" separator=" OR " close=")">
+            id_number LIKE CONCAT(#{idNumberPrefix}, '%')
+        </foreach>
+    </select>
+
+    <select id="getWinCount" resultType="int">
+        SELECT count(*)
+        FROM homestay_registered_info
+        where activities_id = #{activitiesId}
+        and is_win = '1';
+    </select>
+
+</mapper>

@@ -256,6 +256,12 @@ public class NewVersionController extends BaseController {
         return AjaxResult.success(list);
     }
 
+    @GetMapping(value = "/getHmwzBannerInfo/{id}")
+    public AjaxResult getHmwzBannerInfo(@PathVariable("id") Long id)
+    {
+        return success(hmwzBannerService.selectHmwzBannerById(id));
+    }
+
     /**
      * 和美湾沚-封面管理列表
      */

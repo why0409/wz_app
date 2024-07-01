@@ -909,7 +909,7 @@ public class SspServiceImpl implements SspService {
             paramMap.put("timestamp", now + "");
             String sign = SignUtils.getSign(paramMap,secret);
             log.info("请求环保事件列表接口===============");
-            String requst_url = "https://"+"ai.wanzhi.gov.cn/udp_mini"+"/api/open/bigScreen/statistic/list/envProtect?appId="+ appId+ "&timestamp="+now +"&sign=" + sign +"&"+param;
+            String requst_url = "http://"+host+":"+port+"/api/open/bigScreen/statistic/list/envProtect?appId="+ appId+ "&timestamp="+now +"&sign=" + sign +"&"+param;
             resp = HttpRequest.get(requst_url).execute().body();
             log.info("是否环保事件列表接口返回:"+JSON.parseObject(resp)+"===============");
         }catch (Exception e){
@@ -930,7 +930,7 @@ public class SspServiceImpl implements SspService {
             paramMap.put("timestamp", now + "");
             String sign = SignUtils.getSign(paramMap,secret);
             log.info("请求环保事件列表接口===============");
-            String requst_url = "https://"+"ai.wanzhi.gov.cn/udp_mini"+"/api/open/bigScreen/statistic/detail/envProtect?appId="+ appId+ "&timestamp="+now +"&sign=" + sign +"&"+param;
+            String requst_url = "http://"+host+":"+port+"/api/open/bigScreen/statistic/detail/envProtect?appId="+ appId+ "&timestamp="+now +"&sign=" + sign +"&"+param;
             resp = HttpRequest.get(requst_url).execute().body();
             log.info("是否环保事件详情接口返回:"+JSON.parseObject(resp)+"===============");
         }catch (Exception e){

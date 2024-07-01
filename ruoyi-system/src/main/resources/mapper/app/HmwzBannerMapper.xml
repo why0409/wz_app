@@ -13,10 +13,11 @@
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
         <result property="isShow"    column="is_show"    />
+        <result property="remark"    column="remark"    />
     </resultMap>
 
     <sql id="selectHmwzBannerVo">
-        select id, title, url, picture, sort_num, create_time, update_time, is_show from hmwz_banner
+        select id, title, url, picture, sort_num, create_time, update_time, is_show, remark from hmwz_banner
     </sql>
 
     <select id="selectHmwzBannerList" parameterType="HmwzBanner" resultMap="HmwzBannerResult">
@@ -46,6 +47,7 @@
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="isShow != null">is_show,</if>
+            <if test="remark != null">remark,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="title != null">#{title},</if>
@@ -55,6 +57,7 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="isShow != null">#{isShow},</if>
+            <if test="remark != null">#{remark},</if>
         </trim>
     </insert>
 
@@ -68,6 +71,7 @@
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="isShow != null">is_show = #{isShow},</if>
+            <if test="remark != null">remark = #{remark},</if>
         </trim>
         where id = #{id}
     </update>

@@ -119,9 +119,9 @@ spring:
         # 初始连接数
         initialSize: 5
         # 最小连接池数量
-        minIdle: 10
+        minIdle: 50
         # 最大连接池数量
-        maxActive: 20
+        maxActive: 100
         # 配置获取连接等待超时的时间
         maxWait: 60000
         # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
@@ -253,6 +253,15 @@ uccp:
     url: /v2/user/getUserInfo
   servic:
     url: http://60.166.52.177:8081/uccp-service
+
+#短信
+zhwz:
+  secretKey: WZlt!@#123456
+  apId: wz_ltjyd
+  sign: YmQNQMpTK
+  ecName: 芜湖市湾沚区数据资源管理局（政务服务管理局）
+  url: https://112.35.10.201:28888/sms/submit
+
 
 
 
