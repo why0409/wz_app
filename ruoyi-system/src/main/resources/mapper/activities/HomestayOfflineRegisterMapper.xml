@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.activities.mapper.HomestayOfflineRegisterMapper">
+
+    <resultMap type="HomestayOfflineRegister" id="HomestayOfflineRegisterResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="phone"    column="phone"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="homestayId"    column="homestay_id"    />
+        <result property="activitiesId"    column="activities_id"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="inTime"    column="in_time"    />
+        <result property="verifyPhone"    column="verify_phone"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="HomestayOfflineRegisterVo" extends="HomestayOfflineRegisterResult" id="HomestayOfflineRegisterVoResult">
+    </resultMap>
+
+    <sql id="selectHomestayOfflineRegisterVo">
+        select id, name, phone, id_number, homestay_id, activities_id, room_number, in_time, verify_phone, serial_number, create_time, update_time from homestay_offline_register
+    </sql>
+
+    <select id="selectHomestayOfflineRegisterList" parameterType="HomestayOfflineRegister" resultMap="HomestayOfflineRegisterResult">
+        <include refid="selectHomestayOfflineRegisterVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="homestayId != null "> and homestay_id = #{homestayId}</if>
+            <if test="activitiesId != null "> and activities_id = #{activitiesId}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="inTime != null "> and in_time = #{inTime}</if>
+            <if test="verifyPhone != null  and verifyPhone != ''"> and verify_phone = #{verifyPhone}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and serial_number = #{serialNumber}</if>
+        </where>
+        order by in_time desc
+    </select>
+
+    <select id="selectHomestayOfflineRegisterVoList" parameterType="HomestayOfflineRegister" resultMap="HomestayOfflineRegisterVoResult">
+        <include refid="selectHomestayOfflineRegisterVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="homestayId != null "> and homestay_id = #{homestayId}</if>
+            <if test="activitiesId != null "> and activities_id = #{activitiesId}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="inTime != null "> and in_time = #{inTime}</if>
+            <if test="verifyPhone != null  and verifyPhone != ''"> and verify_phone = #{verifyPhone}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and serial_number = #{serialNumber}</if>
+        </where>
+        order by in_time desc
+    </select>
+
+    <select id="selectHomestayOfflineRegisterById" parameterType="Long" resultMap="HomestayOfflineRegisterResult">
+        <include refid="selectHomestayOfflineRegisterVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHomestayOfflineRegister" parameterType="HomestayOfflineRegister" useGeneratedKeys="true" keyProperty="id">
+        insert into homestay_offline_register
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="homestayId != null">homestay_id,</if>
+            <if test="activitiesId != null">activities_id,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="inTime != null">in_time,</if>
+            <if test="verifyPhone != null">verify_phone,</if>
+            <if test="serialNumber != null">serial_number,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="homestayId != null">#{homestayId},</if>
+            <if test="activitiesId != null">#{activitiesId},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="inTime != null">#{inTime},</if>
+            <if test="verifyPhone != null">#{verifyPhone},</if>
+            <if test="serialNumber != null">#{serialNumber},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHomestayOfflineRegister" parameterType="HomestayOfflineRegister">
+        update homestay_offline_register
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="homestayId != null">homestay_id = #{homestayId},</if>
+            <if test="activitiesId != null">activities_id = #{activitiesId},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="inTime != null">in_time = #{inTime},</if>
+            <if test="verifyPhone != null">verify_phone = #{verifyPhone},</if>
+            <if test="serialNumber != null">serial_number = #{serialNumber},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHomestayOfflineRegisterById" parameterType="Long">
+        delete from homestay_offline_register where id = #{id}
+    </delete>
+
+    <delete id="deleteHomestayOfflineRegisterByIds" parameterType="String">
+        delete from homestay_offline_register where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getTodayCountByIdNumber" resultType="int">
+        select count(*)
+        from homestay_offline_register
+        where activities_id = #{activitiesId}
+        and id_number = #{idNumber}
+        and DATE(create_time) = CURRENT_DATE
+    </select>
+</mapper>
