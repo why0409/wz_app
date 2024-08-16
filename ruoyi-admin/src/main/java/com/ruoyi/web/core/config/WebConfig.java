@@ -18,8 +18,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(wxRequestInterceptor)
+                // 应用拦截器到这些 URL 模式
                 .addPathPatterns("/applet/**")
                 .addPathPatterns("/jsj/**")
+                // 排除这些路径，不被拦截
                 .excludePathPatterns("/jsj/loadPositionJson")
                 .excludePathPatterns("/jsj/getBase64ByUrl")
                 .excludePathPatterns("/applet/SendHikInfo")

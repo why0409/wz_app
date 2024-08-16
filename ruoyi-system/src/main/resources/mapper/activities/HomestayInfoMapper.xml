@@ -21,6 +21,8 @@
 
     <resultMap type="HomestayInfoVo" extends="HomestayInfoResult" id="HomestayInfoVoResult">
         <result property="passengerNum"    column="passenger_num"    />
+        <result property="offlineNum"    column="offline_num"    />
+        <result property="totalNum"    column="total_num"    />
     </resultMap>
 
     <sql id="selectHomestayInfoVo">
@@ -129,18 +131,28 @@
 
     <select id="getHomestayListOrderByWinstatus" resultMap="HomestayInfoVoResult">
         SELECT hi.*,
-               IFNULL(T.count, 0) as passenger_num
+               IFNULL(online.count, 0) as passenger_num,
+               IFNULL(offline.count, 0) as offline_num ,
+               (IFNULL(online.count, 0)+IFNULL(offline.count, 0)) as total_num
         FROM homestay_info hi
         LEFT JOIN
         (
-            SELECT COUNT(*) as count, homestay_id
+            SELECT COUNT(*) as count,
+                   homestay_id
             FROM homestay_registered_info
             WHERE win_status = 1 and activities_id = #{activitiesId}
             GROUP BY homestay_id
-        ) T
-        ON hi.id = T.homestay_id
+        ) online ON hi.id = online.homestay_id
+        LEFT JOIN
+        (
+            SELECT COUNT(*) as count,
+                   homestay_id
+            FROM homestay_offline_register
+            WHERE activities_id = #{activitiesId}
+            GROUP BY homestay_id
+        ) offline ON hi.id = offline.homestay_id
         WHERE FIND_IN_SET(hi.id, ( SELECT homestay_ids FROM activities_info ai WHERE id = #{activitiesId} ) )
-        ORDER BY passenger_num DESC
+        ORDER BY total_num DESC
     </select>
 
 </mapper>

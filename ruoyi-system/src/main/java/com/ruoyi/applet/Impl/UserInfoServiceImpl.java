@@ -38,12 +38,11 @@ public class UserInfoServiceImpl implements UserInfoService {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + APPID
                 + "&secret=" + SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         //调用get方法发起get请求，并把返回值赋值给returnvalue
-        String  returnvalue=GET(url);
-        //定义一个json对象。
-        JSONObject convertvalue = new JSONObject();
+        String returnvalue = GET(url);
 
-        //将得到的字符串转换为json
-        convertvalue=(JSONObject) JSON.parse(returnvalue);
+        //定义一个json对象。
+        JSONObject convertvalue = (JSONObject) JSON.parse(returnvalue);
+
         return convertvalue;
     }
 

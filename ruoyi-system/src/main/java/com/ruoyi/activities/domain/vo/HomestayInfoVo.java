@@ -56,6 +56,11 @@ public class HomestayInfoVo extends BaseEntity
 
     private Integer passengerNum;
 
+    private Integer offlineNum;
+
+    private Integer totalNum;
+
+
     public Integer getPassengerNum() {
         return this.passengerNum;
     }
@@ -153,6 +158,22 @@ public class HomestayInfoVo extends BaseEntity
     public String getVerifyPhones()
     {
         return verifyPhones;
+    }
+
+    public Integer getOfflineNum() {
+        return this.offlineNum;
+    }
+
+    public void setOfflineNum(Integer offlineNum) {
+        this.offlineNum = offlineNum;
+    }
+
+    public Integer getTotalNum() {
+        return this.totalNum;
+    }
+
+    public void setTotalNum(Integer totalNum) {
+        this.totalNum = totalNum;
     }
 
     @Override

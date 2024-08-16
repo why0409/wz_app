@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.safetyHazard.mapper.SafetyHazardManifestSchoolMapper">
+
+    <resultMap type="SafetyHazardManifestSchool" id="SafetyHazardManifestSchoolResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="wxPhone"    column="wx_phone"    />
+        <result property="fileListaqgl"    column="fileListaqgl"    />
+        <result property="baysl"    column="baysl"    />
+        <result property="fileListbaysl"    column="fileListbaysl"    />
+        <result property="ssygzrs"    column="ssygzrs"    />
+        <result property="jssrs"    column="jssrs"    />
+        <result property="fjssrs"    column="fjssrs"    />
+        <result property="fileListxyaqbzgzgzzd"    column="fileListxyaqbzgzgzzd"    />
+        <result property="fileListwqgd"    column="fileListwqgd"    />
+        <result property="wqgd"    column="wqgd"    />
+        <result property="fileListfppcs"    column="fileListfppcs"    />
+        <result property="fileListfwqx"    column="fileListfwqx"    />
+        <result property="fwqx"    column="fwqx"    />
+        <result property="checkedyzfczss"    column="checkedyzfczss"    />
+        <result property="fileListyzfczss"    column="fileListyzfczss"    />
+        <result property="fileListazfdaqm"    column="fileListazfdaqm"    />
+        <result property="fileListszxfssqc"    column="fileListszxfssqc"    />
+        <result property="fileListbcctssyjzm"    column="fileListbcctssyjzm"    />
+        <result property="fileListszaqjspd"    column="fileListszaqjspd"    />
+        <result property="fileListafjks"    column="fileListafjks"    />
+        <result property="checkedxyqfg"    column="checkedxyqfg"    />
+        <result property="fileListspbcsj"    column="fileListspbcsj"    />
+        <result property="checkedfbhgl"    column="checkedfbhgl"    />
+        <result property="fileListlsdjjc"    column="fileListlsdjjc"    />
+        <result property="checkedjzxdwxpdw"    column="checkedjzxdwxpdw"    />
+        <result property="checkedhxabll"    column="checkedhxabll"    />
+        <result property="fileListdqkzaqjy"    column="fileListdqkzaqjy"    />
+        <result property="fileListzdyjya"    column="fileListzdyjya"    />
+        <result property="fileListzxdyylqk"    column="fileListzxdyylqk"    />
+        <result property="fzfxzlxfs"    column="fzfxzlxfs"    />
+        <result property="checkedfzfxzdxkzaqgz"    column="checkedfzfxzdxkzaqgz"    />
+        <result property="checkedysjsycqk"    column="checkedysjsycqk"    />
+        <result property="checkedzdmdjf"    column="checkedzdmdjf"    />
+        <result property="checkedlshgxzd"    column="checkedlshgxzd"    />
+        <result property="ispart"    column="ispart"    />
+        <result property="dcReply"    column="dc_reply"    />
+        <result property="zcReply"    column="zc_reply"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSafetyHazardManifestSchoolVo">
+        select id, user_id, wx_phone, fileListaqgl, baysl, fileListbaysl, ssygzrs, jssrs, fjssrs, fileListxyaqbzgzgzzd, fileListwqgd, wqgd, fileListfppcs, fileListfwqx, fwqx, checkedyzfczss, fileListyzfczss, fileListazfdaqm, fileListszxfssqc, fileListbcctssyjzm, fileListszaqjspd, fileListafjks, checkedxyqfg, fileListspbcsj, checkedfbhgl, fileListlsdjjc, checkedjzxdwxpdw, checkedhxabll, fileListdqkzaqjy, fileListzdyjya, fileListzxdyylqk, fzfxzlxfs, checkedfzfxzdxkzaqgz, checkedysjsycqk, checkedzdmdjf, checkedlshgxzd, ispart, create_time, update_time from safety_hazard_manifest_school
+    </sql>
+
+    <select id="selectSafetyHazardManifestSchoolList" parameterType="SafetyHazardManifestSchool" resultMap="SafetyHazardManifestSchoolResult">
+        select ms.*,
+               mr.dc_reply,
+               mr.zc_reply
+        from safety_hazard_manifest_school ms
+        left join safety_hazard_manifest_reply mr on ms.id = mr.manifest_id
+        <where>
+            <if test="userId != null "> and ms.user_id = #{userId}</if>
+            <if test="wxPhone != null  and wxPhone != ''"> and ms.wx_phone = #{wxPhone}</if>
+            <if test="fileListaqgl != null  and fileListaqgl != ''"> and ms.fileListaqgl = #{fileListaqgl}</if>
+            <if test="baysl != null  and baysl != ''"> and ms.baysl = #{baysl}</if>
+            <if test="fileListbaysl != null  and fileListbaysl != ''"> and ms.fileListbaysl = #{fileListbaysl}</if>
+            <if test="ssygzrs != null  and ssygzrs != ''"> and ms.ssygzrs = #{ssygzrs}</if>
+            <if test="jssrs != null  and jssrs != ''"> and ms.jssrs = #{jssrs}</if>
+            <if test="fjssrs != null  and fjssrs != ''"> and ms.fjssrs = #{fjssrs}</if>
+            <if test="fileListxyaqbzgzgzzd != null  and fileListxyaqbzgzgzzd != ''"> and ms.fileListxyaqbzgzgzzd = #{fileListxyaqbzgzgzzd}</if>
+            <if test="fileListwqgd != null  and fileListwqgd != ''"> and ms.fileListwqgd = #{fileListwqgd}</if>
+            <if test="wqgd != null  and wqgd != ''"> and ms.wqgd = #{wqgd}</if>
+            <if test="fileListfppcs != null  and fileListfppcs != ''"> and ms.fileListfppcs = #{fileListfppcs}</if>
+            <if test="fileListfwqx != null  and fileListfwqx != ''"> and ms.fileListfwqx = #{fileListfwqx}</if>
+            <if test="fwqx != null  and fwqx != ''"> and ms.fwqx = #{fwqx}</if>
+            <if test="checkedyzfczss != null  and checkedyzfczss != ''"> and ms.checkedyzfczss = #{checkedyzfczss}</if>
+            <if test="fileListyzfczss != null  and fileListyzfczss != ''"> and ms.fileListyzfczss = #{fileListyzfczss}</if>
+            <if test="fileListazfdaqm != null  and fileListazfdaqm != ''"> and ms.fileListazfdaqm = #{fileListazfdaqm}</if>
+            <if test="fileListszxfssqc != null  and fileListszxfssqc != ''"> and ms.fileListszxfssqc = #{fileListszxfssqc}</if>
+            <if test="fileListbcctssyjzm != null  and fileListbcctssyjzm != ''"> and ms.fileListbcctssyjzm = #{fileListbcctssyjzm}</if>
+            <if test="fileListszaqjspd != null  and fileListszaqjspd != ''"> and ms.fileListszaqjspd = #{fileListszaqjspd}</if>
+            <if test="fileListafjks != null  and fileListafjks != ''"> and ms.fileListafjks = #{fileListafjks}</if>
+            <if test="checkedxyqfg != null  and checkedxyqfg != ''"> and ms.checkedxyqfg = #{checkedxyqfg}</if>
+            <if test="fileListspbcsj != null  and fileListspbcsj != ''"> and ms.fileListspbcsj = #{fileListspbcsj}</if>
+            <if test="checkedfbhgl != null  and checkedfbhgl != ''"> and ms.checkedfbhgl = #{checkedfbhgl}</if>
+            <if test="fileListlsdjjc != null  and fileListlsdjjc != ''"> and ms.fileListlsdjjc = #{fileListlsdjjc}</if>
+            <if test="checkedjzxdwxpdw != null  and checkedjzxdwxpdw != ''"> and ms.checkedjzxdwxpdw = #{checkedjzxdwxpdw}</if>
+            <if test="checkedhxabll != null  and checkedhxabll != ''"> and ms.checkedhxabll = #{checkedhxabll}</if>
+            <if test="fileListdqkzaqjy != null  and fileListdqkzaqjy != ''"> and ms.fileListdqkzaqjy = #{fileListdqkzaqjy}</if>
+            <if test="fileListzdyjya != null  and fileListzdyjya != ''"> and ms.fileListzdyjya = #{fileListzdyjya}</if>
+            <if test="fileListzxdyylqk != null  and fileListzxdyylqk != ''"> and ms.fileListzxdyylqk = #{fileListzxdyylqk}</if>
+            <if test="fzfxzlxfs != null  and fzfxzlxfs != ''"> and ms.fzfxzlxfs = #{fzfxzlxfs}</if>
+            <if test="checkedfzfxzdxkzaqgz != null  and checkedfzfxzdxkzaqgz != ''"> and ms.checkedfzfxzdxkzaqgz = #{checkedfzfxzdxkzaqgz}</if>
+            <if test="checkedysjsycqk != null  and checkedysjsycqk != ''"> and ms.checkedysjsycqk = #{checkedysjsycqk}</if>
+            <if test="checkedzdmdjf != null  and checkedzdmdjf != ''"> and ms.checkedzdmdjf = #{checkedzdmdjf}</if>
+            <if test="checkedlshgxzd != null  and checkedlshgxzd != ''"> and ms.checkedlshgxzd = #{checkedlshgxzd}</if>
+            <if test="ispart != null  and ispart != ''"> and ms.ispart = #{ispart}</if>
+        </where>
+        order by update_time desc
+    </select>
+
+    <select id="selectSafetyHazardManifestSchoolById" parameterType="String" resultMap="SafetyHazardManifestSchoolResult">
+        select ms.*,
+               mr.dc_reply,
+               mr.zc_reply
+        from safety_hazard_manifest_school ms
+        left join safety_hazard_manifest_reply mr on ms.id = mr.manifest_id
+        where ms.id = #{id}
+    </select>
+
+    <insert id="insertSafetyHazardManifestSchool" parameterType="SafetyHazardManifestSchool">
+        insert into safety_hazard_manifest_school
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="wxPhone != null">wx_phone,</if>
+            <if test="fileListaqgl != null">fileListaqgl,</if>
+            <if test="baysl != null">baysl,</if>
+            <if test="fileListbaysl != null">fileListbaysl,</if>
+            <if test="ssygzrs != null">ssygzrs,</if>
+            <if test="jssrs != null">jssrs,</if>
+            <if test="fjssrs != null">fjssrs,</if>
+            <if test="fileListxyaqbzgzgzzd != null">fileListxyaqbzgzgzzd,</if>
+            <if test="fileListwqgd != null">fileListwqgd,</if>
+            <if test="wqgd != null">wqgd,</if>
+            <if test="fileListfppcs != null">fileListfppcs,</if>
+            <if test="fileListfwqx != null">fileListfwqx,</if>
+            <if test="fwqx != null">fwqx,</if>
+            <if test="checkedyzfczss != null">checkedyzfczss,</if>
+            <if test="fileListyzfczss != null">fileListyzfczss,</if>
+            <if test="fileListazfdaqm != null">fileListazfdaqm,</if>
+            <if test="fileListszxfssqc != null">fileListszxfssqc,</if>
+            <if test="fileListbcctssyjzm != null">fileListbcctssyjzm,</if>
+            <if test="fileListszaqjspd != null">fileListszaqjspd,</if>
+            <if test="fileListafjks != null">fileListafjks,</if>
+            <if test="checkedxyqfg != null">checkedxyqfg,</if>
+            <if test="fileListspbcsj != null">fileListspbcsj,</if>
+            <if test="checkedfbhgl != null">checkedfbhgl,</if>
+            <if test="fileListlsdjjc != null">fileListlsdjjc,</if>
+            <if test="checkedjzxdwxpdw != null">checkedjzxdwxpdw,</if>
+            <if test="checkedhxabll != null">checkedhxabll,</if>
+            <if test="fileListdqkzaqjy != null">fileListdqkzaqjy,</if>
+            <if test="fileListzdyjya != null">fileListzdyjya,</if>
+            <if test="fileListzxdyylqk != null">fileListzxdyylqk,</if>
+            <if test="fzfxzlxfs != null">fzfxzlxfs,</if>
+            <if test="checkedfzfxzdxkzaqgz != null">checkedfzfxzdxkzaqgz,</if>
+            <if test="checkedysjsycqk != null">checkedysjsycqk,</if>
+            <if test="checkedzdmdjf != null">checkedzdmdjf,</if>
+            <if test="checkedlshgxzd != null">checkedlshgxzd,</if>
+            <if test="ispart != null">ispart,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="wxPhone != null">#{wxPhone},</if>
+            <if test="fileListaqgl != null">#{fileListaqgl},</if>
+            <if test="baysl != null">#{baysl},</if>
+            <if test="fileListbaysl != null">#{fileListbaysl},</if>
+            <if test="ssygzrs != null">#{ssygzrs},</if>
+            <if test="jssrs != null">#{jssrs},</if>
+            <if test="fjssrs != null">#{fjssrs},</if>
+            <if test="fileListxyaqbzgzgzzd != null">#{fileListxyaqbzgzgzzd},</if>
+            <if test="fileListwqgd != null">#{fileListwqgd},</if>
+            <if test="wqgd != null">#{wqgd},</if>
+            <if test="fileListfppcs != null">#{fileListfppcs},</if>
+            <if test="fileListfwqx != null">#{fileListfwqx},</if>
+            <if test="fwqx != null">#{fwqx},</if>
+            <if test="checkedyzfczss != null">#{checkedyzfczss},</if>
+            <if test="fileListyzfczss != null">#{fileListyzfczss},</if>
+            <if test="fileListazfdaqm != null">#{fileListazfdaqm},</if>
+            <if test="fileListszxfssqc != null">#{fileListszxfssqc},</if>
+            <if test="fileListbcctssyjzm != null">#{fileListbcctssyjzm},</if>
+            <if test="fileListszaqjspd != null">#{fileListszaqjspd},</if>
+            <if test="fileListafjks != null">#{fileListafjks},</if>
+            <if test="checkedxyqfg != null">#{checkedxyqfg},</if>
+            <if test="fileListspbcsj != null">#{fileListspbcsj},</if>
+            <if test="checkedfbhgl != null">#{checkedfbhgl},</if>
+            <if test="fileListlsdjjc != null">#{fileListlsdjjc},</if>
+            <if test="checkedjzxdwxpdw != null">#{checkedjzxdwxpdw},</if>
+            <if test="checkedhxabll != null">#{checkedhxabll},</if>
+            <if test="fileListdqkzaqjy != null">#{fileListdqkzaqjy},</if>
+            <if test="fileListzdyjya != null">#{fileListzdyjya},</if>
+            <if test="fileListzxdyylqk != null">#{fileListzxdyylqk},</if>
+            <if test="fzfxzlxfs != null">#{fzfxzlxfs},</if>
+            <if test="checkedfzfxzdxkzaqgz != null">#{checkedfzfxzdxkzaqgz},</if>
+            <if test="checkedysjsycqk != null">#{checkedysjsycqk},</if>
+            <if test="checkedzdmdjf != null">#{checkedzdmdjf},</if>
+            <if test="checkedlshgxzd != null">#{checkedlshgxzd},</if>
+            <if test="ispart != null">#{ispart},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSafetyHazardManifestSchool" parameterType="SafetyHazardManifestSchool">
+        update safety_hazard_manifest_school
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="wxPhone != null">wx_phone = #{wxPhone},</if>
+            <if test="fileListaqgl != null">fileListaqgl = #{fileListaqgl},</if>
+            <if test="baysl != null">baysl = #{baysl},</if>
+            <if test="fileListbaysl != null">fileListbaysl = #{fileListbaysl},</if>
+            <if test="ssygzrs != null">ssygzrs = #{ssygzrs},</if>
+            <if test="jssrs != null">jssrs = #{jssrs},</if>
+            <if test="fjssrs != null">fjssrs = #{fjssrs},</if>
+            <if test="fileListxyaqbzgzgzzd != null">fileListxyaqbzgzgzzd = #{fileListxyaqbzgzgzzd},</if>
+            <if test="fileListwqgd != null">fileListwqgd = #{fileListwqgd},</if>
+            <if test="wqgd != null">wqgd = #{wqgd},</if>
+            <if test="fileListfppcs != null">fileListfppcs = #{fileListfppcs},</if>
+            <if test="fileListfwqx != null">fileListfwqx = #{fileListfwqx},</if>
+            <if test="fwqx != null">fwqx = #{fwqx},</if>
+            <if test="checkedyzfczss != null">checkedyzfczss = #{checkedyzfczss},</if>
+            <if test="fileListyzfczss != null">fileListyzfczss = #{fileListyzfczss},</if>
+            <if test="fileListazfdaqm != null">fileListazfdaqm = #{fileListazfdaqm},</if>
+            <if test="fileListszxfssqc != null">fileListszxfssqc = #{fileListszxfssqc},</if>
+            <if test="fileListbcctssyjzm != null">fileListbcctssyjzm = #{fileListbcctssyjzm},</if>
+            <if test="fileListszaqjspd != null">fileListszaqjspd = #{fileListszaqjspd},</if>
+            <if test="fileListafjks != null">fileListafjks = #{fileListafjks},</if>
+            <if test="checkedxyqfg != null">checkedxyqfg = #{checkedxyqfg},</if>
+            <if test="fileListspbcsj != null">fileListspbcsj = #{fileListspbcsj},</if>
+            <if test="checkedfbhgl != null">checkedfbhgl = #{checkedfbhgl},</if>
+            <if test="fileListlsdjjc != null">fileListlsdjjc = #{fileListlsdjjc},</if>
+            <if test="checkedjzxdwxpdw != null">checkedjzxdwxpdw = #{checkedjzxdwxpdw},</if>
+            <if test="checkedhxabll != null">checkedhxabll = #{checkedhxabll},</if>
+            <if test="fileListdqkzaqjy != null">fileListdqkzaqjy = #{fileListdqkzaqjy},</if>
+            <if test="fileListzdyjya != null">fileListzdyjya = #{fileListzdyjya},</if>
+            <if test="fileListzxdyylqk != null">fileListzxdyylqk = #{fileListzxdyylqk},</if>
+            <if test="fzfxzlxfs != null">fzfxzlxfs = #{fzfxzlxfs},</if>
+            <if test="checkedfzfxzdxkzaqgz != null">checkedfzfxzdxkzaqgz = #{checkedfzfxzdxkzaqgz},</if>
+            <if test="checkedysjsycqk != null">checkedysjsycqk = #{checkedysjsycqk},</if>
+            <if test="checkedzdmdjf != null">checkedzdmdjf = #{checkedzdmdjf},</if>
+            <if test="checkedlshgxzd != null">checkedlshgxzd = #{checkedlshgxzd},</if>
+            <if test="ispart != null">ispart = #{ispart},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyHazardManifestSchoolById" parameterType="String">
+        delete from safety_hazard_manifest_school where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyHazardManifestSchoolByIds" parameterType="String">
+        delete from safety_hazard_manifest_school where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

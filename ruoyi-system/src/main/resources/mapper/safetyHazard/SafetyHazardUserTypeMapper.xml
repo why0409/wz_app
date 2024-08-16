@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.safetyHazard.mapper.SafetyHazardUserTypeMapper">
+
+    <resultMap type="SafetyHazardUserType" id="SafetyHazardUserTypeResult">
+        <result property="id"    column="id"    />
+        <result property="uuid"    column="uuid"    />
+        <result property="type"    column="type"    />
+        <result property="role"    column="role"    />
+        <result property="icon"    column="icon"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="SafetyHazardUserTypeVo" extends="SafetyHazardUserTypeResult" id="SafetyHazardUserTypeVoResult">
+        <collection property="usersList" ofType="com.ruoyi.safetyHazard.domain.vo.SafetyHazardUserVo">
+            <result property="userId"    column="user_id"    />
+            <result property="userName"    column="user_name"    />
+            <result property="contact"    column="contact"    />
+            <result property="wxPhone"    column="wx_phone"    />
+            <result property="address"    column="address"    />
+            <result property="typeId"    column="type_id"    />
+            <result property="property"    column="property"    />
+            <result property="sortNum"    column="sort_num"    />
+            <result property="createTime"    column="user_create_time"    />
+            <result property="updateTime"    column="user_update_time"    />
+        </collection>
+    </resultMap>
+
+    <sql id="selectSafetyHazardUserTypeVo">
+        select id, uuid, type, role, icon, create_time, update_time from safety_hazard_user_type
+    </sql>
+
+    <select id="selectSafetyHazardUserTypeList" parameterType="SafetyHazardUserType" resultMap="SafetyHazardUserTypeResult">
+        <include refid="selectSafetyHazardUserTypeVo"/>
+        <where>
+            <if test="uuid != null  and uuid != ''"> and uuid = #{uuid}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="role != null  and role != ''"> and role = #{role}</if>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+        </where>
+    </select>
+
+    <select id="selectSafetyHazardUserTypeById" parameterType="Long" resultMap="SafetyHazardUserTypeResult">
+        <include refid="selectSafetyHazardUserTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSafetyHazardUserType" parameterType="SafetyHazardUserType" useGeneratedKeys="true" keyProperty="id">
+        insert into safety_hazard_user_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="type != null">type,</if>
+            <if test="role != null">role,</if>
+            <if test="icon != null">icon,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="type != null">#{type},</if>
+            <if test="role != null">#{role},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSafetyHazardUserType" parameterType="SafetyHazardUserType">
+        update safety_hazard_user_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uuid != null">uuid = #{uuid},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyHazardUserTypeById" parameterType="Long">
+        delete from safety_hazard_user_type where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyHazardUserTypeByIds" parameterType="String">
+        delete from safety_hazard_user_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSafetyHazardUserTypeVoList"  resultMap="SafetyHazardUserTypeVoResult">
+        select shut.*,
+               shu.user_id,
+               shu.user_name,
+               shu.contact,
+               shu.wx_phone,
+               shu.address,
+               shu.type_id,
+               shu.property,
+               shu.sort_num,
+               shu.create_time as user_create_time,
+               shu.update_time as user_update_time
+        from safety_hazard_user shu, safety_hazard_user_type shut
+        where shut.role = '1'
+        and shu.type_id = shut.id
+    </select>
+
+</mapper>

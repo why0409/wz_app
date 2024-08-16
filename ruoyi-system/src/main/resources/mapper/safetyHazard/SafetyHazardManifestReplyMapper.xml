@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.safetyHazard.mapper.SafetyHazardManifestReplyMapper">
+
+    <resultMap type="SafetyHazardManifestReply" id="SafetyHazardManifestReplyResult">
+        <result property="id"    column="id"    />
+        <result property="manifestId"    column="manifest_id"    />
+        <result property="dcReply"    column="dc_reply"    />
+        <result property="zcReply"    column="zc_reply"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSafetyHazardManifestReplyVo">
+        select id, manifest_id, dc_reply, zc_reply, create_time, update_time from safety_hazard_manifest_reply
+    </sql>
+
+    <select id="selectSafetyHazardManifestReplyList" parameterType="SafetyHazardManifestReply" resultMap="SafetyHazardManifestReplyResult">
+        <include refid="selectSafetyHazardManifestReplyVo"/>
+        <where>
+            <if test="manifestId != null  and manifestId != ''"> and manifest_id = #{manifestId}</if>
+            <if test="dcReply != null  and dcReply != ''"> and dc_reply = #{dcReply}</if>
+            <if test="zcReply != null  and zcReply != ''"> and zc_reply = #{zcReply}</if>
+        </where>
+    </select>
+
+    <select id="selectSafetyHazardManifestReplyById" parameterType="Long" resultMap="SafetyHazardManifestReplyResult">
+        <include refid="selectSafetyHazardManifestReplyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSafetyHazardManifestReply" parameterType="SafetyHazardManifestReply" useGeneratedKeys="true" keyProperty="id">
+        insert into safety_hazard_manifest_reply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="manifestId != null">manifest_id,</if>
+            <if test="dcReply != null">dc_reply,</if>
+            <if test="zcReply != null">zc_reply,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="manifestId != null">#{manifestId},</if>
+            <if test="dcReply != null">#{dcReply},</if>
+            <if test="zcReply != null">#{zcReply},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSafetyHazardManifestReply" parameterType="SafetyHazardManifestReply">
+        update safety_hazard_manifest_reply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="manifestId != null">manifest_id = #{manifestId},</if>
+            <if test="dcReply != null">dc_reply = #{dcReply},</if>
+            <if test="zcReply != null">zc_reply = #{zcReply},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyHazardManifestReplyById" parameterType="Long">
+        delete from safety_hazard_manifest_reply where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyHazardManifestReplyByIds" parameterType="String">
+        delete from safety_hazard_manifest_reply where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByManifestId" parameterType="String" resultMap="SafetyHazardManifestReplyResult">
+        select * from safety_hazard_manifest_reply
+        where manifest_id = #{manifestId}
+        limit 1
+        for update
+    </select>
+
+    <update id="updateByManifestId" parameterType="SafetyHazardManifestReply">
+        update safety_hazard_manifest_reply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dcReply != null">dc_reply = #{dcReply},</if>
+            <if test="zcReply != null">zc_reply = #{zcReply},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where manifest_id = #{manifestId}
+    </update>
+</mapper>

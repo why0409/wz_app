@@ -99,7 +99,7 @@ spring:
     druid:
         # 主库数据源
         master:
-            url: jdbc:mysql://localhost:3306/wz_app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            url: jdbc:mysql://localhost:3306/wz_mini_app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
             username: root
             password: root
         # 从库数据源
@@ -264,4 +264,8 @@ zhwz:
   sign: YmQNQMpTK
   ecName: 芜湖市湾沚区数据资源管理局（政务服务管理局）
   url: https://112.35.10.201:28888/sms/submit
+
+#微信小程序接口验证
+wxApp:
+  validate: false
 

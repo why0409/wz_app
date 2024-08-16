@@ -9,7 +9,7 @@ ruoyi:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: /server/app/tairui/ruoyi/uploadPath
+  profile: /home/ruoyi/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
@@ -19,7 +19,7 @@ https:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8085
+  port: 8058
   servlet:
     # 应用的访问路径
     context-path: /
@@ -34,10 +34,11 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
 #  ssl:
-  #    jks方式
+#    jks方式
 #    key-store: classpath:aichazhang.jks
 #    key-store-password: 18wSslTf
 #    key-store-type: JKS
+
 # 日志配置
 logging:
   level:
@@ -72,14 +73,16 @@ spring:
       enabled: true
   # redis 配置
   redis:
-    # 地址
-    host: 172.29.9.215
+    # 地址 192.168.1.38 localhost
+    host: localhost
     # 端口，默认为6379
     port: 6379
     # 数据库索引
-    database: 1
+    database: 0
     # 密码
-    password: j81tyY1YY*HX%TFNJT
+    password:
+    # 连接超时时间
+    timeout: 10s
     lettuce:
       pool:
         # 连接池中的最小空闲连接
@@ -96,9 +99,9 @@ spring:
     druid:
         # 主库数据源
         master:
-            url: jdbc:mysql://172.29.9.215:3306/wz_csdn?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-            username: tairui
-            password: y#cPZXfTfZZCBv4
+            url: jdbc:mysql://183.162.245.49:10117/wz_app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            username: root
+            password: terra
         # 从库数据源
         slave:
             # 从数据源开关/默认关闭
@@ -108,20 +111,20 @@ spring:
             password:
         mydb:
             enabled: true
-            url: jdbc:mysql://172.29.9.215:3306/dispatch_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-            username: tairui
-            password: y#cPZXfTfZZCBv4
+            url: jdbc:mysql://183.162.245.49:10117/wx_wz?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            username: root
+            password: terra
         gisdb:
           enabled: true
-          url: jdbc:mysql://172.19.166.130:3306/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+          url: jdbc:mysql://183.162.245.49:10117/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
           username: root
-          password: y#cPZXfTfZZCBv4
+          password: terra
         # 初始连接数
         initialSize: 5
         # 最小连接池数量
-        minIdle: 50
+        minIdle: 10
         # 最大连接池数量
-        maxActive: 100
+        maxActive: 20
         # 配置获取连接等待超时的时间
         maxWait: 60000
         # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
@@ -184,7 +187,7 @@ swagger:
   # 是否开启swagger
   enabled: true
   # 请求前缀
-  pathMapping: /prod-api
+  pathMapping: /dev-api
 
 # 防止XSS攻击
 xss:
@@ -197,20 +200,20 @@ xss:
 
 jsj:
   #ip
-  host: localhost
+  host: 192.168.70.25
   #端口
   port: 8001
   appId: mini-program
   secret: wanzhi-mini
-  path: /server/app/tairui/ruoyi/jsj/image
-  jsonPath: /server/app/tairui/ruoyi/json/poijson.json
+  path: D:/ruoyi/jsj/image
+  jsonPath: D:\\ruoyi\\json\\poijson.json
   # 同步用户信息接口地址
   syn:
-    url: localhost:8200/api/open/wxUser/saveOrUpdate
+    url: 192.168.70.53:8200/api/open/wxUser/saveOrUpdate
 
 hikvision:
   # 海康云服务地址  接口文档：https://172.28.192.20/artemis-portal
-  hikvisionHost: 172.29.9.215:1443
+  hikvisionHost: 172.28.192.20
   # 海康appkey
   hikvisionAppKey: 23336701
   # 海康AppSecret
@@ -252,7 +255,7 @@ uccp:
   userInfo:
     url: /v2/user/getUserInfo
   servic:
-    url: http://60.166.52.177:8081/uccp-service
+     url: http://60.166.52.177:8081/uccp-service
 
 #短信
 zhwz:
@@ -265,7 +268,3 @@ zhwz:
 #微信小程序接口验证
 wxApp:
   validate: false
-
-
-
-

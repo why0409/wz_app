@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.safetyHazard.mapper.SafetyHazardUserMapper">
+
+    <resultMap type="SafetyHazardUser" id="SafetyHazardUserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="contact"    column="contact"    />
+        <result property="wxPhone"    column="wx_phone"    />
+        <result property="address"    column="address"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="property"    column="property"    />
+        <result property="sortNum"    column="sort_num"    />
+        <result property="contactGroup"    column="contact_group"    />
+        <result property="role"    column="role"    />
+        <result property="typeUuid"    column="type_uuid"    />
+        <result property="maxManifestUpdateTime"    column="max_manifest_update_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSafetyHazardUserVo">
+        select user_id, user_name, contact, wx_phone, address, type_id, property, sort_num, contact_group, create_time, update_time from safety_hazard_user
+    </sql>
+
+    <select id="selectSafetyHazardUserList" parameterType="SafetyHazardUser" resultMap="SafetyHazardUserResult">
+        select shu.*,
+               shut.role,
+               shut.uuid as type_uuid,
+               T.max_manifest_update_time
+        from safety_hazard_user shu
+        left join safety_hazard_user_type shut on shu.type_id = shut.id
+        left join
+        (
+            select user_id,
+                  MAX(update_time) AS max_manifest_update_time
+            FROM safety_hazard_manifest_school
+            GROUP BY user_id
+        ) T ON shu.user_id = T.user_id
+        <where>
+            <if test="userName != null  and userName != ''"> and shu.user_name like concat('%', #{userName}, '%')</if>
+            <if test="contact != null  and contact != ''"> and shu.contact = #{contact}</if>
+            <if test="wxPhone != null  and wxPhone != ''"> and shu.wx_phone = #{wxPhone}</if>
+            <if test="address != null  and address != ''"> and shu.address = #{address}</if>
+            <if test="typeId != null "> and shu.type_id = #{typeId}</if>
+            <if test="property != null  and property != ''"> and shu.property = #{property}</if>
+            <if test="sortNum != null "> and shu.sort_num = #{sortNum}</if>
+            <if test="contactGroup != null  and contactGroup != ''"> and shu.contact_group like concat('%', #{contactGroup}, '%')</if>
+            <if test="role != null  and role != ''"> and shut.role = #{role}</if>
+        </where>
+        order by max_manifest_update_time desc
+    </select>
+
+    <select id="selectSafetyHazardUserByUserId" parameterType="Long" resultMap="SafetyHazardUserResult">
+        select shu.*,
+               shut.role,
+               shut.uuid as type_uuid
+        from safety_hazard_user shu
+        left join safety_hazard_user_type shut on shu.type_id = shut.id
+        where shu.user_id = #{userId}
+    </select>
+
+    <insert id="insertSafetyHazardUser" parameterType="SafetyHazardUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into safety_hazard_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="contact != null">contact,</if>
+            <if test="wxPhone != null">wx_phone,</if>
+            <if test="address != null">address,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="property != null">property,</if>
+            <if test="sortNum != null">sort_num,</if>
+            <if test="contactGroup != null">contact_group,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="wxPhone != null">#{wxPhone},</if>
+            <if test="address != null">#{address},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="property != null">#{property},</if>
+            <if test="sortNum != null">#{sortNum},</if>
+            <if test="contactGroup != null">#{contactGroup},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSafetyHazardUser" parameterType="SafetyHazardUser">
+        update safety_hazard_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="wxPhone != null">wx_phone = #{wxPhone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="property != null">property = #{property},</if>
+            <if test="sortNum != null">sort_num = #{sortNum},</if>
+            <if test="contactGroup != null">contact_group = #{contactGroup},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSafetyHazardUserByUserId" parameterType="Long">
+        delete from safety_hazard_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSafetyHazardUserByUserIds" parameterType="String">
+        delete from safety_hazard_user where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <select id="selectListByUserIds"  resultMap="SafetyHazardUserResult">
+        select shu.*,
+               shut.role,
+               shut.uuid as type_uuid,
+               T.max_manifest_update_time
+        from safety_hazard_user shu
+        left join safety_hazard_user_type shut on shu.type_id = shut.id
+        left join
+        (
+            select user_id,
+                   MAX(update_time) AS max_manifest_update_time
+            FROM safety_hazard_manifest_school
+            GROUP BY user_id
+        ) T ON shu.user_id = T.user_id
+        where shu.user_id in
+        <foreach item="userId" collection="list" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        <if test="userName != null and userName != ''">
+            and shu.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="typeId != null and typeId != ''">
+            and shu.type_id = #{typeId}
+        </if>
+        order by max_manifest_update_time desc
+    </select>
+</mapper>

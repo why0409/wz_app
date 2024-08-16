@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.applet;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.applet.UserInfoService;
 import com.ruoyi.common.config.RuoYiConfig;
@@ -11,6 +12,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.RsaUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.sign.Md5Utils;
@@ -100,15 +102,22 @@ public class UserInfoController extends BaseController {
             log.error("Redis连接异常，请确认Redis是否正常连接！");
             e.printStackTrace();
         }
+
         return success(jsonObject);
     }
 
     @RequestMapping("/decrypt")
-    public AjaxResult decrypt(HttpServletRequest request) {
+    public AjaxResult decrypt(HttpServletRequest request) throws Exception {
         String encryptedData = request.getParameter("encryptedData");
+
+        //获得加密后的sessionKey
         String sessionKey = request.getParameter("sessionKey");
+        //解密sessionKey
+        sessionKey = RsaUtils.decryptByPrivateKey(sessionKey);
+
         String ivParameter = request.getParameter("iv");
         log.info("iv======" + ivParameter);
+
         return success(userInfoService.decrypt(encryptedData, sessionKey, ivParameter));
     }
 

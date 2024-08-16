@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.app.mapper.QuestionnaireInfoMapper">
+
+    <resultMap type="QuestionnaireInfo" id="QuestionnaireInfoResult">
+        <result property="id"    column="id"    />
+        <result property="phone"    column="phone"    />
+        <result property="windowNumber"    column="window_number"    />
+        <result property="satisfactionSelect"    column="satisfaction_select"    />
+        <result property="reasonSelect"    column="reason_select"    />
+        <result property="suggestion"    column="suggestion"    />
+        <result property="isGift"    column="is_gift"    />
+        <result property="address"    column="address"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="QuestionnaireInfoVo" extends="QuestionnaireInfoResult" id="QuestionnaireInfoVoResult">
+        <association property="giftInfo" javaType="com.ruoyi.app.domain.vo.QuestionnaireGiftInfoVo">
+            <result property="id" column="gift_id"/>
+            <result property="giftNumber" column="gift_number"/>
+            <result property="phone" column="gift_phone"/>
+            <result property="giftAddress" column="gift_address"/>
+            <result property="giftTime"    column="gift_time"    />
+            <result property="questionnaireId" column="questionnaire_id"/>
+            <result property="createTime" column="gift_create_time"/>
+            <result property="updateTime"    column="gift_update_time"    />
+        </association>
+    </resultMap>
+
+    <sql id="selectQuestionnaireInfoVo">
+        select id, phone, window_number, satisfaction_select, reason_select, suggestion, is_gift, address, create_time, update_time from questionnaire_info
+    </sql>
+
+    <select id="selectQuestionnaireInfoList" parameterType="QuestionnaireInfo" resultMap="QuestionnaireInfoResult">
+        <include refid="selectQuestionnaireInfoVo"/>
+        <where>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="windowNumber != null  and windowNumber != ''"> and window_number = #{windowNumber}</if>
+            <if test="satisfactionSelect != null  and satisfactionSelect != ''"> and satisfaction_select = #{satisfactionSelect}</if>
+            <if test="reasonSelect != null  and reasonSelect != ''"> and reason_select = #{reasonSelect}</if>
+            <if test="suggestion != null  and suggestion != ''"> and suggestion = #{suggestion}</if>
+            <if test="isGift != null  and isGift != ''"> and is_gift = #{isGift}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectQuestionnaireInfoVoList" parameterType="QuestionnaireInfo" resultMap="QuestionnaireInfoVoResult">
+        select q.*,
+               qg.id as gift_id,
+               qg.gift_number,
+               qg.phone as gift_phone,
+               qg.gift_address,
+               qg.questionnaire_id,
+               qg.gift_time,
+               qg.create_time as gift_create_time,
+               qg.update_time as gift_update_time
+        from questionnaire_info q
+        left join questionnaire_gift_info qg on q.id = qg.questionnaire_id
+        <where>
+            <if test="phone != null  and phone != ''"> and q.phone = #{phone}</if>
+            <if test="windowNumber != null  and windowNumber != ''"> and q.window_number = #{windowNumber}</if>
+            <if test="satisfactionSelect != null  and satisfactionSelect != ''"> and q.satisfaction_select = #{satisfactionSelect}</if>
+            <if test="reasonSelect != null  and reasonSelect != ''"> and q.reason_select = #{reasonSelect}</if>
+            <if test="suggestion != null  and suggestion != ''"> and q.suggestion = #{suggestion}</if>
+            <if test="isGift != null  and isGift != ''"> and q.is_gift = #{isGift}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+        </where>
+        order by q.create_time desc
+    </select>
+
+    <select id="selectQuestionnaireInfoById" parameterType="String" resultMap="QuestionnaireInfoResult">
+        <include refid="selectQuestionnaireInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectQuestionnaireInfoVoById" parameterType="String" resultMap="QuestionnaireInfoVoResult">
+        select q.*,
+               qg.id as gift_id,
+               qg.gift_number,
+               qg.phone as gift_phone,
+               qg.gift_address,
+               qg.questionnaire_id,
+               qg.gift_time,
+               qg.create_time as gift_create_time,
+               qg.update_time as gift_update_time
+        from questionnaire_info q
+        left join questionnaire_gift_info qg on q.id = qg.questionnaire_id
+        where q.id = #{id}
+    </select>
+
+    <insert id="insertQuestionnaireInfo" parameterType="QuestionnaireInfo">
+        insert into questionnaire_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="windowNumber != null">window_number,</if>
+            <if test="satisfactionSelect != null">satisfaction_select,</if>
+            <if test="reasonSelect != null">reason_select,</if>
+            <if test="suggestion != null">suggestion,</if>
+            <if test="isGift != null">is_gift,</if>
+            <if test="address != null">address,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="windowNumber != null">#{windowNumber},</if>
+            <if test="satisfactionSelect != null">#{satisfactionSelect},</if>
+            <if test="reasonSelect != null">#{reasonSelect},</if>
+            <if test="suggestion != null">#{suggestion},</if>
+            <if test="isGift != null">#{isGift},</if>
+            <if test="address != null">#{address},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateQuestionnaireInfo" parameterType="QuestionnaireInfo">
+        update questionnaire_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="windowNumber != null">window_number = #{windowNumber},</if>
+            <if test="satisfactionSelect != null">satisfaction_select = #{satisfactionSelect},</if>
+            <if test="reasonSelect != null">reason_select = #{reasonSelect},</if>
+            <if test="suggestion != null">suggestion = #{suggestion},</if>
+            <if test="isGift != null">is_gift = #{isGift},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQuestionnaireInfoById" parameterType="Long">
+        delete from questionnaire_info where id = #{id}
+    </delete>
+
+    <delete id="deleteQuestionnaireInfoByIds" parameterType="String">
+        delete from questionnaire_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="staticsCountByWindows" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT window_number as windowNumber,
+               count(*) as count,
+               ROUND(AVG(CASE
+                    WHEN satisfaction_select = 1 THEN 100
+                    WHEN satisfaction_select = 2 THEN 85
+                    WHEN satisfaction_select = 3 THEN 70
+                    WHEN satisfaction_select = 4 THEN 50
+                    ELSE 0
+               END), 2) AS avgScore
+        FROM questionnaire_info
+        <where>
+            <if test="windowNumber != null and windowNumber != ''">
+                and window_number = #{windowNumber}
+            </if>
+        </where>
+        GROUP BY window_number
+        ORDER BY CONVERT(window_number, SIGNED)
+    </select>
+
+    <select id="staticsSatisfaction" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT satisfactions.satisfaction_select as satisfactionSelect,
+               IFNULL(qis.count,0) as count
+        FROM
+        (
+            SELECT 1 AS satisfaction_select
+            UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+        ) AS satisfactions
+        LEFT JOIN
+        (
+            SELECT count(*) as count,
+                   satisfaction_select
+            FROM questionnaire_info
+            GROUP BY satisfaction_select
+            ORDER BY satisfaction_select
+        ) AS qis
+        ON satisfactions.satisfaction_select = qis.satisfaction_select
+        ORDER BY satisfactionSelect
+    </select>
+
+</mapper>

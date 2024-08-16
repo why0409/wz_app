@@ -3,6 +3,7 @@ package com.ruoyi.web.interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Adminstrators
@@ -23,10 +26,16 @@ public class WxRequestInterceptor implements HandlerInterceptor {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Value("${wxApp.validate}")
+    private boolean appValidate;
+
+    private static final List<String> QUESTIONNAIRE_WHITE_LIST = Arrays.asList("localhost");
+
     @Override
     public boolean preHandle (HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String clientIp = request.getRemoteAddr();
         Cookie[] cookies = request.getCookies();
-        logger.info("======request请求："+request.getRequestURI()+"===");
+        logger.info("======request请求："+request.getRequestURI()+"======");
         boolean exist = false;
         String openid = "";
         if(cookies!= null && cookies.length>0){
@@ -40,14 +49,24 @@ public class WxRequestInterceptor implements HandlerInterceptor {
             e.printStackTrace();
         }
 
-        //暂时都设置true，方便调试
-        if (true) {
-            logger.info("接口校验通过！");
+        if (! appValidate) {
             return true;
         }else {
-            logger.warn("接口校验失败！");
-            return false;
+            if (exist) {
+                logger.info("接口校验通过！");
+                return true;
+            }else {
+                // 问卷调查接口ip白名单
+                if (isQuestionnaireWhiteList(request.getRequestURI(), clientIp)) {
+                    return true;
+                }
+
+                logger.warn("接口校验失败！");
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return false;
+            }
         }
+
     }
 
     @Override
@@ -59,4 +78,16 @@ public class WxRequestInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
+
+
+    /**
+     * 问卷调查接口ip白名单
+     */
+    public boolean isQuestionnaireWhiteList(String requestUri, String clientIp) {
+        if (requestUri.startsWith("/applet/questionnaire") && QUESTIONNAIRE_WHITE_LIST.contains(clientIp)) {
+            return true;
+        }
+        return false;
+    }
+
 }
