@@ -29,15 +29,22 @@
         select shu.*,
                shut.role,
                shut.uuid as type_uuid,
-               T.max_manifest_update_time
+               T.max_manifest_update_time,
+               T.status,
+               T.dc_reply,
+               T.zc_reply
         from safety_hazard_user shu
         left join safety_hazard_user_type shut on shu.type_id = shut.id
         left join
         (
-            select user_id,
-                  MAX(update_time) AS max_manifest_update_time
-            FROM safety_hazard_manifest_school
-            GROUP BY user_id
+            select sc.user_id,
+                   MAX(sc.update_time) AS max_manifest_update_time,
+                   sc.status,
+                   sr.dc_reply,
+                   sr.zc_reply
+            FROM safety_hazard_manifest_school sc
+            LEFT JOIN safety_hazard_manifest_reply sr ON sc.id = sr.manifest_id
+            GROUP BY sc.user_id
         ) T ON shu.user_id = T.user_id
         <where>
             <if test="userName != null  and userName != ''"> and shu.user_name like concat('%', #{userName}, '%')</if>
@@ -122,15 +129,22 @@
         select shu.*,
                shut.role,
                shut.uuid as type_uuid,
-               T.max_manifest_update_time
+               T.max_manifest_update_time,
+               T.status,
+               T.dc_reply,
+               T.zc_reply
         from safety_hazard_user shu
         left join safety_hazard_user_type shut on shu.type_id = shut.id
         left join
         (
-            select user_id,
-                   MAX(update_time) AS max_manifest_update_time
-            FROM safety_hazard_manifest_school
-            GROUP BY user_id
+            select sc.user_id,
+                   MAX(sc.update_time) AS max_manifest_update_time,
+                   sc.status,
+                   sr.dc_reply,
+                   sr.zc_reply
+            FROM safety_hazard_manifest_school sc
+            LEFT JOIN safety_hazard_manifest_reply sr ON sc.id = sr.manifest_id
+            GROUP BY sc.user_id
         ) T ON shu.user_id = T.user_id
         where shu.user_id in
         <foreach item="userId" collection="list" open="(" separator="," close=")">
@@ -144,4 +158,73 @@
         </if>
         order by max_manifest_update_time desc
     </select>
+
+    <select id="getUsernameByWxphone" resultType="string">
+        select contact_group
+        from safety_hazard_user
+        where contact_group like concat('%',#{phone},'%')
+        limit 1
+    </select>
+
+    <update id="deletePermission" >
+        update safety_hazard_user
+        set parent_id is null
+        where user_id in
+        <foreach item="userId" collection="list" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+    <update id="setPermission" >
+        update safety_hazard_user
+        set parent_id = #{parentId}
+        where user_id in
+        <foreach item="userId" collection="list" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+    <select id="exportSafetyHazardUserList" resultType="com.ruoyi.safetyHazard.domain.vo.ExportSafetyHazardUserVo">
+        select shu.user_name as userName,
+               T.status as status,
+               T.max_manifest_update_time as maxManifestUpdateTime,
+               T.contact as contact,
+               T.wx_phone as wxPhone,
+               shuu.user_name as parentName,
+               T.dc_reply as dcReply,
+               T.zc_reply as zcReply
+        from safety_hazard_user shu
+        left join safety_hazard_user_type shut on shu.type_id = shut.id
+        left join safety_hazard_user shuu on shu.parent_id = shuu.user_id
+        left join
+        (
+            select sc.user_id,
+                   MAX(sc.update_time) AS max_manifest_update_time,
+                   sc.contact,
+                   sc.wx_phone,
+                   sc.status,
+                   sr.dc_reply,
+                   sr.zc_reply
+            FROM safety_hazard_manifest_school sc
+            LEFT JOIN safety_hazard_manifest_reply sr ON sc.id = sr.manifest_id
+            GROUP BY sc.user_id
+        ) T ON shu.user_id = T.user_id
+        <where>
+            <if test="userName != null  and userName != ''"> and shu.user_name like concat('%', #{userName}, '%')</if>
+            <if test="contact != null  and contact != ''"> and shu.contact = #{contact}</if>
+            <if test="wxPhone != null  and wxPhone != ''"> and shu.wx_phone = #{wxPhone}</if>
+            <if test="address != null  and address != ''"> and shu.address = #{address}</if>
+            <if test="typeId != null "> and shu.type_id = #{typeId}</if>
+            <if test="property != null  and property != ''"> and shu.property = #{property}</if>
+            <if test="sortNum != null "> and shu.sort_num = #{sortNum}</if>
+            <if test="contactGroup != null  and contactGroup != ''"> and shu.contact_group like concat('%', #{contactGroup}, '%')</if>
+            <if test="role != null  and role != ''"> and shut.role = #{role}</if>
+        </where>
+        order by max_manifest_update_time desc
+    </select>
+
+    <select id="selectUserIdsByParentId" parameterType="Long" resultType="Long">
+        select user_id from safety_hazard_user where parent_id = #{parentId}
+    </select>
+
 </mapper>

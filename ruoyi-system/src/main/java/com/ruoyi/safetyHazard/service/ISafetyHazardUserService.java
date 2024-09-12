@@ -1,6 +1,9 @@
 package com.ruoyi.safetyHazard.service;
 
 import com.ruoyi.safetyHazard.domain.SafetyHazardUser;
+import com.ruoyi.safetyHazard.domain.vo.ExportSafetyHazardUserVo;
+import com.ruoyi.safetyHazard.domain.vo.SafetyHazardUserPermissionVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,4 +64,12 @@ public interface ISafetyHazardUserService
     public int deleteSafetyHazardUserByUserId(Long userId);
 
     public List<SafetyHazardUser> selectListByUserIds(List<Long> userIds, String userName, Long typeId);
+
+   public String getUsernameByWxphone(String phone);
+
+    public int setPermission(SafetyHazardUserPermissionVo safetyHazardUserPermissionVo);
+
+    public List<ExportSafetyHazardUserVo> exportSafetyHazardUserList(SafetyHazardUser safetyHazardUser);
+
+    public List<Long> selectUserIdsByParentId(Long parentId);
 }

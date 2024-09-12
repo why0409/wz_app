@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.onePicture.mapper.XcxCameraSecondMapper">
+
+    <resultMap type="com.ruoyi.onePicture.domain.XcxCameraColumn" id="XcxCameraColumnResult">
+        <result property="id"    column="id"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="columnName"    column="column_name"    />
+        <result property="columnSort"    column="column_sort"    />
+        <result property="couimnStatus"    column="couimn_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="icon"    column="icon"    />
+        <result property="showType"    column="show_type"    />
+    </resultMap>
+
+    <sql id="selectXcxCameraColumnVo">
+        select id, type_id, column_name, column_sort, couimn_status, create_time,icon,show_type from xcx_camera_second
+    </sql>
+
+    <select id="selectXcxCameraColumnList" parameterType="XcxCameraColumn" resultMap="XcxCameraColumnResult">
+        <include refid="selectXcxCameraColumnVo"/>
+        <where>
+            <if test="typeId != null  and typeId != ''"> and type_id = #{typeId}</if>
+            <if test="columnName != null  and columnName != ''"> and column_name like concat('%', #{columnName}, '%')</if>
+            <if test="columnSort != null "> and column_sort = #{columnSort}</if>
+            <if test="couimnStatus != null "> and couimn_status = #{couimnStatus}</if>
+        </where>
+        order by column_sort DESC
+    </select>
+
+    <select id="selectXcxCameraColumnById" parameterType="Long" resultMap="XcxCameraColumnResult">
+        <include refid="selectXcxCameraColumnVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectByTypeId" resultMap="XcxCameraColumnResult">
+        <include refid="selectXcxCameraColumnVo"/>
+        where find_in_set(#{typeId}, type_id)
+    </select>
+    <select id="selectSort" resultType="java.lang.Integer">
+        select count(1) from xcx_camera_second where column_sort = #{columnSort}
+                                          and type_id = #{typeId}
+        <if test="id!=null">
+            and id !=#{id}
+        </if>
+    </select>
+
+    <insert id="insertXcxCameraColumn" parameterType="XcxCameraColumn" useGeneratedKeys="true" keyProperty="id">
+        insert into xcx_camera_second
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">type_id,</if>
+            <if test="columnName != null">column_name,</if>
+            <if test="columnSort != null">column_sort,</if>
+            <if test="couimnStatus != null">couimn_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="icon != null">icon,</if>
+            <if test="showType != null">show_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">#{typeId},</if>
+            <if test="columnName != null">#{columnName},</if>
+            <if test="columnSort != null">#{columnSort},</if>
+            <if test="couimnStatus != null">#{couimnStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="showType != null">#{showType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXcxCameraColumn" parameterType="XcxCameraColumn">
+        update xcx_camera_second
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="columnName != null">column_name = #{columnName},</if>
+            <if test="columnSort != null">column_sort = #{columnSort},</if>
+            <if test="couimnStatus != null">couimn_status = #{couimnStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="showType != null">show_type = #{showType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateTypeId">
+        UPDATE xcx_camera_second set type_id = REPLACE(type_id,concat(#{id},','),'') where find_in_set(#{id}, type_id)
+    </update>
+
+    <delete id="deleteXcxCameraColumnById" parameterType="Long">
+        delete from xcx_camera_second where id = #{id}
+    </delete>
+
+    <delete id="deleteXcxCameraColumnByIds" parameterType="String">
+        delete from xcx_camera_second where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

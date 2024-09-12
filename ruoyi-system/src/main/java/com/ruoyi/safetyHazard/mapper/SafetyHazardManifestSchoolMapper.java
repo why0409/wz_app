@@ -60,4 +60,8 @@ public interface SafetyHazardManifestSchoolMapper
      * @return 结果
      */
     public int deleteSafetyHazardManifestSchoolByIds(String[] ids);
+
+    public String getLastCreateTimeByUser(Long userId);
+
+    public SafetyHazardManifestSchool getLastManifestByUserId(Long userId);
 }

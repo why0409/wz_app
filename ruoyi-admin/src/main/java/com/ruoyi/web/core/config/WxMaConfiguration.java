@@ -39,12 +39,7 @@ public class WxMaConfiguration {
     @Bean
     public WxMaService wxMaService() {
         List<WxMaProperties.Config> configs = this.properties.getConfigs();
-//        WxMaProperties.Config config1 = new WxMaProperties.Config();
-//        config1.setAppid("wxbfd823f44767d21c");
-//        config1.setSecret("3d0e780f7f93a4ef821eeb6b1937db3a");
-//        config1.setMsgDataFormat("JSON");
-//        List<WxMaProperties.Config> configs = new ArrayList<>();
-//        configs.add(config1);
+
         if (configs == null) {
             throw new WxRuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
         }
@@ -53,7 +48,6 @@ public class WxMaConfiguration {
             configs.stream()
                 .map(a -> {
                     WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
-//                WxMaDefaultConfigImpl config = new WxMaRedisConfigImpl(new JedisPool());
                     // 使用上面的配置时，需要同时引入jedis-lock的依赖，否则会报类无法找到的异常
                     config.setAppid(a.getAppid());
                     config.setSecret(a.getSecret());

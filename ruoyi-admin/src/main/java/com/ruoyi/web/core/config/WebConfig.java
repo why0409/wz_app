@@ -25,8 +25,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/jsj/loadPositionJson")
                 .excludePathPatterns("/jsj/getBase64ByUrl")
                 .excludePathPatterns("/applet/SendHikInfo")
+                .excludePathPatterns("/applet/getOpenId")
                 .excludePathPatterns("/applet/decrypt")
-                .excludePathPatterns("/applet/getLatestFive")
-                .excludePathPatterns("/applet/getOpenId");
+                .excludePathPatterns("/applet/setWxOnLine")
+                .excludePathPatterns("/applet/getLatestFive");
     }
 }

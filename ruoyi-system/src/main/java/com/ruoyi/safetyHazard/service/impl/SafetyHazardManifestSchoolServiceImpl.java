@@ -1,12 +1,17 @@
 package com.ruoyi.safetyHazard.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.safetyHazard.domain.SafetyHazardManifestSchool;
 import com.ruoyi.safetyHazard.mapper.SafetyHazardManifestSchoolMapper;
 import com.ruoyi.safetyHazard.service.ISafetyHazardManifestSchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,7 +59,10 @@ public class SafetyHazardManifestSchoolServiceImpl implements ISafetyHazardManif
     @Override
     public int insertSafetyHazardManifestSchool(SafetyHazardManifestSchool safetyHazardManifestSchool)
     {
-        safetyHazardManifestSchool.setCreateTime(DateUtils.getNowDate());
+        Date nowDate = DateUtils.getNowDate();
+        safetyHazardManifestSchool.setCreateTime(nowDate);
+        safetyHazardManifestSchool.setUpdateTime(nowDate);
+
         return safetyHazardManifestSchoolMapper.insertSafetyHazardManifestSchool(safetyHazardManifestSchool);
     }
 
@@ -94,4 +102,27 @@ public class SafetyHazardManifestSchoolServiceImpl implements ISafetyHazardManif
     {
         return safetyHazardManifestSchoolMapper.deleteSafetyHazardManifestSchoolById(id);
     }
+
+    @Override
+    public boolean isAddInTimes(Long userId){
+        String lastCreateTime = safetyHazardManifestSchoolMapper.getLastCreateTimeByUser(userId);
+        if (StringUtils.isEmpty(lastCreateTime)) {
+            return true;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime inputDate = LocalDateTime.parse(lastCreateTime, formatter);
+
+        // 计算输入日期与当前时间的天数差异
+        LocalDateTime now = LocalDateTime.now();
+        long daysDifference = ChronoUnit.DAYS.between(now, inputDate);
+
+        return daysDifference >= 30 || daysDifference <= -30 ? true : false;
+    }
+
+    @Override
+    public SafetyHazardManifestSchool getLastManifestByUserId(Long userId){
+        return safetyHazardManifestSchoolMapper.getLastManifestByUserId(userId);
+    }
+
 }

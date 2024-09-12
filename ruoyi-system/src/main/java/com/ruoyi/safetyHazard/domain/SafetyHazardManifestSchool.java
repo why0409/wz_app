@@ -23,8 +23,11 @@ public class SafetyHazardManifestSchool extends BaseEntity
     @Excel(name = "用户id")
     private Long userId;
 
+    @Excel(name = "填报人")
+    private String contact;
+
     /** 微信手机号 */
-    @Excel(name = "微信手机号")
+    @Excel(name = "填报人手机号")
     private String wxPhone;
 
     private String fileListaqgl;
@@ -95,10 +98,16 @@ public class SafetyHazardManifestSchool extends BaseEntity
 
     private String ispart;
 
+    private String fileListfqlgzlsqk;
+
+    private String fileListxsqlzlwyh;
+
     private String dcReply;
 
     /** 自查回复 */
     private String zcReply;
+
+    private String status;
 
     public void setId(String id)
     {
@@ -118,6 +127,15 @@ public class SafetyHazardManifestSchool extends BaseEntity
     {
         return userId;
     }
+
+    public String getContact() {
+        return this.contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
     public void setWxPhone(String wxPhone)
     {
         this.wxPhone = wxPhone;
@@ -424,6 +442,23 @@ public class SafetyHazardManifestSchool extends BaseEntity
     {
         return checkedlshgxzd;
     }
+
+    public String getFileListfqlgzlsqk() {
+        return this.fileListfqlgzlsqk;
+    }
+
+    public void setFileListfqlgzlsqk(String fileListfqlgzlsqk) {
+        this.fileListfqlgzlsqk = fileListfqlgzlsqk;
+    }
+
+    public String getFileListxsqlzlwyh() {
+        return this.fileListxsqlzlwyh;
+    }
+
+    public void setFileListxsqlzlwyh(String fileListxsqlzlwyh) {
+        this.fileListxsqlzlwyh = fileListxsqlzlwyh;
+    }
+
     public void setIspart(String ispart)
     {
         this.ispart = ispart;
@@ -446,8 +481,16 @@ public class SafetyHazardManifestSchool extends BaseEntity
         return this.zcReply;
     }
 
-    public void setZcReply(final String zcReply) {
+    public void setZcReply(String zcReply) {
         this.zcReply = zcReply;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
@@ -485,6 +528,8 @@ public class SafetyHazardManifestSchool extends BaseEntity
                 .append("fileListzdyjya", getFileListzdyjya())
                 .append("fileListzxdyylqk", getFileListzxdyylqk())
                 .append("fzfxzlxfs", getFzfxzlxfs())
+                .append("fileListzxdyylqk", getFileListfqlgzlsqk())
+                .append("fzfxzlxfs", getFileListxsqlzlwyh())
                 .append("checkedfzfxzdxkzaqgz", getCheckedfzfxzdxkzaqgz())
                 .append("checkedysjsycqk", getCheckedysjsycqk())
                 .append("checkedzdmdjf", getCheckedzdmdjf())

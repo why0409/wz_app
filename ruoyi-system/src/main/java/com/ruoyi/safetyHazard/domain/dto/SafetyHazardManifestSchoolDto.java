@@ -25,6 +25,8 @@ public class SafetyHazardManifestSchoolDto extends BaseEntity
     /** 用户id */
     private Long userId;
 
+    private String contact;
+
     /** 微信手机号 */
     private String wxPhone;
 
@@ -96,50 +98,64 @@ public class SafetyHazardManifestSchoolDto extends BaseEntity
 
     private String ispart;
 
+    private JSONArray fileListfqlgzlsqk;
+
+    private JSONArray fileListxsqlzlwyh;
+
+    private String status;
+
 
     public SafetyHazardManifestSchool convertSafetyHazardManifestSchool(){
         SafetyHazardManifestSchool s = new SafetyHazardManifestSchool();
         s.setId(this.getId());
         s.setUserId(this.getUserId());
+        s.setId(this.contact);
         s.setWxPhone(this.getWxPhone());
-        s.setFileListaqgl(fileListaqgl.toJSONString());
+        s.setFileListaqgl(toJSONArrayString(fileListaqgl));
         s.setBaysl(this.getBaysl());
-        s.setFileListbaysl(fileListbaysl.toJSONString());
+        s.setFileListbaysl(toJSONArrayString(fileListbaysl));
         s.setSsygzrs(this.getSsygzrs());
         s.setJssrs(this.getJssrs());
         s.setFjssrs(this.getFjssrs());
-        s.setFileListxyaqbzgzgzzd(fileListxyaqbzgzgzzd.toJSONString());
-        s.setFileListwqgd(fileListwqgd.toJSONString());
+        s.setFileListxyaqbzgzgzzd(toJSONArrayString(fileListxyaqbzgzgzzd));
+        s.setFileListwqgd(toJSONArrayString(fileListwqgd));
         s.setWqgd(this.getWqgd());
-        s.setFileListfppcs(fileListfppcs.toJSONString());
-        s.setFileListfwqx(fileListfwqx.toJSONString());
+        s.setFileListfppcs(toJSONArrayString(fileListfppcs));
+        s.setFileListfwqx(toJSONArrayString(fileListfwqx));
         s.setFwqx(this.getFwqx());
         s.setCheckedyzfczss(this.getCheckedyzfczss());
-        s.setFileListyzfczss(fileListyzfczss.toJSONString());
-        s.setFileListazfdaqm(fileListazfdaqm.toJSONString());
-        s.setFileListszxfssqc(fileListszxfssqc.toJSONString());
-        s.setFileListbcctssyjzm(fileListbcctssyjzm.toJSONString());
-        s.setFileListszaqjspd(fileListszaqjspd.toJSONString());
-        s.setFileListafjks(fileListafjks.toJSONString());
+        s.setFileListyzfczss(toJSONArrayString(fileListyzfczss));
+        s.setFileListazfdaqm(toJSONArrayString(fileListazfdaqm));
+        s.setFileListszxfssqc(toJSONArrayString(fileListszxfssqc));
+        s.setFileListbcctssyjzm(toJSONArrayString(fileListbcctssyjzm));
+        s.setFileListszaqjspd(toJSONArrayString(fileListszaqjspd));
+        s.setFileListafjks(toJSONArrayString(fileListafjks));
         s.setCheckedxyqfg(this.getCheckedxyqfg());
-        s.setFileListspbcsj(fileListspbcsj.toJSONString());
+        s.setFileListspbcsj(toJSONArrayString(fileListspbcsj));
         s.setCheckedfbhgl(this.getCheckedfbhgl());
-        s.setFileListlsdjjc(fileListlsdjjc.toJSONString());
+        s.setFileListlsdjjc(toJSONArrayString(fileListlsdjjc));
         s.setCheckedjzxdwxpdw(this.getCheckedjzxdwxpdw());
         s.setCheckedhxabll(this.getCheckedhxabll());
-        s.setFileListdqkzaqjy(fileListdqkzaqjy.toJSONString());
-        s.setFileListzdyjya(fileListzdyjya.toJSONString());
-        s.setFileListzxdyylqk(fileListzxdyylqk.toJSONString());
+        s.setFileListdqkzaqjy(toJSONArrayString(fileListdqkzaqjy));
+        s.setFileListzdyjya(toJSONArrayString(fileListzdyjya));
+        s.setFileListzxdyylqk(toJSONArrayString(fileListzxdyylqk));
         s.setFzfxzlxfs(this.getFzfxzlxfs());
         s.setCheckedfzfxzdxkzaqgz(this.getCheckedfzfxzdxkzaqgz());
         s.setCheckedysjsycqk(this.getCheckedysjsycqk());
         s.setCheckedzdmdjf(this.getCheckedzdmdjf());
         s.setCheckedlshgxzd(this.getCheckedlshgxzd());
         s.setIspart(this.getIspart());
+        s.setFileListfqlgzlsqk(toJSONArrayString(fileListfqlgzlsqk));
+        s.setFileListxsqlzlwyh(toJSONArrayString(fileListxsqlzlwyh));
         s.setCreateTime(this.getCreateTime());
         s.setUpdateTime(this.getUpdateTime());
+        s.setStatus(this.getStatus());
 
         return s;
+    }
+
+    private String toJSONArrayString(JSONArray array){
+        return array == null ? null : array.toJSONString();
     }
 
 }

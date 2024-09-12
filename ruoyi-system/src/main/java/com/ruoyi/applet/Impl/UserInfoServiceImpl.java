@@ -3,6 +3,7 @@ package com.ruoyi.applet.Impl;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.applet.UserInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sun.misc.BASE64Decoder;
@@ -18,11 +19,13 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
 
     @Value("${applet.APPID}")
     private String APPID;
+
     @Value("${applet.SECRET}")
     private String SECRET;
 
@@ -35,13 +38,17 @@ public class UserInfoServiceImpl implements UserInfoService {
      */
     @Override
     public JSONObject getOpenId(String code) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + APPID
-                + "&secret=" + SECRET + "&js_code=" + code + "&grant_type=authorization_code";
-        //调用get方法发起get请求，并把返回值赋值给returnvalue
-        String returnvalue = GET(url);
+        JSONObject convertvalue = new JSONObject();
+        try {
+            String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + APPID
+                    + "&secret=" + SECRET + "&js_code=" + code + "&grant_type=authorization_code";
+            //调用get方法发起get请求，并把返回值赋值给returnvalue
+            String returnvalue = GET(url);
 
-        //定义一个json对象。
-        JSONObject convertvalue = (JSONObject) JSON.parse(returnvalue);
+            convertvalue = (JSONObject) JSON.parse(returnvalue);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         return convertvalue;
     }

@@ -39,7 +39,7 @@ public class ClickLogAspect {
 
     @Before("clickLogPointCut()")
     public void doBefore(JoinPoint joinPoint) {
-        logger.info("=====开始记录小程序点击日志=====");
+
     }
 
     @AfterReturning(pointcut = "clickLogPointCut()", returning = "result")

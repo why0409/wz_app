@@ -36,37 +36,38 @@ public class WxRequestInterceptor implements HandlerInterceptor {
         String clientIp = request.getRemoteAddr();
         Cookie[] cookies = request.getCookies();
         logger.info("======request请求："+request.getRequestURI()+"======");
-        boolean exist = false;
-        String openid = "";
-        if(cookies!= null && cookies.length>0){
-            openid = cookies[0].getName()+"==";
-        }
+        //boolean exist = false;
+        //String openid = "";
+        //if(cookies!= null && cookies.length>0){
+        //    openid = cookies[0].getName()+"==";
+        //}
+        //
+        //try {
+        //    exist = Boolean.TRUE.equals(redisTemplate.opsForSet().isMember("VALIDATE_KEYS", openid));
+        //} catch (Exception e) {
+        //    logger.error("Redis连接异常，请确认Redis是否正常连接！");
+        //    e.printStackTrace();
+        //}
+        //
+        //if (! appValidate) {
+        //    return true;
+        //}else {
+        //    if (exist) {
+        //        logger.info("接口校验通过！");
+        //        return true;
+        //    }else {
+        //        // 问卷调查接口ip白名单
+        //        if (isQuestionnaireWhiteList(request.getRequestURI(), clientIp)) {
+        //            return true;
+        //        }
+        //
+        //        logger.warn("接口校验失败！");
+        //        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        //        return false;
+        //    }
+        //}
 
-        try {
-            exist = Boolean.TRUE.equals(redisTemplate.opsForSet().isMember("VALIDATE_KEYS", openid));
-        } catch (Exception e) {
-            logger.error("Redis连接异常，请确认Redis是否正常连接！");
-            e.printStackTrace();
-        }
-
-        if (! appValidate) {
-            return true;
-        }else {
-            if (exist) {
-                logger.info("接口校验通过！");
-                return true;
-            }else {
-                // 问卷调查接口ip白名单
-                if (isQuestionnaireWhiteList(request.getRequestURI(), clientIp)) {
-                    return true;
-                }
-
-                logger.warn("接口校验失败！");
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return false;
-            }
-        }
-
+        return true;
     }
 
     @Override

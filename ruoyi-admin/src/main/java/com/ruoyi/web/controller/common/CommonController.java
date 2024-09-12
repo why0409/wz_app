@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.xcx.domain.XcxFile;
-import com.ruoyi.xcx.service.IFileService;
+import com.ruoyi.onePicture.domain.XcxFile;
+import com.ruoyi.onePicture.service.IFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;

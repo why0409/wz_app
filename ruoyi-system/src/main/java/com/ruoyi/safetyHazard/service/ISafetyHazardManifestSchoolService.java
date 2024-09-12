@@ -60,4 +60,8 @@ public interface ISafetyHazardManifestSchoolService
      * @return 结果
      */
     public int deleteSafetyHazardManifestSchoolById(String id);
+
+    public boolean isAddInTimes(Long userId);
+
+    public SafetyHazardManifestSchool getLastManifestByUserId(Long userId);
 }

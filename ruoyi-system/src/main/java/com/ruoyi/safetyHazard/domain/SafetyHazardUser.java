@@ -1,9 +1,12 @@
 package com.ruoyi.safetyHazard.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 安全隐患-用户管理对象 safety_hazard_user
@@ -19,42 +22,48 @@ public class SafetyHazardUser extends BaseEntity
     private Long userId;
 
     /** 用户名称 */
-    @Excel(name = "用户名称")
+    @Excel(name = "名称")
     private String userName;
 
     /** 联系人 */
-    @Excel(name = "联系人")
+    @Excel(name = "填报人")
     private String contact;
 
     /** 微信手机号 */
-    @Excel(name = "微信手机号")
+    @Excel(name = "填报人手机号")
     private String wxPhone;
 
     /** 地址 */
-    @Excel(name = "地址")
     private String address;
 
     /** 类型id */
-    @Excel(name = "类型id")
     private Long typeId;
 
     /** 属性 */
-    @Excel(name = "属性")
     private String property;
 
     /** 排序序号 */
-    @Excel(name = "排序序号")
     private Long sortNum;
 
-    @Excel(name = "联系人组")
     private String contactGroup;
 
-    @Excel(name = "角色")
     private String role;
 
     private String typeUuid;
 
-    private String maxManifestUpdateTime;
+    @Excel(name = "（最新）填报状态", readConverterExp = "1=部分填报,2=全部填报,3=督察已回复,4=流程结束")
+    private String status;
+
+    @Excel(name = "（最新）填报时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date maxManifestUpdateTime;
+
+    @Excel(name = "督查回复")
+    private String dcReply;
+
+    /** 自查回复 */
+    @Excel(name = "自查回复")
+    private String zcReply;
 
     public void setUserId(Long userId)
     {
@@ -153,12 +162,36 @@ public class SafetyHazardUser extends BaseEntity
         this.typeUuid = typeUuid;
     }
 
-    public String getMaxManifestUpdateTime() {
+    public Date getMaxManifestUpdateTime() {
         return this.maxManifestUpdateTime;
     }
 
-    public void setMaxManifestUpdateTime(String maxManifestUpdateTime) {
+    public void setMaxManifestUpdateTime(Date maxManifestUpdateTime) {
         this.maxManifestUpdateTime = maxManifestUpdateTime;
+    }
+
+    public String getDcReply() {
+        return this.dcReply;
+    }
+
+    public void setDcReply(String dcReply) {
+        this.dcReply = dcReply;
+    }
+
+    public String getZcReply() {
+        return this.zcReply;
+    }
+
+    public void setZcReply(String zcReply) {
+        this.zcReply = zcReply;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

@@ -88,4 +88,6 @@ public interface WxUserLogininfoMapper
 
     public int updateOfflineStatus(@Param("set") Set<String> set);
 
+    public int getCountByPhone(String phone);
+
 }

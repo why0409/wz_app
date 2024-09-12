@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jsjDb.mapper.WxUserMapper">
+
+    <resultMap type="WxUser" id="WxUserResult">
+        <result property="id"    column="id"    />
+        <result property="username"    column="username"    />
+        <result property="password"    column="password"    />
+        <result property="realName"    column="real_name"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="wechatMobile"    column="wechat_mobile"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="status"    column="status"    />
+        <result property="silence"    column="silence"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="lastLogin"    column="last_login"    />
+        <result property="loginIp"    column="login_ip"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="creatorId"    column="creator_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="label"    column="label"    />
+        <result property="videoPermissions"    column="video_permissions"    />
+    </resultMap>
+
+    <sql id="selectWxUserVo">
+        select id, username, password, real_name, mobile,wechat_mobile, avatar, status, silence, dept_id, last_login, login_ip, create_by, creator_id, create_time, update_by, update_id, update_time,label,video_permissions from sys_user
+    </sql>
+
+    <sql id="selectWxUserVo1">
+        select id, username, real_name, mobile,wechat_mobile, avatar, status, silence, dept_id, last_login, login_ip, create_by, creator_id, create_time, update_by, update_id, update_time, label, video_permissions from sys_user
+    </sql>
+
+    <select id="selectWxUserList" parameterType="WxUser" resultMap="WxUserResult">
+        <include refid="selectWxUserVo1"/>
+        <where>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="mobile != null  and mobile != ''"> and mobile like concat('%', #{mobile}, '%')</if>
+            <if test="wechatMobile != null  and wechatMobile != ''"> and wechat_mobile like concat('%', #{wechatMobile}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="silence != null "> and silence = #{silence}</if>
+            <if test="label != null "> and label like concat('%', #{label}, '%')</if>
+            <if test="videoPermissions != null "> and video_permissions = #{videoPermissions}</if>
+        </where>
+    </select>
+
+    <select id="selectWxUserById" parameterType="String" resultMap="WxUserResult">
+        <include refid="selectWxUserVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWxUser" parameterType="WxUser" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">username,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="realName != null and realName != ''">real_name,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="wechatMobile != null">wechat_mobile,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="status != null">status,</if>
+            <if test="silence != null">silence,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="lastLogin != null">last_login,</if>
+            <if test="loginIp != null">login_ip,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="creatorId != null">creator_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="label != null">label,</if>
+            <if test="videoPermissions != null">video_permissions,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="realName != null and realName != ''">#{realName},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="wechatMobile != null">#{wechatMobile},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="status != null">#{status},</if>
+            <if test="silence != null">#{silence},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="lastLogin != null">#{lastLogin},</if>
+            <if test="loginIp != null">#{loginIp},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="creatorId != null">#{creatorId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="label != null">#{label},</if>
+            <if test="videoPermissions != null">#{videoPermissions},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxUser" parameterType="WxUser">
+        update sys_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="realName != null and realName != ''">real_name = #{realName},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="wechatMobile != null">wechat_mobile = #{wechatMobile},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="silence != null">silence = #{silence},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="lastLogin != null">last_login = #{lastLogin},</if>
+            <if test="loginIp != null">login_ip = #{loginIp},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="creatorId != null">creator_id = #{creatorId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="label != null">label = #{label},</if>
+            <if test="videoPermissions != null">video_permissions = #{videoPermissions},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWxUserById" parameterType="String">
+        delete from sys_user where id = #{id}
+    </delete>
+
+    <delete id="deleteWxUserByIds" parameterType="String">
+        delete from sys_user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectWxUserByPhoneList" resultMap="WxUserResult">
+        <include refid="selectWxUserVo1"/>
+        where status = 0 and mobile in
+        <foreach collection="phoneList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        limit #{start},#{end}
+    </select>
+
+    <select id="selectWxUserByPhone" resultMap="WxUserResult">
+        <include refid="selectWxUserVo1"/>
+        where status = 0 and mobile = #{mobile}
+        limit 1
+    </select>
+
+    <select id="countWxUserByPhoneList" resultType="integer">
+        select count(*) from sys_user
+        where status = 0 and mobile in
+        <foreach collection="phoneList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+</mapper>

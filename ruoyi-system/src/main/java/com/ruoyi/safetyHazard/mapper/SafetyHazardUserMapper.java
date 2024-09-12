@@ -1,6 +1,7 @@
 package com.ruoyi.safetyHazard.mapper;
 
 import com.ruoyi.safetyHazard.domain.SafetyHazardUser;
+import com.ruoyi.safetyHazard.domain.vo.ExportSafetyHazardUserVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -64,4 +65,15 @@ public interface SafetyHazardUserMapper
     public List<SafetyHazardUser> selectListByUserIds(@Param("list") List<Long> userIds,
                                                       @Param("userName") String userName,
                                                       @Param("typeId") Long typeId);
+
+    public String getUsernameByWxphone(String phone);
+
+    public int deletePermission(List<Long> userIds);
+
+    public int setPermission(@Param("parentId") Long parentId,
+                             @Param("list") List<Long> userIds);
+
+    public List<ExportSafetyHazardUserVo> exportSafetyHazardUserList(SafetyHazardUser safetyHazardUser);
+
+    public List<Long> selectUserIdsByParentId(Long parentId);
 }

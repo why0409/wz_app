@@ -75,4 +75,6 @@ public interface IWxUserLogininfoService
     List<WxUserLogininfo> selectByPhone(String phone);
 
     public int updateOfflineStatus(Set<String> set);
+
+    public int getCountByPhone(String phone);
 }

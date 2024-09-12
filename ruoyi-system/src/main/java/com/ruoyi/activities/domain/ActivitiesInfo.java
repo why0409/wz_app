@@ -71,7 +71,7 @@ public class ActivitiesInfo extends BaseEntity
         return this.staticInfo;
     }
 
-    public void setStaticInfo(final JSONObject staticInfo) {
+    public void setStaticInfo(JSONObject staticInfo) {
         this.staticInfo = staticInfo;
     }
 

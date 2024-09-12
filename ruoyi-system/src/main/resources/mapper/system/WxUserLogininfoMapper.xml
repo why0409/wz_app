@@ -170,6 +170,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
+    <select id="getCountByPhone" resultType="int">
+        select count(*) from wx_user_logininfo where phone = #{phone}
+    </select>
+
     <update id="updateLoginTimeByPhone" parameterType="com.ruoyi.system.domain.WxUserLogininfo">
         update wx_user_logininfo set login_time = #{loginTime} where phone = #{phone}
     </update>

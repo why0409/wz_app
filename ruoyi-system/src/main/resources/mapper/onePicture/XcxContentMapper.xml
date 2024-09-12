@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.onePicture.mapper.XcxContentMapper">
+
+    <resultMap type="com.ruoyi.onePicture.domain.XcxContent" id="XcxContentResult">
+        <result property="id"    column="id"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="columnId"    column="column_id"    />
+        <result property="contentName"    column="content_name"    />
+        <result property="introduction"    column="introduction"    />
+        <result property="phone"    column="phone"    />
+        <result property="fileIds"    column="file_ids"    />
+        <result property="contentSort"    column="content_sort"    />
+        <result property="contentStatus"    column="content_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="lon"    column="lon"    />
+        <result property="lat"    column="lat"    />
+        <result property="thumbnail"    column="thumbnail"    />
+        <result property="showType"    column="show_type"    />
+        <result property="collectionStatus"    column="collection_status"    />
+        <result property="linkType"    column="link_type"    />
+        <result property="employmentType"    column="employment_type"    />
+    </resultMap>
+
+    <sql id="selectXcxContentVo">
+        select id, type_id, column_id, content_name, introduction, phone, file_ids, content_sort, content_status, create_time,lon,lat,thumbnail,link_type,employment_type from xcx_content
+    </sql>
+
+    <select id="selectXcxContentList" parameterType="XcxContent" resultMap="XcxContentResult">
+        <include refid="selectXcxContentVo"/>
+        <where>
+            <if test="typeId != null "> and type_id = #{typeId}</if>
+            <if test="columnId != null "> and column_id = #{columnId}</if>
+            <if test="contentName != null  and contentName != ''"> and content_name like concat('%', #{contentName}, '%')</if>
+            <if test="introduction != null  and introduction != ''"> and introduction = #{introduction}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="fileIds != null  and fileIds != ''"> and file_ids = #{fileIds}</if>
+            <if test="contentSort != null "> and content_sort = #{contentSort}</if>
+            <if test="contentStatus != null "> and content_status = #{contentStatus}</if>
+        </where>
+        order by content_sort DESC
+    </select>
+
+    <select id="selectXcxContentById" parameterType="Long" resultMap="XcxContentResult">
+        <include refid="selectXcxContentVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectByColumnId" resultMap="XcxContentResult">
+        select xc.*
+        <if test="phone != null  and phone != ''">
+            , xcl.collection_status
+        </if>
+        from xcx_content xc
+        <if test="phone != null  and phone != ''">
+            left join
+                (select * from xcx_collection where phone = #{phone}) xcl
+            on xc.id = xcl.content_id
+        </if>
+        where xc.column_id = #{columnId}
+        <if test="contentName != null  and contentName != ''">
+            and xc.content_name like concat('%', #{contentName}, '%')
+        </if>
+        order by xc.content_sort desc
+    </select>
+
+    <select id="selectSort" resultType="java.lang.Integer">
+        select count(1) from xcx_content where content_sort = #{contentSort}
+        <if test="id!=null">
+            and id != #{id}
+        </if>
+        and column_id = #{columnId}
+    </select>
+
+    <insert id="insertXcxContent" parameterType="XcxContent" useGeneratedKeys="true" keyProperty="id">
+        insert into xcx_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">type_id,</if>
+            <if test="columnId != null">column_id,</if>
+            <if test="contentName != null">content_name,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="phone != null">phone,</if>
+            <if test="lon != null">lon,</if>
+            <if test="lat != null">lat,</if>
+            <if test="thumbnail != null">thumbnail,</if>
+            <if test="fileIds != null">file_ids,</if>
+            <if test="contentSort != null">content_sort,</if>
+            <if test="contentStatus != null">content_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="linkType != null">link_type,</if>
+            <if test="employmentType != null">employment_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">#{typeId},</if>
+            <if test="columnId != null">#{columnId},</if>
+            <if test="contentName != null">#{contentName},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="lon != null">#{lon},</if>
+            <if test="lat != null">#{lat},</if>
+            <if test="thumbnail != null">#{thumbnail},</if>
+            <if test="fileIds != null">#{fileIds},</if>
+            <if test="contentSort != null">#{contentSort},</if>
+            <if test="contentStatus != null">#{contentStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="linkType != null">#{linkType},</if>
+            <if test="employmentType != null">#{employmentType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXcxContent" parameterType="XcxContent">
+        update xcx_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="columnId != null">column_id = #{columnId},</if>
+            <if test="contentName != null">content_name = #{contentName},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="lon != null">lon = #{lon},</if>
+            <if test="lat != null">lat = #{lat},</if>
+            <if test="thumbnail != null">thumbnail = #{thumbnail},</if>
+            <if test="fileIds != null">file_ids = #{fileIds},</if>
+            <if test="contentSort != null">content_sort = #{contentSort},</if>
+            <if test="contentStatus != null">content_status = #{contentStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="linkType != null">link_type = #{linkType},</if>
+            <if test="employmentType != null">employment_type = #{employmentType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXcxContentById" parameterType="Long">
+        delete from xcx_content where id = #{id}
+    </delete>
+
+    <delete id="deleteXcxContentByIds" parameterType="String">
+        delete from xcx_content where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByTypeIds">
+        delete from xcx_content where type_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByColumnIds">
+        delete from xcx_content where column_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getListByCollectionPhone" resultMap="XcxContentResult">
+        select xc.*, xl.show_type, 1 as collection_status
+        from xcx_content xc
+        left join xcx_column xl on xl.id = xc.column_id
+        where xc.id in
+              (select distinct(content_id) from xcx_collection
+               where content_id is not null and phone = #{phone})
+    </select>
+
+    <select id="searchContent" resultMap="XcxContentResult">
+        select xc.*, xl.show_type, xcl.collection_status
+        from xcx_content xc
+        left join xcx_column xl on xl.id = xc.column_id
+        left join
+                 (select * from xcx_collection where content_id is not null and phone = #{phone}) xcl
+        on xc.id = xcl.content_id
+        where xc.content_name like concat('%',#{contentName},'%')
+    </select>
+
+</mapper>

@@ -157,4 +157,8 @@ public class WxUserLogininfoServiceImpl implements IWxUserLogininfoService
         return wxUserLogininfoMapper.updateOfflineStatus(set);
     }
 
+    @Override
+    public int getCountByPhone(String phone){
+        return wxUserLogininfoMapper.getCountByPhone(phone);
+    }
 }

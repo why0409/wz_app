@@ -7,6 +7,7 @@
     <resultMap type="SafetyHazardManifestSchool" id="SafetyHazardManifestSchoolResult">
         <result property="id"    column="id"    />
         <result property="userId"    column="user_id"    />
+        <result property="contact"    column="contact"    />
         <result property="wxPhone"    column="wx_phone"    />
         <result property="fileListaqgl"    column="fileListaqgl"    />
         <result property="baysl"    column="baysl"    />
@@ -41,15 +42,18 @@
         <result property="checkedysjsycqk"    column="checkedysjsycqk"    />
         <result property="checkedzdmdjf"    column="checkedzdmdjf"    />
         <result property="checkedlshgxzd"    column="checkedlshgxzd"    />
+        <result property="fileListfqlgzlsqk"    column="fileListfqlgzlsqk"    />
+        <result property="fileListxsqlzlwyh"    column="fileListxsqlzlwyh"    />
         <result property="ispart"    column="ispart"    />
-        <result property="dcReply"    column="dc_reply"    />
-        <result property="zcReply"    column="zc_reply"    />
+        <result property="status"    column="status"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="dcReply"    column="dc_reply"    />
+        <result property="zcReply"    column="zc_reply"    />
     </resultMap>
 
     <sql id="selectSafetyHazardManifestSchoolVo">
-        select id, user_id, wx_phone, fileListaqgl, baysl, fileListbaysl, ssygzrs, jssrs, fjssrs, fileListxyaqbzgzgzzd, fileListwqgd, wqgd, fileListfppcs, fileListfwqx, fwqx, checkedyzfczss, fileListyzfczss, fileListazfdaqm, fileListszxfssqc, fileListbcctssyjzm, fileListszaqjspd, fileListafjks, checkedxyqfg, fileListspbcsj, checkedfbhgl, fileListlsdjjc, checkedjzxdwxpdw, checkedhxabll, fileListdqkzaqjy, fileListzdyjya, fileListzxdyylqk, fzfxzlxfs, checkedfzfxzdxkzaqgz, checkedysjsycqk, checkedzdmdjf, checkedlshgxzd, ispart, create_time, update_time from safety_hazard_manifest_school
+        select id, user_id, contact, wx_phone, fileListaqgl, baysl, fileListbaysl, ssygzrs, jssrs, fjssrs, fileListxyaqbzgzgzzd, fileListwqgd, wqgd, fileListfppcs, fileListfwqx, fwqx, checkedyzfczss, fileListyzfczss, fileListazfdaqm, fileListszxfssqc, fileListbcctssyjzm, fileListszaqjspd, fileListafjks, checkedxyqfg, fileListspbcsj, checkedfbhgl, fileListlsdjjc, checkedjzxdwxpdw, checkedhxabll, fileListdqkzaqjy, fileListzdyjya, fileListzxdyylqk, fzfxzlxfs, checkedfzfxzdxkzaqgz, checkedysjsycqk, checkedzdmdjf, checkedlshgxzd, ispart, fileListfqlgzlsqk, fileListxsqlzlwyh, status, create_time, update_time from safety_hazard_manifest_school
     </sql>
 
     <select id="selectSafetyHazardManifestSchoolList" parameterType="SafetyHazardManifestSchool" resultMap="SafetyHazardManifestSchoolResult">
@@ -60,6 +64,7 @@
         left join safety_hazard_manifest_reply mr on ms.id = mr.manifest_id
         <where>
             <if test="userId != null "> and ms.user_id = #{userId}</if>
+            <if test="contact != null  and contact != ''"> and ms.contact = #{contact}</if>
             <if test="wxPhone != null  and wxPhone != ''"> and ms.wx_phone = #{wxPhone}</if>
             <if test="fileListaqgl != null  and fileListaqgl != ''"> and ms.fileListaqgl = #{fileListaqgl}</if>
             <if test="baysl != null  and baysl != ''"> and ms.baysl = #{baysl}</if>
@@ -95,6 +100,9 @@
             <if test="checkedzdmdjf != null  and checkedzdmdjf != ''"> and ms.checkedzdmdjf = #{checkedzdmdjf}</if>
             <if test="checkedlshgxzd != null  and checkedlshgxzd != ''"> and ms.checkedlshgxzd = #{checkedlshgxzd}</if>
             <if test="ispart != null  and ispart != ''"> and ms.ispart = #{ispart}</if>
+            <if test="fileListfqlgzlsqk != null  and fileListfqlgzlsqk != ''"> and ms.fileListfqlgzlsqk = #{fileListfqlgzlsqk}</if>
+            <if test="fileListxsqlzlwyh != null  and fileListxsqlzlwyh != ''"> and ms.fileListxsqlzlwyh = #{fileListxsqlzlwyh}</if>
+            <if test="status != null  and status != ''"> and ms.status = #{status}</if>
         </where>
         order by update_time desc
     </select>
@@ -113,6 +121,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="userId != null">user_id,</if>
+            <if test="contact != null">contact,</if>
             <if test="wxPhone != null">wx_phone,</if>
             <if test="fileListaqgl != null">fileListaqgl,</if>
             <if test="baysl != null">baysl,</if>
@@ -148,12 +157,16 @@
             <if test="checkedzdmdjf != null">checkedzdmdjf,</if>
             <if test="checkedlshgxzd != null">checkedlshgxzd,</if>
             <if test="ispart != null">ispart,</if>
+            <if test="fileListfqlgzlsqk != null">fileListfqlgzlsqk,</if>
+            <if test="fileListxsqlzlwyh != null">fileListxsqlzlwyh,</if>
+            <if test="status != null">status,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="userId != null">#{userId},</if>
+            <if test="contact != null">#{contact},</if>
             <if test="wxPhone != null">#{wxPhone},</if>
             <if test="fileListaqgl != null">#{fileListaqgl},</if>
             <if test="baysl != null">#{baysl},</if>
@@ -189,6 +202,9 @@
             <if test="checkedzdmdjf != null">#{checkedzdmdjf},</if>
             <if test="checkedlshgxzd != null">#{checkedlshgxzd},</if>
             <if test="ispart != null">#{ispart},</if>
+            <if test="fileListfqlgzlsqk != null">#{fileListfqlgzlsqk},</if>
+            <if test="fileListxsqlzlwyh != null">#{fileListxsqlzlwyh},</if>
+            <if test="status != null">#{status},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
         </trim>
@@ -198,6 +214,7 @@
         update safety_hazard_manifest_school
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null">user_id = #{userId},</if>
+            <if test="contact != null">contact = #{contact},</if>
             <if test="wxPhone != null">wx_phone = #{wxPhone},</if>
             <if test="fileListaqgl != null">fileListaqgl = #{fileListaqgl},</if>
             <if test="baysl != null">baysl = #{baysl},</if>
@@ -233,6 +250,9 @@
             <if test="checkedzdmdjf != null">checkedzdmdjf = #{checkedzdmdjf},</if>
             <if test="checkedlshgxzd != null">checkedlshgxzd = #{checkedlshgxzd},</if>
             <if test="ispart != null">ispart = #{ispart},</if>
+            <if test="fileListfqlgzlsqk != null">fileListfqlgzlsqk = #{fileListfqlgzlsqk},</if>
+            <if test="fileListxsqlzlwyh != null">fileListxsqlzlwyh = #{fileListxsqlzlwyh},</if>
+            <if test="status != null">status = #{status},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -249,4 +269,19 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="getLastCreateTimeByUser" resultType="string">
+        select max(create_time)
+        from safety_hazard_manifest_school
+        where user_id = #{userId}
+    </select>
+
+    <select id="getLastManifestByUserId" resultMap="SafetyHazardManifestSchoolResult">
+        select *
+        from safety_hazard_manifest_school
+        where user_id = #{userId}
+        order by create_time desc
+        limit 1
+    </select>
+
 </mapper>
