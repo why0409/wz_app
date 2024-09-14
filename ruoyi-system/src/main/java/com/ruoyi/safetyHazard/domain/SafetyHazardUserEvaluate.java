@@ -1,9 +1,20 @@
 package com.ruoyi.safetyHazard.domain;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 隐患排查-用户评价对象 safety_hazard_user_evaluate
@@ -11,11 +22,14 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2024-09-12
  */
-public class SafetyHazardUserEvaluate extends BaseEntity
+@Data
+@TableName(value = "safety_hazard_user_evaluate", autoResultMap = true)
+public class SafetyHazardUserEvaluate implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     /** 序号 */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /** 用户id */
@@ -28,54 +42,12 @@ public class SafetyHazardUserEvaluate extends BaseEntity
 
     /** 附件 */
     @Excel(name = "附件")
-    private String annex;
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+    private JSONArray annex;
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
-    public Long getId()
-    {
-        return id;
-    }
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
-    }
-
-    public Long getUserId()
-    {
-        return userId;
-    }
-    public void setContent(String content)
-    {
-        this.content = content;
-    }
-
-    public String getContent()
-    {
-        return content;
-    }
-    public void setAnnex(String annex)
-    {
-        this.annex = annex;
-    }
-
-    public String getAnnex()
-    {
-        return annex;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("userId", getUserId())
-            .append("content", getContent())
-            .append("annex", getAnnex())
-            .append("createTime", getCreateTime())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }

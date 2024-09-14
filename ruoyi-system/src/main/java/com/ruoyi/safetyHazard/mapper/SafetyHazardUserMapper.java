@@ -1,5 +1,6 @@
 package com.ruoyi.safetyHazard.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.safetyHazard.domain.SafetyHazardUser;
 import com.ruoyi.safetyHazard.domain.vo.ExportSafetyHazardUserVo;
 import org.apache.ibatis.annotations.Param;

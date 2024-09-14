@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.wz.safetyHazard;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -7,12 +9,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.safetyHazard.domain.SafetyHazardUser;
+import com.ruoyi.safetyHazard.domain.vo.SafetyHazardUserPermissionVo;
 import com.ruoyi.safetyHazard.service.ISafetyHazardUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,7 +75,28 @@ public class SafetyHazardUserController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody SafetyHazardUser safetyHazardUser)
     {
-        return toAjax(safetyHazardUserService.insertSafetyHazardUser(safetyHazardUser));
+        //新增用户
+        safetyHazardUserService.insertSafetyHazardUser(safetyHazardUser);
+
+        //新增权限
+        JSONObject property = JSONObject.parseObject(safetyHazardUser.getProperty());
+        if (property.containsKey("sxdw")){
+            JSONArray sxdwArray = property.getJSONArray("sxdw");
+
+            List<Long> userIds = new ArrayList<>();
+            for (int i = 0; i < sxdwArray.size(); i++) {
+                JSONArray innerArray = sxdwArray.getJSONArray(i);
+                Long userId = innerArray.getLongValue(1);
+                userIds.add(userId);
+            }
+
+            SafetyHazardUserPermissionVo supv = new SafetyHazardUserPermissionVo();
+            supv.setParenId(safetyHazardUser.getUserId());
+            supv.setUserIds(userIds);
+            safetyHazardUserService.setPermission(supv);
+        }
+
+        return success();
     }
 
     /**
@@ -82,7 +107,29 @@ public class SafetyHazardUserController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody SafetyHazardUser safetyHazardUser)
     {
-        return toAjax(safetyHazardUserService.updateSafetyHazardUser(safetyHazardUser));
+        //修改用户
+        safetyHazardUserService.updateSafetyHazardUser(safetyHazardUser);
+
+        //修改权限
+        SafetyHazardUser su = safetyHazardUserService.selectSafetyHazardUserByUserId(safetyHazardUser.getUserId());
+        JSONObject property = JSONObject.parse(su.getProperty());
+        if (property.containsKey("sxdw")){
+            JSONArray sxdwArray = property.getJSONArray("sxdw");
+
+            List<Long> userIds = new ArrayList<>();
+            for (int i = 0; i < sxdwArray.size(); i++) {
+                JSONArray innerArray = sxdwArray.getJSONArray(i);
+                Long userId = innerArray.getLongValue(1);
+                userIds.add(userId);
+            }
+
+            SafetyHazardUserPermissionVo supv = new SafetyHazardUserPermissionVo();
+            supv.setParenId(safetyHazardUser.getUserId());
+            supv.setUserIds(userIds);
+            safetyHazardUserService.setPermission(supv);
+        }
+
+        return success();
     }
 
     /**
@@ -94,5 +141,14 @@ public class SafetyHazardUserController extends BaseController
     public AjaxResult remove(@PathVariable Long[] userIds)
     {
         return toAjax(safetyHazardUserService.deleteSafetyHazardUserByUserIds(userIds));
+    }
+
+    /**
+     * 督察单位设置所辖单位
+     */
+    @PostMapping("/setPermission")
+    public AjaxResult setPermission(@RequestBody SafetyHazardUserPermissionVo safetyHazardUserPermissionVo)
+    {
+        return success(safetyHazardUserService.setPermission(safetyHazardUserPermissionVo));
     }
 }

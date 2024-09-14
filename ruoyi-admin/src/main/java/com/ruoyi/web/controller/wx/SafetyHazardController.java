@@ -1,31 +1,26 @@
 package com.ruoyi.web.controller.wx;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.safetyHazard.domain.*;
 import com.ruoyi.safetyHazard.domain.dto.SafetyHazardManifestSchoolDto;
 import com.ruoyi.safetyHazard.domain.vo.ExportSafetyHazardUserVo;
-import com.ruoyi.safetyHazard.domain.vo.SafetyHazardUserPermissionVo;
 import com.ruoyi.safetyHazard.service.*;
 import com.ruoyi.web.controller.wx.common.SmsMsgService;
 import com.ruoyi.web.controller.wx.common.WxService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -345,9 +340,9 @@ public class SafetyHazardController extends BaseController {
 
         //获取小程序链接
         String wxUrl = wxService.generateLinkByPath("packageE/pages/hazard/index");
-        String content = "您在单位隐患自查应用上提交的自查清单，辖区派出所已给出整改意见，整改期限为"+term+"天，请及时反馈整改情况。点击链接进入："+wxUrl;
 
         //发送通知短信
+        String content = "您在单位隐患自查应用上提交的自查清单，辖区派出所已给出整改意见，整改期限为"+term+"天，请及时反馈整改情况。点击链接进入："+wxUrl;
         JSONObject object = smsMsgService.sendMsgByPerson(phone,content);
         if ("success".equals(object.get("rspcod"))) {
             return success("发送成功");
@@ -358,25 +353,22 @@ public class SafetyHazardController extends BaseController {
 
 
     /**
-     * 督察单位设置所辖单位
-     */
-    @GetMapping("/user/setPermission")
-    public AjaxResult setPermission(SafetyHazardUserPermissionVo safetyHazardUserPermissionVo)
-    {
-        return success(safetyHazardUserService.setPermission(safetyHazardUserPermissionVo));
-    }
-
-
-    /**
      * 导出自查数据
      */
     @ApiOperation("导出数据")
     @PostMapping("/exportSafetyHazardData")
-    public void export(HttpServletResponse response, SafetyHazardUser safetyHazardUser)
+    public AjaxResult export(SafetyHazardUser safetyHazardUser)
     {
         List<ExportSafetyHazardUserVo> list = safetyHazardUserService.exportSafetyHazardUserList(safetyHazardUser);
         ExcelUtil<ExportSafetyHazardUserVo> util = new ExcelUtil<>(ExportSafetyHazardUserVo.class);
-        util.exportExcel(response, list, "隐患排查-自查填报数据");
+        util.init(list, "隐患排查填报数据", StringUtils.EMPTY, Excel.Type.EXPORT);
+
+        AjaxResult ajaxResult = util.exportExcel();
+        String fileName = (String) ajaxResult.get("msg");
+
+        String fileUrl = "/profile/download/"+fileName;
+
+        return AjaxResult.success(fileUrl);
     }
 
     /**
@@ -406,7 +398,8 @@ public class SafetyHazardController extends BaseController {
     @PostMapping("/evaluate")
     public AjaxResult add(@RequestBody SafetyHazardUserEvaluate safetyHazardUserEvaluate)
     {
-        return toAjax(safetyHazardUserEvaluateService.insertSafetyHazardUserEvaluate(safetyHazardUserEvaluate));
+        safetyHazardUserEvaluate.setCreateTime(new Date());
+        return toAjax(safetyHazardUserEvaluateService.save(safetyHazardUserEvaluate));
     }
 
 }

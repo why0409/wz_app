@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * swagger 接口
- * 
+ *
  * @author ruoyi
  */
 @Controller
@@ -18,6 +18,6 @@ public class SwaggerController extends BaseController
     @GetMapping()
     public String index()
     {
-        return redirect("/swagger-ui.html");
+        return redirect("/doc.html");
     }
 }

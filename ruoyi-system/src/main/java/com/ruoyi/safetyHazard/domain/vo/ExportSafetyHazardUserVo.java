@@ -23,7 +23,7 @@ public class ExportSafetyHazardUserVo
     private static final long serialVersionUID = 1L;
 
     /** 用户名称 */
-    @Excel(name = "单位名称")
+    @Excel(name = "单位名称", width = 35)
     private String userName;
 
     /** 联系人 */

@@ -168,7 +168,7 @@
 
     <update id="deletePermission" >
         update safety_hazard_user
-        set parent_id is null
+        set parent_id = null
         where user_id in
         <foreach item="userId" collection="list" open="(" separator="," close=")">
             #{userId}
