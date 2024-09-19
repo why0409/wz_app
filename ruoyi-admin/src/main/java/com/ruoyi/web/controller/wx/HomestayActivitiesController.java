@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.wx;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.img.ImgUtil;
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.alibaba.fastjson2.JSONObject;
@@ -21,7 +22,9 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.utils.DesensitizedUtils;
 import com.ruoyi.common.utils.SmsUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.ws.WebSocketServer;
 import com.ruoyi.web.controller.wx.common.SmsMsgService;
@@ -52,23 +55,6 @@ public class HomestayActivitiesController extends BaseController
 
     @Autowired
     private RedisCache redisCache;
-
-    @Value("${zhwz.url}")
-    private String url;
-
-    @Value("${zhwz.secretKey}")
-    private String secretKey;
-
-    @Value("${zhwz.apId}")
-    private String apId;
-
-    @Value("${zhwz.sign}")
-    private String sign;
-
-    @Value("${zhwz.ecName}")
-    private String ecName;
-
-    private static final int CAPTCHA_EXPIRY_TIME_SECONDS = 60;
 
     private static final int QRCODE_EXPIRY_TIME_MINUTES = 10;
 
@@ -116,7 +102,7 @@ public class HomestayActivitiesController extends BaseController
     public void registeredInfoExport(HttpServletResponse response, HomestayRegisteredInfo homestayRegisteredInfo)
     {
         List<HomestayRegisteredInfo> list = homestayRegisteredInfoService.selectHomestayRegisteredInfoList(homestayRegisteredInfo);
-        ExcelUtil<HomestayRegisteredInfo> util = new ExcelUtil<HomestayRegisteredInfo>(HomestayRegisteredInfo.class);
+        ExcelUtil<HomestayRegisteredInfo> util = new ExcelUtil<>(HomestayRegisteredInfo.class);
         util.exportExcel(response, list, "民宿体验季活动数据");
     }
 
@@ -135,38 +121,38 @@ public class HomestayActivitiesController extends BaseController
     @PostMapping("/addRegisteredInfo")
     public AjaxResult addRegisteredInfo(@RequestBody HomestayRegisteredInfo homestayRegisteredInfo)
     {
-        //String redisKey = "sms_captcha_" + homestayRegisteredInfo.getContactPhone();
-        //String correctCode = redisCache.getCacheObject(redisKey)+"";
-        //
-        //String wxPhone = homestayRegisteredInfo.getWxPhone();
-        //String idNumber = homestayRegisteredInfo.getIdNumber();
-        //Long activitiesId = homestayRegisteredInfo.getActivitiesId();
-        //if (StringUtils.isEmpty(wxPhone) || activitiesId == null) {
-        //    return error("必要参数缺失，请重新登录小程序");
-        //}
-        //
-        //int countByWxPhone = homestayRegisteredInfoService.checkCountByWxPhone(wxPhone, activitiesId);
-        //if (countByWxPhone > 0) {
-        //    return error("该用户已登记");
-        //}
-        //
-        //int countByIdNumber = homestayRegisteredInfoService.checkCountByIdNumber(idNumber, activitiesId);
-        //if (countByIdNumber > 0) {
-        //    return error("该身份证号已被登记");
-        //}
-        //
-        //if (correctCode == null) {
-        //    return error("验证码已过期");
-        //} else if (! correctCode.equals(homestayRegisteredInfo.getSmsCode())) {
-        //    return error("验证码无效");
-        //} else {
-        //    redisCache.deleteObject(redisKey);
-        //
-        //    homestayRegisteredInfo.setIsWin("0");
-        //    return toAjax(homestayRegisteredInfoService.insertHomestayRegisteredInfo(homestayRegisteredInfo));
-        //}
+        String redisKey = "sms_captcha_" + homestayRegisteredInfo.getContactPhone();
+        String correctCode = redisCache.getCacheObject(redisKey)+"";
 
-        return error("登记结束");
+        String wxPhone = homestayRegisteredInfo.getWxPhone();
+        String idNumber = homestayRegisteredInfo.getIdNumber();
+        Long activitiesId = homestayRegisteredInfo.getActivitiesId();
+        if (StringUtils.isEmpty(wxPhone) || activitiesId == null) {
+            return error("必要参数缺失，请重新登录小程序");
+        }
+
+        int countByWxPhone = homestayRegisteredInfoService.checkCountByWxPhone(wxPhone, activitiesId);
+        if (countByWxPhone > 0) {
+            return error("该用户已登记");
+        }
+
+        int countByIdNumber = homestayRegisteredInfoService.checkCountByIdNumber(idNumber, activitiesId);
+        if (countByIdNumber > 0) {
+            return error("该身份证号已被登记");
+        }
+
+        if (correctCode == null) {
+            return error("验证码已过期");
+        } else if (! correctCode.equals(homestayRegisteredInfo.getSmsCode())) {
+            return error("验证码无效");
+        } else {
+            redisCache.deleteObject(redisKey);
+
+            homestayRegisteredInfo.setIsWin("0");
+            return toAjax(homestayRegisteredInfoService.insertHomestayRegisteredInfo(homestayRegisteredInfo));
+        }
+
+        //return error("登记结束");
     }
 
     /**
@@ -175,10 +161,10 @@ public class HomestayActivitiesController extends BaseController
     @GetMapping("/getRegisteredInfoByWxPhone")
     public AjaxResult getRegisteredInfoByWxPhone(String phone, Long activitiesId)
     {
-        if (activitiesId == null) {
-            ActivitiesInfo ac =  activitiesInfoService.selectNormalActivitiesInfo("0");
-            activitiesId = ac.getId();
-        }
+        //if (activitiesId == null) {
+        //    ActivitiesInfo ac =  activitiesInfoService.selectNormalActivitiesInfo("0");
+        //    activitiesId = ac.getId();
+        //}
         return success(homestayRegisteredInfoService.selectHomestayRegisteredInfoByWxPhone(phone, activitiesId));
     }
 
@@ -188,19 +174,19 @@ public class HomestayActivitiesController extends BaseController
     @PutMapping("/editRegisteredInfo")
     public AjaxResult editRegisteredInfo(@RequestBody HomestayRegisteredInfo homestayRegisteredInfo)
     {
-        //String redisKey = "sms_captcha_" + homestayRegisteredInfo.getContactPhone();
-        //String correctCode = redisCache.getCacheObject(redisKey)+"";
-        //
-        //if (correctCode == null) {
-        //    return error("验证码已过期");
-        //} else if (! correctCode.equals(homestayRegisteredInfo.getSmsCode())) {
-        //    return error("验证码无效");
-        //} else {
-        //    redisCache.deleteObject(redisKey);
-        //    return toAjax(homestayRegisteredInfoService.updateHomestayRegisteredInfoByWxPhone(homestayRegisteredInfo));
-        //}
+        String redisKey = "sms_captcha_" + homestayRegisteredInfo.getContactPhone();
+        String correctCode = redisCache.getCacheObject(redisKey)+"";
 
-        return error("登记结束");
+        if (correctCode == null) {
+            return error("验证码已过期");
+        } else if (! correctCode.equals(homestayRegisteredInfo.getSmsCode())) {
+            return error("验证码无效");
+        } else {
+            redisCache.deleteObject(redisKey);
+            return toAjax(homestayRegisteredInfoService.updateHomestayRegisteredInfoByWxPhone(homestayRegisteredInfo));
+        }
+
+        //return error("登记结束");
     }
 
     /**
@@ -217,16 +203,7 @@ public class HomestayActivitiesController extends BaseController
      */
     @GetMapping("/sendSmsCode")
     public AjaxResult sendSmsCode(String phone) throws Exception {
-        // 生成一个六位数的验证码
-        int verificationCode = (int) (Math.random() * 900000) + 100000;
-        String content = "您的验证码是：" + verificationCode + "。有效期为1分钟，请不要把验证码泄露给其他人。";
-        // 将验证码存入redis
-        redisCache.setCacheObject("sms_captcha_" + phone, verificationCode, CAPTCHA_EXPIRY_TIME_SECONDS, TimeUnit.SECONDS);
-        // 发送短信
-        String base64 = SmsUtils.getBase64(content, phone, ecName, apId, secretKey, sign);
-        String msg = SmsUtils.sendMsg(base64, url);
-
-        JSONObject object = JSONObject.parse(msg);
+        JSONObject object = smsMsgService.sendNumberCode(phone);
 
         if ("success".equals(object.get("rspcod"))) {
             return AjaxResult.success("发送成功");
@@ -239,9 +216,10 @@ public class HomestayActivitiesController extends BaseController
      * 获取当前正常活动
      */
     @GetMapping("/getNormalActivities")
-    public AjaxResult getNormalActivities()
+    public AjaxResult getNormalActivities(Long activitiesId)
     {
-        ActivitiesInfo ac =  activitiesInfoService.selectNormalActivitiesInfo("0");
+        //ActivitiesInfo ac =  activitiesInfoService.selectNormalActivitiesInfo("0");
+        ActivitiesInfo ac =  activitiesInfoService.selectActivitiesInfoById(activitiesId);
 
         Long registerStartTime = DateUtil.parseDateTime(ac.getRegistrationTime().split(",")[0]).getTime();
         Long registerEndTime = DateUtil.parseDateTime(ac.getRegistrationTime().split(",")[1]).getTime();
@@ -305,78 +283,80 @@ public class HomestayActivitiesController extends BaseController
     /**
      * 摇号抽奖
      */
-    //@GetMapping("/lottery")
-    //public void lottery(int round) throws Exception {
-    //    log.info(DateUtil.now()+"---开始第"+round+"轮抽奖---");
-    //
-    //    ActivitiesInfo activitiesInfo = activitiesInfoService.selectNormalActivitiesInfo("0");
-    //    Long activitiesId = activitiesInfo.getId();
-    //    int prizesCount = activitiesInfo.getSecuritiesRestNumber();
-    //
-    //    List<Long> allIds = new ArrayList<>();
-    //    List<Long> whiteListIds = new ArrayList<>();
-    //    int winCount = 0;
-    //    int prizesCountByRound = 0;
-    //    if (round == 1) {
-    //        prizesCountByRound = 200;
-    //        //湾沚区白名单
-    //        List<String> whiteListByWz = Arrays.asList("18905530025");
-    //        whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteListByWz);
-    //        //第一轮抽取湾沚区名单
-    //        allIds = homestayRegisteredInfoService.selectNotWinIdsByWz(activitiesId);
-    //    } else if (round == 2){
-    //        prizesCountByRound = 300;
-    //        //本市外区白名单
-    //        List<String> whiteListByWh = Arrays.asList("");
-    //        whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteListByWh);
-    //        //第二轮抽取本市外区名单
-    //        allIds = homestayRegisteredInfoService.selectNotWinIdsByWhNotWz(activitiesId);
-    //    } else if (round == 3){
-    //        prizesCountByRound = 500;
-    //        //其他地区白名单
-    //        List<String> whiteListByOther = Arrays.asList("18105539005","15609690111","18118846365");
-    //        whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteListByOther);
-    //        //第二轮抽取其他地区名单
-    //        allIds = homestayRegisteredInfoService.selectNotWinIdsByOther(activitiesId);
-    //    }
-    //    //待抽奖名单中移除白名单人员
-    //    allIds.removeAll(whiteListIds);
-    //    winCount = prizesCountByRound - whiteListIds.size();
-    //
-    //    //随机抽奖
-    //    List<Long> winIds = getRandomlyDraw(allIds,winCount);
-    //    winIds.addAll(whiteListIds);
-    //
-    //   //更新中奖用户中奖状态和未兑奖状态
-    //    homestayRegisteredInfoService.updateIsWinByIds("1","0", winIds);
-    //
-    //    //更新本次抽奖后剩余奖品数量
-    //    ActivitiesInfo ac = new ActivitiesInfo();
-    //    ac.setId(activitiesInfo.getId());
-    //    ac.setSecuritiesRestNumber(prizesCount - winIds.size());
-    //    activitiesInfoService.updateActivitiesInfo(ac);
-    //
-    //    //模拟逐条抽奖并向前端发送信息
-    //    List<HomestayRegisteredInfo> list = homestayRegisteredInfoService.selectHomestayRegisteredInfoByIds(winIds);
-    //    for (HomestayRegisteredInfo h : list) {
-    //        JSONObject msg = JSONObject.parse(h.toString());
-    //        msg.put("winTime",new Date());
-    //        msg.put("name", DesensitizedUtils.desensitizeName(msg.getString("name")));
-    //        msg.put("wxPhone", DesensitizedUtil.mobilePhone(msg.getString("wxPhone")));
-    //        msg.put("contactPhone", DesensitizedUtil.mobilePhone(msg.getString("contactPhone")));
-    //        msg.put("idNumber", DesensitizedUtil.idCardNum(msg.getString("idNumber"), 3, 4));
-    //
-    //        webSocketServer.sendInfo(msg.toJSONString(),"wzLottery");
-    //
-    //        Thread.sleep(150);
-    //    }
-    //
-    //    //抽奖结束
-    //    webSocketServer.sendInfo("over","wzLottery");
-    //
-    //    //更新摇号中可查看
-    //    homestayRegisteredInfoService.updateIsLotteryingShowByIds("1",winIds);
-    //}
+    @GetMapping("/lottery")
+    public void lottery(int round, Long activitiesId) throws Exception {
+        log.info(DateUtil.now()+"---开始第"+round+"轮抽奖---");
+
+        //ActivitiesInfo activitiesInfo = activitiesInfoService.selectNormalActivitiesInfo("0");
+        //Long activitiesId = activitiesInfo.getId();
+
+        ActivitiesInfo activitiesInfo = activitiesInfoService.selectActivitiesInfoById(activitiesId);
+        int prizesCount = activitiesInfo.getSecuritiesRestNumber();
+
+        List<Long> allIds = new ArrayList<>();
+        List<Long> whiteListIds = new ArrayList<>();
+        int winCount = 0;
+        int prizesCountByRound = 0;
+        if (round == 1) {
+            prizesCountByRound = 200;
+            //湾沚区白名单
+            List<String> whiteListByWz = Arrays.asList("18905530025");
+            whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteListByWz);
+            //第一轮抽取湾沚区名单
+            allIds = homestayRegisteredInfoService.selectNotWinIdsByWz(activitiesId);
+        } else if (round == 2){
+            prizesCountByRound = 300;
+            //本市外区白名单
+            List<String> whiteListByWh = Arrays.asList("");
+            whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteListByWh);
+            //第二轮抽取本市外区名单
+            allIds = homestayRegisteredInfoService.selectNotWinIdsByWhNotWz(activitiesId);
+        } else if (round == 3){
+            prizesCountByRound = 500;
+            //其他地区白名单
+            List<String> whiteListByOther = Arrays.asList("18105539005","15609690111","18118846365");
+            whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteListByOther);
+            //第二轮抽取其他地区名单
+            allIds = homestayRegisteredInfoService.selectNotWinIdsByOther(activitiesId);
+        }
+        //待抽奖名单中移除白名单人员
+        allIds.removeAll(whiteListIds);
+        winCount = prizesCountByRound - whiteListIds.size();
+
+        //随机抽奖
+        List<Long> winIds = getRandomlyDraw(allIds,winCount);
+        winIds.addAll(whiteListIds);
+
+       //更新中奖用户中奖状态和未兑奖状态
+        homestayRegisteredInfoService.updateIsWinByIds("1","0", winIds);
+
+        //更新本次抽奖后剩余奖品数量
+        ActivitiesInfo ac = new ActivitiesInfo();
+        ac.setId(activitiesInfo.getId());
+        ac.setSecuritiesRestNumber(prizesCount - winIds.size());
+        activitiesInfoService.updateActivitiesInfo(ac);
+
+        //模拟逐条抽奖并向前端发送信息
+        List<HomestayRegisteredInfo> list = homestayRegisteredInfoService.selectHomestayRegisteredInfoByIds(winIds);
+        for (HomestayRegisteredInfo h : list) {
+            JSONObject msg = JSONObject.parse(h.toString());
+            msg.put("winTime",new Date());
+            msg.put("name", DesensitizedUtils.desensitizeName(msg.getString("name")));
+            msg.put("wxPhone", DesensitizedUtil.mobilePhone(msg.getString("wxPhone")));
+            msg.put("contactPhone", DesensitizedUtil.mobilePhone(msg.getString("contactPhone")));
+            msg.put("idNumber", DesensitizedUtil.idCardNum(msg.getString("idNumber"), 3, 4));
+
+            webSocketServer.sendInfo(msg.toJSONString(),"wzLottery");
+
+            Thread.sleep(150);
+        }
+
+        //抽奖结束
+        webSocketServer.sendInfo("over","wzLottery");
+
+        //更新摇号中可查看
+        homestayRegisteredInfoService.updateIsLotteryingShowByIds("1",winIds);
+    }
 
     public List<Long> getRandomlyDraw(List<Long> allIds, int winCount) {
         List<Long> winIds;
@@ -523,7 +503,6 @@ public class HomestayActivitiesController extends BaseController
         return success(activitiesInfoService.getActivitiesListByHomestayId(homestayId));
     }
 
-
     /**
      * 查询民宿活动线下劵注册信息列表
      */
@@ -561,9 +540,11 @@ public class HomestayActivitiesController extends BaseController
     @PostMapping("/offlineRegister/save")
     public AjaxResult addOfflineRegister(@RequestBody HomestayOfflineRegister homestayOfflineRegister)
     {
-        ActivitiesInfo ac =  activitiesInfoService.selectNormalActivitiesInfo("0");
-        Long activitiesId = ac.getId();
-        homestayOfflineRegister.setActivitiesId(activitiesId);
+        //ActivitiesInfo ac =  activitiesInfoService.selectNormalActivitiesInfo("0");
+        //Long activitiesId = ac.getId();
+        //homestayOfflineRegister.setActivitiesId(activitiesId);
+
+        Long activitiesId = homestayOfflineRegister.getActivitiesId();
 
         String idNumber = homestayOfflineRegister.getIdNumber();
         int count = homestayOfflineRegisterService.getTodayCountByIdNumber(activitiesId, idNumber);
@@ -618,5 +599,12 @@ public class HomestayActivitiesController extends BaseController
     //        return error("发送失败");
     //    }
     //}
+
+    @GetMapping("/activities/list")
+    public AjaxResult list(ActivitiesInfo activitiesInfo)
+    {
+        List<ActivitiesInfo> list = activitiesInfoService.selectActivitiesInfoList(activitiesInfo);
+        return success(list);
+    }
 
 }

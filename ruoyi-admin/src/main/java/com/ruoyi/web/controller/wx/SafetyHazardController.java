@@ -356,7 +356,7 @@ public class SafetyHazardController extends BaseController {
      * 导出自查数据
      */
     @ApiOperation("导出数据")
-    @PostMapping("/exportSafetyHazardData")
+    @GetMapping("/exportSafetyHazardData")
     public AjaxResult export(SafetyHazardUser safetyHazardUser)
     {
         List<ExportSafetyHazardUserVo> list = safetyHazardUserService.exportSafetyHazardUserList(safetyHazardUser);

@@ -19,6 +19,7 @@
         <result property="status"    column="status"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
     </resultMap>
 
     <resultMap type="ActivitiesInfoHomestayVo" extends="ActivitiesInfoResult" id="ActivitiesInfoHomestayVoResult">
@@ -26,7 +27,7 @@
     </resultMap>
 
     <sql id="selectActivitiesInfoVo">
-        select id, name, content, securities_total_number, securities_rest_number, securities_amount, registration_time, release_time, release_cycle, consumption_time, homestay_ids, status, create_time, update_time from activities_info
+        select id, name, content, securities_total_number, securities_rest_number, securities_amount, registration_time, release_time, release_cycle, consumption_time, homestay_ids, status, create_time, update_time, remark from activities_info
     </sql>
 
     <select id="selectActivitiesInfoList" parameterType="ActivitiesInfo" resultMap="ActivitiesInfoResult">
@@ -42,6 +43,7 @@
             <if test="releaseCycle != null "> and release_cycle = #{releaseCycle}</if>
             <if test="consumptionTime != null  and consumptionTime != ''"> and consumption_time = #{consumptionTime}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
         </where>
         order by create_time desc
     </select>
@@ -67,6 +69,7 @@
             <if test="status != null">status,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
@@ -82,6 +85,7 @@
             <if test="status != null">#{status},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
         </trim>
     </insert>
 
@@ -101,6 +105,7 @@
             <if test="status != null">status = #{status},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
         </trim>
         where id = #{id}
     </update>

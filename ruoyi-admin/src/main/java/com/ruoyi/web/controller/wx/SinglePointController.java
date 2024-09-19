@@ -26,8 +26,6 @@ import java.util.Map;
 public class SinglePointController {
     private Logger logger = LoggerFactory.getLogger(UserInfoController.class);
 
-
-
 //    @PostMapping(value = "getUserInfo")
 //    public String getUserInfo(HttpServletRequest request) throws Exception{
 //        System.out.println(userInfoUrl);

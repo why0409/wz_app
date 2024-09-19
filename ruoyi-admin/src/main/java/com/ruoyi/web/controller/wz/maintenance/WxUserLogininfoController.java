@@ -72,7 +72,6 @@ public class WxUserLogininfoController extends BaseController {
     //@PreAuthorize("@ss.hasPermi('system:logininfo:list')")
     @GetMapping("/clickModuleInfoCount")
     public TableDataInfo selectWxClickmoduleInfoCount(WxClickmoduleInfoDto wxClickmoduleInfo) {
-
         startPage();
 
         List<WxClickmoduleInfo> list = wxClickmoduleInfoService.selectWxClickmoduleInfoCount(wxClickmoduleInfo);

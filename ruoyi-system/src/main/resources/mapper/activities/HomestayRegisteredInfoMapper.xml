@@ -171,7 +171,6 @@
             <if test="idNumber != null">id_number = #{idNumber},</if>
             <if test="isWin != null">is_win = #{isWin},</if>
             <if test="winStatus != null">win_status = #{winStatus},</if>
-            <if test="activitiesId != null">activities_id = #{activitiesId},</if>
             <if test="homestayId != null">homestay_id = #{homestayId},</if>
             <if test="verifyPhone != null">verify_phone = #{verifyPhone},</if>
             <if test="verifyTime != null">verify_time = #{verifyTime},</if>
@@ -179,6 +178,7 @@
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where wx_phone = #{wxPhone}
+        and activities_id = #{activitiesId}
     </update>
 
     <delete id="deleteHomestayRegisteredInfoById" parameterType="Long">
