@@ -286,4 +286,9 @@ public class HomestayRegisteredInfoServiceImpl implements IHomestayRegisteredInf
         return homestayRegisteredInfoMapper.updateIsLotteryingShowByIds(isLotteryingShow, ids);
     }
 
+    @Override
+    public List<Long> selectNotWinIds(Long activitiesId){
+        return homestayRegisteredInfoMapper.selectNotWinIds(activitiesId);
+    }
+
 }

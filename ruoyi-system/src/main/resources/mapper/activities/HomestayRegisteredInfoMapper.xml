@@ -233,6 +233,20 @@
         </if>
     </update>
 
+    <select id="selectNotWinIds" resultType="Long">
+        SELECT id
+        FROM homestay_registered_info
+        WHERE id IN
+        (
+            SELECT MIN(id)
+            FROM homestay_registered_info
+            WHERE wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
+            AND activities_id = #{activitiesId}
+            GROUP BY id_number
+        )
+        AND is_win = '0'
+    </select>
+
     <select id="selectNotWinIdsByWz" resultType="Long">
         SELECT id
         FROM homestay_registered_info
@@ -252,13 +266,13 @@
         SELECT id
         FROM homestay_registered_info
         WHERE id IN
-              (
-                  SELECT MIN(id)
-                  FROM homestay_registered_info
-                  WHERE wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
-                    AND activities_id = #{activitiesId}
-                  GROUP BY id_number
-              )
+        (
+            SELECT MIN(id)
+            FROM homestay_registered_info
+            WHERE wx_phone is NOT null AND wx_phone != '' AND activities_id is NOT null
+            AND activities_id = #{activitiesId}
+            GROUP BY id_number
+        )
         AND is_win = '0'
         AND id_number like '3402%'
         AND id_number not like '340221%'

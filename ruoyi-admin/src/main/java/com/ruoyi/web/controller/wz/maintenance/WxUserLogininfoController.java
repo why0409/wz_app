@@ -141,6 +141,7 @@ public class WxUserLogininfoController extends BaseController {
             }
             resultList.add(map);
         }));
+
         TableDataInfo tableDataInfo= getDataTable(resultList);
         tableDataInfo.setTotal(new PageInfo(list).getTotal());
         return tableDataInfo;

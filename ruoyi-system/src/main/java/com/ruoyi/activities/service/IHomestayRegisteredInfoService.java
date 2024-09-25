@@ -93,6 +93,8 @@ public interface IHomestayRegisteredInfoService
 
     public int getWinCount(Long activitiesId);
 
+    public List<Long> selectNotWinIds(Long activitiesId);
+
     public List<Long> selectNotWinIdsByWz(Long activitiesId);
 
     public List<Long> selectNotWinIdsByWhNotWz(Long activitiesId);

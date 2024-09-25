@@ -89,6 +89,8 @@ public interface HomestayRegisteredInfoMapper
                                 @Param("winStatus") String winStatus,
                                 @Param("ids") List<Long> ids);
 
+    public List<Long> selectNotWinIds(Long activitiesId);
+
     public List<Long> selectNotWinIdsByWz(Long activitiesId);
 
     public List<Long> selectNotWinIdsByWhNotWz(Long activitiesId);
