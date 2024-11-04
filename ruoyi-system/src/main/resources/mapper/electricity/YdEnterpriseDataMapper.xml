@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.electricity.mapper.YdEnterpriseDataMapper">
+
+    <resultMap type="YdEnterpriseData" id="YdEnterpriseDataResult">
+        <result property="id"    column="id"    />
+        <result property="meterNumber"    column="meter_number"    />
+        <result property="meterAddress"    column="meter_address"    />
+        <result property="meterProtocol"    column="meter_protocol"    />
+        <result property="terminalAddress"    column="terminal_address"    />
+        <result property="iotName"    column="iot_name"    />
+        <result property="iotNumber"    column="iot_number"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userNumber"    column="user_number"    />
+        <result property="platformName"    column="platform_name"    />
+        <result property="platformNumber"    column="platform_number"    />
+        <result property="dataDate"    column="data_date"    />
+        <result property="dataTime"    column="data_time"    />
+        <result property="samplingMode"    column="sampling_mode"    />
+        <result property="entryTime"    column="entry_time"    />
+        <result property="totalActivePower"    column="total_active_power"    />
+        <result property="aActivePower"    column="a_active_power"    />
+        <result property="bActivePower"    column="b_active_power"    />
+        <result property="cActivePower"    column="c_active_power"    />
+        <result property="totalReactivePower"    column="total_reactive_power"    />
+        <result property="aReactivePower"    column="a_reactive_power"    />
+        <result property="bReactivePower"    column="b_reactive_power"    />
+        <result property="cReactivePower"    column="c_reactive_power"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectYdEnterpriseDataVo">
+        select id, meter_number, meter_address, meter_protocol, terminal_address, iot_name, iot_number, user_name, user_number, platform_name, platform_number, data_date, data_time, sampling_mode, entry_time, total_active_power, a_active_power, b_active_power, c_active_power, total_reactive_power, a_reactive_power, b_reactive_power, c_reactive_power, create_time, update_time from yd_enterprise_data
+    </sql>
+
+    <select id="selectYdEnterpriseDataList" parameterType="YdEnterpriseData" resultMap="YdEnterpriseDataResult">
+        <include refid="selectYdEnterpriseDataVo"/>
+        <where>
+            <if test="meterNumber != null  and meterNumber != ''"> and meter_number = #{meterNumber}</if>
+            <if test="meterAddress != null  and meterAddress != ''"> and meter_address = #{meterAddress}</if>
+            <if test="meterProtocol != null  and meterProtocol != ''"> and meter_protocol = #{meterProtocol}</if>
+            <if test="terminalAddress != null  and terminalAddress != ''"> and terminal_address = #{terminalAddress}</if>
+            <if test="iotName != null  and iotName != ''"> and iot_name like concat('%', #{iotName}, '%')</if>
+            <if test="iotNumber != null  and iotNumber != ''"> and iot_number = #{iotNumber}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userNumber != null  and userNumber != ''"> and user_number = #{userNumber}</if>
+            <if test="platformName != null  and platformName != ''"> and platform_name like concat('%', #{platformName}, '%')</if>
+            <if test="platformNumber != null  and platformNumber != ''"> and platform_number = #{platformNumber}</if>
+            <if test="dataDate != null  and dataDate != ''"> and data_date = #{dataDate}</if>
+            <if test="dataTime != null  and dataTime != ''"> and data_time = #{dataTime}</if>
+            <if test="samplingMode != null  and samplingMode != ''"> and sampling_mode = #{samplingMode}</if>
+            <if test="entryTime != null  and entryTime != ''"> and entry_time = #{entryTime}</if>
+            <if test="totalActivePower != null "> and total_active_power = #{totalActivePower}</if>
+            <if test="aActivePower != null "> and a_active_power = #{aActivePower}</if>
+            <if test="bActivePower != null "> and b_active_power = #{bActivePower}</if>
+            <if test="cActivePower != null "> and c_active_power = #{cActivePower}</if>
+            <if test="totalReactivePower != null "> and total_reactive_power = #{totalReactivePower}</if>
+            <if test="aReactivePower != null "> and a_reactive_power = #{aReactivePower}</if>
+            <if test="bReactivePower != null "> and b_reactive_power = #{bReactivePower}</if>
+            <if test="cReactivePower != null "> and c_reactive_power = #{cReactivePower}</if>
+        </where>
+    </select>
+
+    <select id="selectYdEnterpriseDataById" parameterType="Long" resultMap="YdEnterpriseDataResult">
+        <include refid="selectYdEnterpriseDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertYdEnterpriseData" parameterType="YdEnterpriseData" useGeneratedKeys="true" keyProperty="id">
+        insert into yd_enterprise_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="meterNumber != null">meter_number,</if>
+            <if test="meterAddress != null">meter_address,</if>
+            <if test="meterProtocol != null">meter_protocol,</if>
+            <if test="terminalAddress != null">terminal_address,</if>
+            <if test="iotName != null">iot_name,</if>
+            <if test="iotNumber != null">iot_number,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userNumber != null">user_number,</if>
+            <if test="platformName != null">platform_name,</if>
+            <if test="platformNumber != null">platform_number,</if>
+            <if test="dataDate != null">data_date,</if>
+            <if test="dataTime != null">data_time,</if>
+            <if test="samplingMode != null">sampling_mode,</if>
+            <if test="entryTime != null">entry_time,</if>
+            <if test="totalActivePower != null">total_active_power,</if>
+            <if test="aActivePower != null">a_active_power,</if>
+            <if test="bActivePower != null">b_active_power,</if>
+            <if test="cActivePower != null">c_active_power,</if>
+            <if test="totalReactivePower != null">total_reactive_power,</if>
+            <if test="aReactivePower != null">a_reactive_power,</if>
+            <if test="bReactivePower != null">b_reactive_power,</if>
+            <if test="cReactivePower != null">c_reactive_power,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="meterNumber != null">#{meterNumber},</if>
+            <if test="meterAddress != null">#{meterAddress},</if>
+            <if test="meterProtocol != null">#{meterProtocol},</if>
+            <if test="terminalAddress != null">#{terminalAddress},</if>
+            <if test="iotName != null">#{iotName},</if>
+            <if test="iotNumber != null">#{iotNumber},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userNumber != null">#{userNumber},</if>
+            <if test="platformName != null">#{platformName},</if>
+            <if test="platformNumber != null">#{platformNumber},</if>
+            <if test="dataDate != null">#{dataDate},</if>
+            <if test="dataTime != null">#{dataTime},</if>
+            <if test="samplingMode != null">#{samplingMode},</if>
+            <if test="entryTime != null">#{entryTime},</if>
+            <if test="totalActivePower != null">#{totalActivePower},</if>
+            <if test="aActivePower != null">#{aActivePower},</if>
+            <if test="bActivePower != null">#{bActivePower},</if>
+            <if test="cActivePower != null">#{cActivePower},</if>
+            <if test="totalReactivePower != null">#{totalReactivePower},</if>
+            <if test="aReactivePower != null">#{aReactivePower},</if>
+            <if test="bReactivePower != null">#{bReactivePower},</if>
+            <if test="cReactivePower != null">#{cReactivePower},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateYdEnterpriseData" parameterType="YdEnterpriseData">
+        update yd_enterprise_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="meterNumber != null">meter_number = #{meterNumber},</if>
+            <if test="meterAddress != null">meter_address = #{meterAddress},</if>
+            <if test="meterProtocol != null">meter_protocol = #{meterProtocol},</if>
+            <if test="terminalAddress != null">terminal_address = #{terminalAddress},</if>
+            <if test="iotName != null">iot_name = #{iotName},</if>
+            <if test="iotNumber != null">iot_number = #{iotNumber},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userNumber != null">user_number = #{userNumber},</if>
+            <if test="platformName != null">platform_name = #{platformName},</if>
+            <if test="platformNumber != null">platform_number = #{platformNumber},</if>
+            <if test="dataDate != null">data_date = #{dataDate},</if>
+            <if test="dataTime != null">data_time = #{dataTime},</if>
+            <if test="samplingMode != null">sampling_mode = #{samplingMode},</if>
+            <if test="entryTime != null">entry_time = #{entryTime},</if>
+            <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
+            <if test="aActivePower != null">a_active_power = #{aActivePower},</if>
+            <if test="bActivePower != null">b_active_power = #{bActivePower},</if>
+            <if test="cActivePower != null">c_active_power = #{cActivePower},</if>
+            <if test="totalReactivePower != null">total_reactive_power = #{totalReactivePower},</if>
+            <if test="aReactivePower != null">a_reactive_power = #{aReactivePower},</if>
+            <if test="bReactivePower != null">b_reactive_power = #{bReactivePower},</if>
+            <if test="cReactivePower != null">c_reactive_power = #{cReactivePower},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteYdEnterpriseDataById" parameterType="Long">
+        delete from yd_enterprise_data where id = #{id}
+    </delete>
+
+    <delete id="deleteYdEnterpriseDataByIds" parameterType="String">
+        delete from yd_enterprise_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

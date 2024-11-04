@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.wx.common;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SmsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,9 @@ public class SmsMsgService {
         JSONObject object = JSONObject.parse(msg);
 
         if ("success".equals(object.get("rspcod"))) {
-            log.info("发送成功");
+            log.info(DateUtils.getTime() + "短信发送成功，发送用户："+phone);
         } else {
-            log.error("发送失败");
+            log.error(DateUtils.getTime() + "短信发送失败");
         }
 
         return object;
@@ -74,9 +75,9 @@ public class SmsMsgService {
         JSONObject object = JSONObject.parse(msg);
 
         if ("success".equals(object.get("rspcod"))) {
-            log.info("发送成功");
+            log.info(DateUtils.getTime() + "短信发送成功，发送用户："+phone);
         } else {
-            log.error("发送失败");
+            log.error(DateUtils.getTime() + "短信发送失败");
         }
 
         return object;
@@ -93,9 +94,9 @@ public class SmsMsgService {
         JSONObject object = JSONObject.parse(msg);
 
         if ("success".equals(object.get("rspcod"))) {
-            log.info("发送成功");
+            log.info(DateUtils.getTime() + "短信发送成功，发送用户："+phonesList);
         } else {
-            log.error("发送失败");
+            log.error(DateUtils.getTime() + "短信发送失败");
         }
 
         return object;

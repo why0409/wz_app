@@ -88,5 +88,5 @@ public interface SspService {
 
      JSONObject proxyWithAut(HttpServletRequest request, Map<String,String> paramMap) throws URISyntaxException;
 
-     JSONObject proxyWithAutNew(HttpServletRequest request, JSONObject jsonObject) throws URISyntaxException;
+     JSONObject proxyWithAutNew(HttpServletRequest request, JSONObject jsonObject) throws Exception ;
 }

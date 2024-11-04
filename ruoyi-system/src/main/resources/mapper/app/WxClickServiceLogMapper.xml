@@ -292,7 +292,8 @@
         SELECT COALESCE(T.pv, 0) as pv,
                COALESCE(T.uv, 0) as uv,
                T.time as time,
-               sc.name as name
+               sc.name as name,
+               sc.icon as icon
         FROM
         (
             SELECT all_sc.*
@@ -326,7 +327,8 @@
         SELECT COALESCE(T.pv, 0) as pv,
                COALESCE(T.uv, 0) as uv,
                COALESCE(T.time, #{time}) as time,
-               sc.name as name
+               sc.name as name,
+               sc.icon as icon
         FROM
         (
             SELECT all_sc.*
@@ -363,7 +365,8 @@
         SELECT COALESCE(T.pv, 0) as pv,
                COALESCE(T.uv, 0) as uv,
                COALESCE(T.time, #{time}) as time,
-               sc.name as name
+               sc.name as name,
+               sc.icon as icon
         FROM
         (
             SELECT all_sc.*
@@ -400,7 +403,8 @@
         SELECT COALESCE(T.pv, 0) as pv,
                COALESCE(T.uv, 0) as uv,
                COALESCE(T.time, #{time}) as time,
-               sc.name as name
+               sc.name as name,
+               sc.icon as icon
         FROM
         (
             SELECT all_sc.*

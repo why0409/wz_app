@@ -5,6 +5,9 @@ import cn.hutool.http.Method;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.utils.RsaUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sign.SignUtils;
@@ -1054,7 +1057,6 @@ public class SspServiceImpl implements SspService {
             paramMap = jsonObject.getObject("targetParam",Map.class);
         }
 
-
         String param = this.dealPostParams(paramMap);
 
         URI uri = new URI(request.getRequestURI());
@@ -1111,9 +1113,10 @@ public class SspServiceImpl implements SspService {
     }
 
     @Override
-    public JSONObject proxyWithAutNew(HttpServletRequest request, JSONObject jsonObject) throws URISyntaxException {
+    public JSONObject proxyWithAutNew(HttpServletRequest request, JSONObject jsonObject) throws Exception  {
         //api鉴权
         Map<String,String> paramMap = jsonObject.to(Map.class);
+
         String methodName = request.getMethod();
         if (jsonObject.containsKey("targetMethod") && jsonObject.containsKey("targetParam") && jsonObject.size() == 2) {
             methodName = jsonObject.getString("targetMethod");
@@ -1133,6 +1136,7 @@ public class SspServiceImpl implements SspService {
         if (param != null && !param.equals("") && !param.equals("null")) {
             target = target +"&"+param;
         }
+
         // 执行代理查询
         JSONObject result = new JSONObject();
         try {

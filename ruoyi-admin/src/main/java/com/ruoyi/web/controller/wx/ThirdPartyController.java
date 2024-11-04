@@ -414,7 +414,6 @@ public class ThirdPartyController extends BaseController {
 
     @PostMapping("/proxyApp/**")
     public JSONObject proxyApp(HttpServletRequest request, @RequestBody RequestVo requestVo) throws URISyntaxException {
-
         URI uri = new URI(request.getRequestURI());
         String path = uri.getPath();
         String target = requestVo.getTargetAddr() + path.replace("/applet/proxyApp", "");
@@ -443,6 +442,49 @@ public class ThirdPartyController extends BaseController {
             result.put("msg", "接口请求失败");
         }
         return result;
+    }
+
+    @RequestMapping(value = "/airData/**", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public JSONObject airData(HttpServletRequest request, @RequestBody RequestVo requestVo) throws URISyntaxException {
+        //获取token
+        String token = airData().getString("token");
+        Map<String, Object> paramMap = requestVo.getParamMap();
+        if (paramMap == null) {
+            paramMap = new HashMap<>();
+        }
+        paramMap.put("token",token);
+
+        requestVo.setTargetAddr("https://ahwzaqi.gbqyun.com");
+
+        URI uri = new URI(request.getRequestURI());
+        String path = uri.getPath();
+        String target = requestVo.getTargetAddr() + path.replace("/applet/airData", "");
+
+        // 执行代理查询
+        String methodName = requestVo.getMethod();
+        JSONObject result = new JSONObject();
+        try {
+            log.info("接口转发请求路径：" + target);
+            String resp = "";
+            if(methodName.equalsIgnoreCase("GET")) {
+                resp = HttpRequest.patch(target)
+                        .method(Method.valueOf(methodName))
+                        .form(paramMap)
+                        .execute().body();
+            }else {
+                resp = HttpRequest.patch(target)
+                        .method(Method.valueOf(methodName))
+                        .body(new JSONObject(paramMap).toJSONString())
+                        .execute().body();
+            }
+            log.info("接口转发返回数据：" + JSON.parseObject(resp));
+            result = JSON.parseObject(resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("msg", "接口请求失败");
+        }
+        return result;
+
     }
 
 }

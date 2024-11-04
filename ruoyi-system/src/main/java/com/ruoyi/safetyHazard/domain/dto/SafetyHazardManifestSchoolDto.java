@@ -107,9 +107,9 @@ public class SafetyHazardManifestSchoolDto extends BaseEntity
 
     public SafetyHazardManifestSchool convertSafetyHazardManifestSchool(){
         SafetyHazardManifestSchool s = new SafetyHazardManifestSchool();
-        s.setId(this.getId());
-        s.setUserId(this.getUserId());
-        s.setId(this.contact);
+        s.setId(id);
+        s.setUserId(userId);
+        s.setContact(contact);
         s.setWxPhone(this.getWxPhone());
         s.setFileListaqgl(toJSONArrayString(fileListaqgl));
         s.setBaysl(this.getBaysl());

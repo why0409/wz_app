@@ -629,7 +629,7 @@ public class JishijiaoController extends BaseController {
     }
 
     @RequestMapping(value = "/proxyWithAutNew/**",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public JSONObject proxyWithAutNew(HttpServletRequest request, @RequestBody JSONObject jsonObject) throws URISyntaxException {
+    public JSONObject proxyWithAutNew(HttpServletRequest request, @RequestBody JSONObject jsonObject) throws Exception  {
         return sspService.proxyWithAutNew(request,jsonObject);
     }
 
@@ -681,7 +681,7 @@ public class JishijiaoController extends BaseController {
 
         try (InputStream is = conn.getInputStream();
              OutputStream os = response.getOutputStream()) {
-            StreamUtils.copy(is, os);
+             StreamUtils.copy(is, os);
         }
     }
 

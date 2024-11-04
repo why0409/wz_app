@@ -2,7 +2,6 @@ package com.ruoyi.quartz.task;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.activities.domain.ActivitiesInfo;
 import com.ruoyi.activities.domain.HomestayRegisteredInfo;
 import com.ruoyi.activities.service.IActivitiesInfoService;
 import com.ruoyi.activities.service.IHomestayRegisteredInfoService;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
