@@ -51,6 +51,11 @@ public class ElectricityController extends BaseController {
         return getDataTable(list);
     }
 
+    /**
+     * @param meterNumber 电表资产编号
+     * @param flag        0-天，1-月
+     * @return 获取电表趋势图
+     */
     @GetMapping("/getEleCount")
     @ApiOperation("获取电表趋势图")
     public AjaxResult getEleCount(String meterNumber, String flag) {

@@ -68,4 +68,8 @@ public interface YdEnterpriseDataMapper {
     String getNewMonth();
 
     List<JSONObject> selectMonthData(String meterNumber);
+
+    int selectByParam(@Param("meterNumber") String meterNumber, @Param("dataDate") String dataDate, @Param("dataTime") String dataTime);
+
+    int updateData(YdEnterpriseData ydEnterpriseData);
 }

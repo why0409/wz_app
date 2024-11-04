@@ -106,13 +106,22 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
         }
         for (YdEnterpriseData ydEnterpriseData : dataList) {
             // 检验如果是同一个电表，同一时间段更新操作
+            String meterNumber = ydEnterpriseData.getMeterNumber();
             String dataDate = ydEnterpriseData.getDataDate1();
             String dataTime = ydEnterpriseData.getDataTime();
+
             ydEnterpriseData.setDataDate(formatter1.parse(dataDate));
             String time = dataDate + " " + dataTime;
             // 拼接时间
             ydEnterpriseData.setFullTime(formatter.parse(time));
-            int i = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
+            // int i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
+            // if (i > 0) {
+            //     // 更新
+            //     int a = ydEnterpriseDataMapper.updateData(ydEnterpriseData);
+            // } else {
+            //     int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
+            // }
+            int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
         }
         return 1;
     }

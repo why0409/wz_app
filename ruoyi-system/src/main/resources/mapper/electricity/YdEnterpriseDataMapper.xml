@@ -94,6 +94,9 @@
         ORDER BY
             time;
     </select>
+    <select id="selectByParam" resultType="java.lang.Integer">
+        select count(*) from yd_enterprise_data where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
+    </select>
 
     <insert id="insertYdEnterpriseData" parameterType="YdEnterpriseData" useGeneratedKeys="true" keyProperty="id">
         insert into yd_enterprise_data
@@ -183,6 +186,15 @@
             <if test="fullTime != null">full_time = #{fullTime},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="updateData" parameterType="YdEnterpriseData">
+        update yd_enterprise_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
+        </trim>
+        where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
     </update>
 
     <delete id="deleteYdEnterpriseDataById" parameterType="Long">
