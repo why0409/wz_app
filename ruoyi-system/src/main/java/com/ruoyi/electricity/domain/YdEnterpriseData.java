@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * 用电企业数据对象 yd_enterprise_data
  *
@@ -23,23 +25,23 @@ public class YdEnterpriseData extends BaseEntity
     private String meterNumber;
 
     /** 电表地址 */
-    @Excel(name = "电表地址")
+    // @Excel(name = "电表地址")
     private String meterAddress;
 
     /** 电能表通信规约 */
-    @Excel(name = "电能表通信规约")
+    // @Excel(name = "电能表通信规约")
     private String meterProtocol;
 
     /** 终端地址 */
-    @Excel(name = "终端地址")
+    // @Excel(name = "终端地址")
     private String terminalAddress;
 
     /** 物联点名称 */
-    @Excel(name = "物联点名称")
+    // @Excel(name = "物联点名称")
     private String iotName;
 
     /** 物联点编号 */
-    @Excel(name = "物联点编号")
+    // @Excel(name = "物联点编号")
     private String iotNumber;
 
     /** 用户名称 */
@@ -47,64 +49,69 @@ public class YdEnterpriseData extends BaseEntity
     private String userName;
 
     /** 用户编号 */
-    @Excel(name = "用户编号")
+    // @Excel(name = "用户编号")
     private String userNumber;
 
     /** 台区名称 */
-    @Excel(name = "台区名称")
+    // @Excel(name = "台区名称")
     private String platformName;
 
     /** 台区编号 */
-    @Excel(name = "台区编号")
+    // @Excel(name = "台区编号")
     private String platformNumber;
 
     /** 数据日期 */
+    // @Excel(name = "数据日期")
+    private Date dataDate;
+
     @Excel(name = "数据日期")
-    private String dataDate;
+    private String dataDate1;
 
     /** 时间 */
     @Excel(name = "时间")
     private String dataTime;
 
     /** 采样方式 */
-    @Excel(name = "采样方式")
+    // @Excel(name = "采样方式")
     private String samplingMode;
 
     /** 入库时间 */
-    @Excel(name = "入库时间")
+    // @Excel(name = "入库时间")
     private String entryTime;
 
     /** 总有功功率(kW) */
     @Excel(name = "总有功功率(kW)")
-    private Long totalActivePower;
+    private String totalActivePower;
 
     /** A相有功功率(kW) */
-    @Excel(name = "A相有功功率(kW)")
+    // @Excel(name = "A相有功功率(kW)")
     private Long aActivePower;
 
     /** B相有功功率(kW) */
-    @Excel(name = "B相有功功率(kW)")
+    // @Excel(name = "B相有功功率(kW)")
     private Long bActivePower;
 
     /** C相有功功率(kW) */
-    @Excel(name = "C相有功功率(kW)")
+    // @Excel(name = "C相有功功率(kW)")
     private Long cActivePower;
 
     /** 总无功功率(kW) */
-    @Excel(name = "总无功功率(kW)")
+    // @Excel(name = "总无功功率(kW)")
     private Long totalReactivePower;
 
     /** A相无功功率(kW) */
-    @Excel(name = "A相无功功率(kW)")
+    // @Excel(name = "A相无功功率(kW)")
     private Long aReactivePower;
 
     /** B相无功功率(kW) */
-    @Excel(name = "B相无功功率(kW)")
+    // @Excel(name = "B相无功功率(kW)")
     private Long bReactivePower;
 
     /** C相无功功率(kW) */
-    @Excel(name = "C相无功功率(kW)")
+    // @Excel(name = "C相无功功率(kW)")
     private Long cReactivePower;
+
+    private Date fullTime;
 
     public void setId(Long id)
     {
@@ -205,15 +212,7 @@ public class YdEnterpriseData extends BaseEntity
     {
         return platformNumber;
     }
-    public void setDataDate(String dataDate)
-    {
-        this.dataDate = dataDate;
-    }
 
-    public String getDataDate()
-    {
-        return dataDate;
-    }
     public void setDataTime(String dataTime)
     {
         this.dataTime = dataTime;
@@ -223,6 +222,23 @@ public class YdEnterpriseData extends BaseEntity
     {
         return dataTime;
     }
+
+    public String getDataDate1() {
+        return dataDate1;
+    }
+
+    public void setDataDate1(String dataDate1) {
+        this.dataDate1 = dataDate1;
+    }
+
+    public Date getDataDate() {
+        return dataDate;
+    }
+
+    public void setDataDate(Date dataDate) {
+        this.dataDate = dataDate;
+    }
+
     public void setSamplingMode(String samplingMode)
     {
         this.samplingMode = samplingMode;
@@ -241,15 +257,15 @@ public class YdEnterpriseData extends BaseEntity
     {
         return entryTime;
     }
-    public void setTotalActivePower(Long totalActivePower)
-    {
+
+    public String getTotalActivePower() {
+        return totalActivePower;
+    }
+
+    public void setTotalActivePower(String totalActivePower) {
         this.totalActivePower = totalActivePower;
     }
 
-    public Long getTotalActivePower()
-    {
-        return totalActivePower;
-    }
     public void setaActivePower(Long aActivePower)
     {
         this.aActivePower = aActivePower;
@@ -314,6 +330,14 @@ public class YdEnterpriseData extends BaseEntity
         return cReactivePower;
     }
 
+    public Date getFullTime() {
+        return fullTime;
+    }
+
+    public void setFullTime(Date fullTime) {
+        this.fullTime = fullTime;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -342,6 +366,7 @@ public class YdEnterpriseData extends BaseEntity
             .append("cReactivePower", getcReactivePower())
             .append("createTime", getCreateTime())
             .append("updateTime", getUpdateTime())
+            .append("fullTime", getFullTime())
             .toString();
     }
 }

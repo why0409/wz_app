@@ -30,10 +30,11 @@
         <result property="cReactivePower"    column="c_reactive_power"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="fullTime"    column="full_time"    />
     </resultMap>
 
     <sql id="selectYdEnterpriseDataVo">
-        select id, meter_number, meter_address, meter_protocol, terminal_address, iot_name, iot_number, user_name, user_number, platform_name, platform_number, data_date, data_time, sampling_mode, entry_time, total_active_power, a_active_power, b_active_power, c_active_power, total_reactive_power, a_reactive_power, b_reactive_power, c_reactive_power, create_time, update_time from yd_enterprise_data
+        select id, full_time,meter_number, meter_address, meter_protocol, terminal_address, iot_name, iot_number, user_name, user_number, platform_name, platform_number, data_date, data_time, sampling_mode, entry_time, total_active_power, a_active_power, b_active_power, c_active_power, total_reactive_power, a_reactive_power, b_reactive_power, c_reactive_power, create_time, update_time from yd_enterprise_data
     </sql>
 
     <select id="selectYdEnterpriseDataList" parameterType="YdEnterpriseData" resultMap="YdEnterpriseDataResult">
@@ -68,6 +69,31 @@
         <include refid="selectYdEnterpriseDataVo"/>
         where id = #{id}
     </select>
+    <select id="getNewDay" resultType="java.lang.String">
+        select DISTINCT data_date from yd_enterprise_data order by data_date desc limit 1
+    </select>
+    <select id="selectData" resultType="com.alibaba.fastjson2.JSONObject">
+        select total_active_power as count,full_time as time from yd_enterprise_data where data_date = #{time} and meter_number = #{meterNumber} order by data_time
+    </select>
+    <select id="getNewMonth" resultType="java.lang.String">
+        SELECT DISTINCT MONTH(full_time) AS latest_month
+        FROM yd_enterprise_data
+        ORDER BY full_time DESC LIMIT 1;
+    </select>
+    <select id="selectMonthData" resultType="com.alibaba.fastjson2.JSONObject">
+        SELECT
+            DATE(data_date) AS time,
+            SUM(total_active_power) / COUNT(*) AS count
+        FROM
+            yd_enterprise_data
+        WHERE
+            meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = (
+            SELECT DATE_FORMAT(MAX(data_date), '%Y-%m') FROM yd_enterprise_data)
+        GROUP BY
+            time
+        ORDER BY
+            time;
+    </select>
 
     <insert id="insertYdEnterpriseData" parameterType="YdEnterpriseData" useGeneratedKeys="true" keyProperty="id">
         insert into yd_enterprise_data
@@ -96,6 +122,7 @@
             <if test="cReactivePower != null">c_reactive_power,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="fullTime != null">full_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="meterNumber != null">#{meterNumber},</if>
@@ -122,6 +149,7 @@
             <if test="cReactivePower != null">#{cReactivePower},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="fullTime != null">#{fullTime},</if>
         </trim>
     </insert>
 
@@ -152,6 +180,7 @@
             <if test="cReactivePower != null">c_reactive_power = #{cReactivePower},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="fullTime != null">full_time = #{fullTime},</if>
         </trim>
         where id = #{id}
     </update>

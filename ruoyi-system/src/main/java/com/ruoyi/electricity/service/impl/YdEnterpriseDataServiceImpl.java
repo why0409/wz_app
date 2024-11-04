@@ -1,5 +1,6 @@
 package com.ruoyi.electricity.service.impl;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
@@ -12,6 +13,8 @@ import com.ruoyi.electricity.service.IYdEnterpriseDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -21,8 +24,7 @@ import java.util.List;
  * @date 2024-11-04
  */
 @Service
-public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
-{
+public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
     @Autowired
     private YdEnterpriseDataMapper ydEnterpriseDataMapper;
 
@@ -33,8 +35,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
      * @return 用电企业数据
      */
     @Override
-    public YdEnterpriseData selectYdEnterpriseDataById(Long id)
-    {
+    public YdEnterpriseData selectYdEnterpriseDataById(Long id) {
         return ydEnterpriseDataMapper.selectYdEnterpriseDataById(id);
     }
 
@@ -45,8 +46,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
      * @return 用电企业数据
      */
     @Override
-    public List<YdEnterpriseData> selectYdEnterpriseDataList(YdEnterpriseData ydEnterpriseData)
-    {
+    public List<YdEnterpriseData> selectYdEnterpriseDataList(YdEnterpriseData ydEnterpriseData) {
         return ydEnterpriseDataMapper.selectYdEnterpriseDataList(ydEnterpriseData);
     }
 
@@ -57,8 +57,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
      * @return 结果
      */
     @Override
-    public int insertYdEnterpriseData(YdEnterpriseData ydEnterpriseData)
-    {
+    public int insertYdEnterpriseData(YdEnterpriseData ydEnterpriseData) {
         ydEnterpriseData.setCreateTime(DateUtils.getNowDate());
         return ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
     }
@@ -70,8 +69,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
      * @return 结果
      */
     @Override
-    public int updateYdEnterpriseData(YdEnterpriseData ydEnterpriseData)
-    {
+    public int updateYdEnterpriseData(YdEnterpriseData ydEnterpriseData) {
         ydEnterpriseData.setUpdateTime(DateUtils.getNowDate());
         return ydEnterpriseDataMapper.updateYdEnterpriseData(ydEnterpriseData);
     }
@@ -83,8 +81,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
      * @return 结果
      */
     @Override
-    public int deleteYdEnterpriseDataByIds(Long[] ids)
-    {
+    public int deleteYdEnterpriseDataByIds(Long[] ids) {
         return ydEnterpriseDataMapper.deleteYdEnterpriseDataByIds(ids);
     }
 
@@ -95,8 +92,40 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService
      * @return 结果
      */
     @Override
-    public int deleteYdEnterpriseDataById(Long id)
-    {
+    public int deleteYdEnterpriseDataById(Long id) {
         return ydEnterpriseDataMapper.deleteYdEnterpriseDataById(id);
+    }
+
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Override
+    public int importData(List<YdEnterpriseData> dataList) throws ParseException {
+        if (StringUtils.isNull(dataList) || dataList.isEmpty()) {
+            throw new ServiceException("导入用户数据不能为空！");
+        }
+        for (YdEnterpriseData ydEnterpriseData : dataList) {
+            // 检验如果是同一个电表，同一时间段更新操作
+            String dataDate = ydEnterpriseData.getDataDate1();
+            String dataTime = ydEnterpriseData.getDataTime();
+            ydEnterpriseData.setDataDate(formatter1.parse(dataDate));
+            String time = dataDate + " " + dataTime;
+            // 拼接时间
+            ydEnterpriseData.setFullTime(formatter.parse(time));
+            int i = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
+        }
+        return 1;
+    }
+
+    @Override
+    public List<JSONObject> getEleCount(String meterNumber, String flag) {
+        // 天
+        if ("0".equals(flag)) {
+            // 查询最近的一天
+            String time = ydEnterpriseDataMapper.getNewDay();
+            return ydEnterpriseDataMapper.selectData(time, meterNumber);
+        } else {
+            return ydEnterpriseDataMapper.selectMonthData(meterNumber);
+        }
     }
 }

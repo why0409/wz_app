@@ -9,6 +9,8 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
 import com.ruoyi.electricity.service.IYdEnterpriseDataService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +27,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/yd/enterprise/data")
-public class YdEnterpriseDataController extends BaseController
-{
+@Api(tags = "用电企业数据Controller")
+public class YdEnterpriseDataController extends BaseController {
     @Autowired
     private IYdEnterpriseDataService ydEnterpriseDataService;
 
@@ -35,8 +37,8 @@ public class YdEnterpriseDataController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:data:list')")
     @GetMapping("/list")
-    public TableDataInfo list(YdEnterpriseData ydEnterpriseData)
-    {
+    @ApiOperation("分页查询用电企业数据列表")
+    public TableDataInfo list(YdEnterpriseData ydEnterpriseData) {
         startPage();
         List<YdEnterpriseData> list = ydEnterpriseDataService.selectYdEnterpriseDataList(ydEnterpriseData);
         return getDataTable(list);
@@ -48,8 +50,7 @@ public class YdEnterpriseDataController extends BaseController
     //@PreAuthorize("@ss.hasPermi('system:data:export')")
     //@Log(title = "用电企业数据", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, YdEnterpriseData ydEnterpriseData)
-    {
+    public void export(HttpServletResponse response, YdEnterpriseData ydEnterpriseData) {
         List<YdEnterpriseData> list = ydEnterpriseDataService.selectYdEnterpriseDataList(ydEnterpriseData);
         ExcelUtil<YdEnterpriseData> util = new ExcelUtil<YdEnterpriseData>(YdEnterpriseData.class);
         util.exportExcel(response, list, "用电企业数据数据");
@@ -60,8 +61,7 @@ public class YdEnterpriseDataController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:data:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(ydEnterpriseDataService.selectYdEnterpriseDataById(id));
     }
 
@@ -71,8 +71,7 @@ public class YdEnterpriseDataController extends BaseController
     //@PreAuthorize("@ss.hasPermi('system:data:add')")
     //@Log(title = "用电企业数据", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody YdEnterpriseData ydEnterpriseData)
-    {
+    public AjaxResult add(@RequestBody YdEnterpriseData ydEnterpriseData) {
         return toAjax(ydEnterpriseDataService.insertYdEnterpriseData(ydEnterpriseData));
     }
 
@@ -82,8 +81,7 @@ public class YdEnterpriseDataController extends BaseController
     //@PreAuthorize("@ss.hasPermi('system:data:edit')")
     //@Log(title = "用电企业数据", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody YdEnterpriseData ydEnterpriseData)
-    {
+    public AjaxResult edit(@RequestBody YdEnterpriseData ydEnterpriseData) {
         return toAjax(ydEnterpriseDataService.updateYdEnterpriseData(ydEnterpriseData));
     }
 
@@ -92,10 +90,17 @@ public class YdEnterpriseDataController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:data:remove')")
     //@Log(title = "用电企业数据", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(ydEnterpriseDataService.deleteYdEnterpriseDataByIds(ids));
+    }
+
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file) throws Exception {
+        ExcelUtil<YdEnterpriseData> util = new ExcelUtil<>(YdEnterpriseData.class);
+        List<YdEnterpriseData> dataList = util.importExcel(file.getInputStream());
+        int a = ydEnterpriseDataService.importData(dataList);
+        return toAjax(a);
     }
 
 }

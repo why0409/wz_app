@@ -1,6 +1,8 @@
 package com.ruoyi.electricity.mapper;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -10,8 +12,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
-public interface YdEnterpriseDataMapper
-{
+public interface YdEnterpriseDataMapper {
     /**
      * 查询用电企业数据
      *
@@ -59,4 +60,12 @@ public interface YdEnterpriseDataMapper
      * @return 结果
      */
     public int deleteYdEnterpriseDataByIds(Long[] ids);
+
+    String getNewDay();
+
+    List<JSONObject> selectData(@Param("time") String time, @Param("meterNumber") String meterNumber);
+
+    String getNewMonth();
+
+    List<JSONObject> selectMonthData(String meterNumber);
 }

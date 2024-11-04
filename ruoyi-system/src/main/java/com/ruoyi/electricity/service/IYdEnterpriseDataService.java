@@ -1,8 +1,10 @@
 package com.ruoyi.electricity.service;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -60,4 +62,8 @@ public interface IYdEnterpriseDataService
      * @return 结果
      */
     public int deleteYdEnterpriseDataById(Long id);
+
+    int importData(List<YdEnterpriseData> dataList) throws ParseException;
+
+    List<JSONObject> getEleCount(String meterNumber, String flag);
 }
