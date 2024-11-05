@@ -1,6 +1,8 @@
 package com.ruoyi.electricity.mapper;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,6 +14,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
+@DataSource(DataSourceType.GISDB)
 public interface YdEnterpriseDataMapper {
     /**
      * 查询用电企业数据

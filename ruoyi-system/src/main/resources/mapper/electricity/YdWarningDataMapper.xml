@@ -98,13 +98,17 @@
             tp.full_time as data_time,
             tp.total_active_power AS total_active_power,
             (
-                SELECT GROUP_CONCAT(b.total_active_power ORDER BY b.total_active_power) AS total_active_power_array
-                FROM yd_enterprise_data b
-                WHERE b.meter_number = tp.meter_number
+                SELECT GROUP_CONCAT(T.total_active_power ORDER BY T.total_active_power) AS total_active_power_array
+                FROM
+                (
+                    SELECT b.total_active_power
+                    FROM yd_enterprise_data b
+                    WHERE b.meter_number = tp.meter_number
                     AND b.data_time = tp.data_time
                     AND b.full_time &lt; tp.full_time
-                ORDER BY b.data_date DESC
-                LIMIT 7
+                    ORDER BY b.data_date DESC
+                    LIMIT 7
+                ) T
             ) AS mini_active_power
         FROM
             yd_enterprise_data tp
@@ -145,4 +149,15 @@
         ) as ywd
         on sl.status = ywd.status
     </select>
+
+    <select id="getWarningList" parameterType="YdWarningData" resultMap="YdWarningDataResult">
+        <include refid="selectYdWarningDataVo"/>
+        where status <![CDATA[!= ]]> '0'
+        <if test="meterNumber != null  and meterNumber != ''"> and meter_number = #{meterNumber}</if>
+        <if test="totalActivePower != null "> and total_active_power = #{totalActivePower}</if>
+        <if test="miniActivePower != null "> and mini_active_power = #{miniActivePower}</if>
+        <if test="volatilityRange != null  and volatilityRange != ''"> and volatility_range = #{volatilityRange}</if>
+        <if test="dataTime != null "> and data_time = #{dataTime}</if>
+    </select>
+
 </mapper>

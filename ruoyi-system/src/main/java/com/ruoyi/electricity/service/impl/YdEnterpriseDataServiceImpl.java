@@ -113,6 +113,11 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             String meterNumber = ydEnterpriseData.getMeterNumber();
             String dataDate = ydEnterpriseData.getDataDate1();
             String dataTime = ydEnterpriseData.getDataTime();
+            String totalActivePower = ydEnterpriseData.getTotalActivePower();
+
+            if (StringUtils.isEmpty(meterNumber) || StringUtils.isEmpty(totalActivePower)){
+                continue;
+            }
 
             ydEnterpriseData.setDataDate(formatter1.parse(dataDate));
             String time = dataDate + " " + dataTime;

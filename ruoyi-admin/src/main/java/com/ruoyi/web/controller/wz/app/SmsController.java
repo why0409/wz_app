@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.wz;
+package com.ruoyi.web.controller.wz.app;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WxSmsLog;

@@ -1,8 +1,14 @@
 package com.ruoyi.electricity.domain;
 
 import cn.hutool.core.math.MathUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.utils.StringUtils;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -17,11 +23,14 @@ import java.util.Date;
  * @author ruoyi
  * @date 2024-11-04
  */
-public class YdWarningData extends BaseEntity
+@Data
+@TableName("yd_warning_data")
+public class YdWarningData extends Model
 {
     private static final long serialVersionUID = 1L;
 
     /** 序号 */
+    @TableId(value = "id",type= IdType.AUTO)
     private Long id;
 
     /** 电表号 */
@@ -49,96 +58,10 @@ public class YdWarningData extends BaseEntity
     @Excel(name = "数据时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date dataTime;
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
-    public Long getId()
-    {
-        return id;
-    }
-    public void setMeterNumber(String meterNumber)
-    {
-        this.meterNumber = meterNumber;
-    }
-
-    public String getMeterNumber()
-    {
-        return meterNumber;
-    }
-    public void setTotalActivePower(String totalActivePower)
-    {
-        this.totalActivePower = totalActivePower;
-    }
-
-    public String getTotalActivePower()
-    {
-        return totalActivePower;
-    }
-    public void setMiniActivePower(String miniActivePower)
-    {
-        if (StringUtils.isEmpty(miniActivePower)){
-            this.miniActivePower = miniActivePower;
-            return;
-        }
-
-        String[] array = miniActivePower.split(",");
-        if (array.length < 7){
-            this.miniActivePower = null;
-        }else {
-            DecimalFormat df = new DecimalFormat("0.0000");
-            double avgValue = (Double.parseDouble(array[2])+Double.parseDouble(array[3])+Double.parseDouble(array[4]))/3;
-            this.miniActivePower = df.format(avgValue);
-        }
-    }
-
-    public String getMiniActivePower()
-    {
-        return miniActivePower;
-    }
-
-    public void setVolatilityRange(String volatilityRange)
-    {
-        this.volatilityRange = volatilityRange;
-    }
-
-    public String getVolatilityRange()
-    {
-        return volatilityRange;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-    public void setDataTime(Date dataTime)
-    {
-        this.dataTime = dataTime;
-    }
-
-    public Date getDataTime()
-    {
-        return dataTime;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("meterNumber", getMeterNumber())
-                .append("totalActivePower", getTotalActivePower())
-                .append("miniActivePower", getMiniActivePower())
-                .append("volatilityRange", getVolatilityRange())
-                .append("status", getStatus())
-                .append("dataTime", getDataTime())
-                .append("createTime", getCreateTime())
-                .append("updateTime", getUpdateTime())
-                .toString();
-    }
+    /** 更新时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }

@@ -1,6 +1,9 @@
 package com.ruoyi.electricity.service;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.electricity.domain.YdWarningData;
 
 import java.util.List;
@@ -11,7 +14,8 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
-public interface IYdWarningDataService
+@DataSource(DataSourceType.GISDB)
+public interface IYdWarningDataService extends IService<YdWarningData>
 {
     /**
      * 查询用电预警数据
@@ -61,9 +65,11 @@ public interface IYdWarningDataService
      */
     public int deleteYdWarningDataById(Long id);
 
-    public int analysisImport();
+    public List<YdWarningData> analysisImport();
 
     public YdWarningData getLatestWarningDataByMeter(String meterNumber);
 
     public List<JSONObject> statisticsByStatus(String meterNumber);
+
+    List<YdWarningData> getWarningList(YdWarningData ydWarningData);
 }
