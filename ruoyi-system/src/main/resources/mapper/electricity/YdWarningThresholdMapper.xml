@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.electricity.mapper.YdWarningThresholdMapper">
+
+    <resultMap type="YdWarningThreshold" id="YdWarningThresholdResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="threshold"    column="threshold"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectYdWarningThresholdVo">
+        select id, status, threshold, create_time, update_time from yd_warning_threshold
+    </sql>
+
+    <select id="selectYdWarningThresholdList" parameterType="YdWarningThreshold" resultMap="YdWarningThresholdResult">
+        <include refid="selectYdWarningThresholdVo"/>
+        <where>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="threshold != null "> and threshold = #{threshold}</if>
+        </where>
+    </select>
+
+    <select id="selectYdWarningThresholdById" parameterType="Long" resultMap="YdWarningThresholdResult">
+        <include refid="selectYdWarningThresholdVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertYdWarningThreshold" parameterType="YdWarningThreshold" useGeneratedKeys="true" keyProperty="id">
+        insert into yd_warning_threshold
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="status != null">status,</if>
+            <if test="threshold != null">threshold,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="status != null">#{status},</if>
+            <if test="threshold != null">#{threshold},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateYdWarningThreshold" parameterType="YdWarningThreshold">
+        update yd_warning_threshold
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="threshold != null">threshold = #{threshold},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteYdWarningThresholdById" parameterType="Long">
+        delete from yd_warning_threshold where id = #{id}
+    </delete>
+
+    <delete id="deleteYdWarningThresholdByIds" parameterType="String">
+        delete from yd_warning_threshold where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getThresholdByStatus" resultType="Double">
+        select threshold from yd_warning_threshold where status = #{status}
+    </select>
+</mapper>

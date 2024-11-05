@@ -2,6 +2,7 @@ package com.ruoyi.electricity.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -27,6 +28,9 @@ import java.util.List;
 public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
     @Autowired
     private YdEnterpriseDataMapper ydEnterpriseDataMapper;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 查询用电企业数据
@@ -123,6 +127,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             }
             // int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
         }
+
         return 1;
     }
 

@@ -24,7 +24,21 @@
     </sql>
 
     <select id="selectYdEnterpriseInfoList" parameterType="YdEnterpriseInfo" resultMap="YdEnterpriseInfoResult">
-        <include refid="selectYdEnterpriseInfoVo"/>
+        select id,
+               ei.sort_num,
+               ei.name,
+               ei.meter_number,
+               (
+                    select status from yd_warning_data where meter_number = ei.meter_number ORDER BY data_time DESC limit 1
+               ) as status,
+               ei.address,
+               ei.contact,
+               ei.phone,
+               ei.monitors,
+               ei.remark,
+               ei.create_time,
+               ei.update_time
+        from yd_enterprise_info ei
         <where>
             <if test="sortNum != null "> and sort_num = #{sortNum}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>

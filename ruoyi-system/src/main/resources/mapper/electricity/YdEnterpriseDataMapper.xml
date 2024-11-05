@@ -69,17 +69,21 @@
         <include refid="selectYdEnterpriseDataVo"/>
         where id = #{id}
     </select>
+
     <select id="getNewDay" resultType="java.lang.String">
         select DISTINCT data_date from yd_enterprise_data order by data_date desc limit 1
     </select>
+
     <select id="selectData" resultType="com.alibaba.fastjson2.JSONObject">
         select total_active_power as count,full_time as time from yd_enterprise_data where data_date = #{time} and meter_number = #{meterNumber} order by data_time
     </select>
+
     <select id="getNewMonth" resultType="java.lang.String">
         SELECT DISTINCT MONTH(full_time) AS latest_month
         FROM yd_enterprise_data
         ORDER BY full_time DESC LIMIT 1;
     </select>
+
     <select id="selectMonthData" resultType="com.alibaba.fastjson2.JSONObject">
         SELECT
             DATE(data_date) AS time,
@@ -94,6 +98,7 @@
         ORDER BY
             time;
     </select>
+
     <select id="selectByParam" resultType="java.lang.Integer">
         select count(*) from yd_enterprise_data where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
     </select>
@@ -207,4 +212,8 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="getMaxId" resultType="Long">
+        SELECT max(id) FROM yd_enterprise_data
+    </select>
 </mapper>

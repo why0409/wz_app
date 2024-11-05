@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.electricity.mapper.YdWarningDataMapper">
+
+
+    <resultMap type="YdWarningData" id="YdWarningDataResult">
+        <result property="id"    column="id"    />
+        <result property="meterNumber"    column="meter_number"    />
+        <result property="totalActivePower"    column="total_active_power"    />
+        <result property="miniActivePower"    column="mini_active_power"    />
+        <result property="volatilityRange"    column="volatility_range"    />
+        <result property="status"    column="status"    />
+        <result property="dataTime"    column="data_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectYdWarningDataVo">
+        select id, meter_number, total_active_power, mini_active_power, volatility_range, status, data_time, create_time, update_time from yd_warning_data
+    </sql>
+
+    <select id="selectYdWarningDataList" parameterType="YdWarningData" resultMap="YdWarningDataResult">
+        <include refid="selectYdWarningDataVo"/>
+        <where>
+            <if test="meterNumber != null  and meterNumber != ''"> and meter_number = #{meterNumber}</if>
+            <if test="totalActivePower != null "> and total_active_power = #{totalActivePower}</if>
+            <if test="miniActivePower != null "> and mini_active_power = #{miniActivePower}</if>
+            <if test="volatilityRange != null  and volatilityRange != ''"> and volatility_range = #{volatilityRange}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="dataTime != null "> and data_time = #{dataTime}</if>
+        </where>
+    </select>
+
+    <select id="selectYdWarningDataById" parameterType="Long" resultMap="YdWarningDataResult">
+        <include refid="selectYdWarningDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertYdWarningData" parameterType="YdWarningData" useGeneratedKeys="true" keyProperty="id">
+        insert into yd_warning_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="meterNumber != null">meter_number,</if>
+            <if test="totalActivePower != null">total_active_power,</if>
+            <if test="miniActivePower != null">mini_active_power,</if>
+            <if test="volatilityRange != null">volatility_range,</if>
+            <if test="status != null">status,</if>
+            <if test="dataTime != null">data_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="meterNumber != null">#{meterNumber},</if>
+            <if test="totalActivePower != null">#{totalActivePower},</if>
+            <if test="miniActivePower != null">#{miniActivePower},</if>
+            <if test="volatilityRange != null">#{volatilityRange},</if>
+            <if test="status != null">#{status},</if>
+            <if test="dataTime != null">#{dataTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateYdWarningData" parameterType="YdWarningData">
+        update yd_warning_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="meterNumber != null">meter_number = #{meterNumber},</if>
+            <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
+            <if test="miniActivePower != null">mini_active_power = #{miniActivePower},</if>
+            <if test="volatilityRange != null">volatility_range = #{volatilityRange},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="dataTime != null">data_time = #{dataTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteYdWarningDataById" parameterType="Long">
+        delete from yd_warning_data where id = #{id}
+    </delete>
+
+    <delete id="deleteYdWarningDataByIds" parameterType="String">
+        delete from yd_warning_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getLatestDataTime" resultType="String">
+        select max(data_time) from yd_warning_data
+    </select>
+
+    <select id="getLatestWarningDataList" resultMap="YdWarningDataResult">
+        SELECT
+            tp.meter_number,
+            tp.full_time as data_time,
+            tp.total_active_power AS total_active_power,
+            (
+                SELECT GROUP_CONCAT(b.total_active_power ORDER BY b.total_active_power) AS total_active_power_array
+                FROM yd_enterprise_data b
+                WHERE b.meter_number = tp.meter_number
+                    AND b.data_time = tp.data_time
+                    AND b.full_time &lt; tp.full_time
+                ORDER BY b.data_date DESC
+                LIMIT 7
+            ) AS mini_active_power
+        FROM
+            yd_enterprise_data tp
+        <where>
+            <if test="id != null">
+                tp.id > #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getLatestWarningDataByMeter" resultMap="YdWarningDataResult">
+        select *
+        from yd_warning_data
+        where meter_number = #{meterNumber}
+        order by data_time desc
+        limit 1
+    </select>
+
+    <select id="statisticsByStatus" resultType="com.alibaba.fastjson2.JSONObject">
+        select sl.status as status,
+               IFNULL(ywd.count,0) as count
+        from
+        (
+            SELECT 0 AS status
+            UNION SELECT 1 UNION SELECT 2
+        ) as sl
+        left join
+        (
+            select status,
+                   count(*) as count
+            from yd_warning_data
+            <where>
+                <if test="meterNumber != null  and meterNumber != '' ">
+                    meter_number = #{meterNumber}
+                </if>
+            </where>
+            group by status
+        ) as ywd
+        on sl.status = ywd.status
+    </select>
+</mapper>

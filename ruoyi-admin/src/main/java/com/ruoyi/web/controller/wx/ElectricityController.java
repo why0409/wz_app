@@ -8,6 +8,7 @@ import com.ruoyi.electricity.domain.YdEnterpriseData;
 import com.ruoyi.electricity.domain.YdEnterpriseInfo;
 import com.ruoyi.electricity.service.IYdEnterpriseDataService;
 import com.ruoyi.electricity.service.IYdEnterpriseInfoService;
+import com.ruoyi.electricity.service.IYdWarningDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ElectricityController extends BaseController {
 
     @Autowired
     private IYdEnterpriseDataService ydEnterpriseDataService;
+
+    @Autowired
+    private IYdWarningDataService ydWarningDataService;
 
     @GetMapping("/getYdEnterpriseInfo")
     @ApiOperation("获取列表")
@@ -61,5 +65,17 @@ public class ElectricityController extends BaseController {
     public AjaxResult getEleCount(String meterNumber, String flag) {
         List<JSONObject> list = ydEnterpriseDataService.getEleCount(meterNumber, flag);
         return success(list);
+    }
+
+    @GetMapping("/warningData/getLatestDataByMeter")
+    public AjaxResult getLatestDataByMeter(String meterNumber)
+    {
+        return success(ydWarningDataService.getLatestWarningDataByMeter(meterNumber));
+    }
+
+    @GetMapping("/warningData/statisticsByStatus")
+    public AjaxResult statisticsByStatus(String meterNumber)
+    {
+        return success(ydWarningDataService.statisticsByStatus(meterNumber));
     }
 }
