@@ -1,5 +1,7 @@
 package com.ruoyi.electricity.mapper;
 
+import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.electricity.domain.YdEnterpriseInfo;
 
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
+@DataSource(DataSourceType.GISDB)
 public interface YdEnterpriseInfoMapper
 {
     /**

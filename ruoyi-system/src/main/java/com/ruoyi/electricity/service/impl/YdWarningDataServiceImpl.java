@@ -1,10 +1,12 @@
 package com.ruoyi.electricity.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.electricity.domain.YdEnterpriseData;
 import com.ruoyi.electricity.domain.YdWarningData;
 import com.ruoyi.electricity.mapper.YdEnterpriseDataMapper;
 import com.ruoyi.electricity.mapper.YdWarningDataMapper;
@@ -24,7 +26,7 @@ import java.util.List;
  * @date 2024-11-04
  */
 @Service
-public class YdWarningDataServiceImpl implements IYdWarningDataService
+public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, YdWarningData> implements IYdWarningDataService
 {
     @Autowired
     private YdWarningDataMapper ydWarningDataMapper;
@@ -113,7 +115,7 @@ public class YdWarningDataServiceImpl implements IYdWarningDataService
     }
 
     @Override
-    public int analysisImport(){
+    public List<YdWarningData> analysisImport(){
         Long latestMaxId = redisCache.getCacheObject("maxYdDataId");
         List<YdWarningData> list = ydWarningDataMapper.getLatestWarningDataList(latestMaxId);
 
@@ -121,17 +123,36 @@ public class YdWarningDataServiceImpl implements IYdWarningDataService
         Double red = ydWarningThresholdMapper.getThresholdByStatus("2");
 
         for (YdWarningData wd : list) {
+            //设置前7日平均功率值
+            String miniActivePower;
+            if (StringUtils.isEmpty(wd.getMiniActivePower())){
+                miniActivePower = null;
+            }else {
+                String[] array = wd.getMiniActivePower().split(",");
+                if (array.length != 7){
+                    miniActivePower = null;
+                }else {
+                    DecimalFormat df = new DecimalFormat("0.0000");
+                    double avgValue = (Double.parseDouble(array[2])+Double.parseDouble(array[3])+Double.parseDouble(array[4]))/3;
+                    miniActivePower = df.format(avgValue);
+                }
+            }
+
             //设置变化幅度
             String volatilityRange;
-            if (wd.getTotalActivePower() == null || wd.getMiniActivePower() == null){
+            if (miniActivePower == null){
                 volatilityRange = null;
             }else {
                 Double totalValue = Double.parseDouble(wd.getTotalActivePower());
-                Double miniValue = Double.parseDouble(wd.getMiniActivePower());
+                if (totalValue == 0){
+                    volatilityRange = null;
+                }else {
+                    Double miniValue = Double.parseDouble(miniActivePower);
 
-                DecimalFormat df = new DecimalFormat("0.00");
-                double value =  Math.abs((totalValue - miniValue) * 100 / totalValue);
-                volatilityRange = df.format(value);
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    double value =  Math.abs((totalValue - miniValue) * 100 / miniValue);
+                    volatilityRange = df.format(value);
+                }
             }
 
             //设置预警状态
@@ -149,9 +170,11 @@ public class YdWarningDataServiceImpl implements IYdWarningDataService
                 }
             }
 
+            wd.setMiniActivePower(miniActivePower);
             wd.setVolatilityRange(volatilityRange);
             wd.setStatus(status);
             wd.setCreateTime(new Date());
+
             ydWarningDataMapper.insertYdWarningData(wd);
         }
 
@@ -159,7 +182,7 @@ public class YdWarningDataServiceImpl implements IYdWarningDataService
         Long maxYdDataId = ydEnterpriseDataMapper.getMaxId();
         redisCache.setCacheObject("maxYdDataId",maxYdDataId);
 
-        return list.size();
+        return list;
     }
 
     @Override
@@ -170,5 +193,10 @@ public class YdWarningDataServiceImpl implements IYdWarningDataService
     @Override
     public List<JSONObject> statisticsByStatus(String meterNumber){
         return ydWarningDataMapper.statisticsByStatus(meterNumber);
+    }
+
+    @Override
+    public List<YdWarningData> getWarningList(YdWarningData ydWarningData){
+        return ydWarningDataMapper.getWarningList(ydWarningData);
     }
 }

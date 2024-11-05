@@ -1,15 +1,14 @@
 package com.ruoyi.web.controller.wz.electricity;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.electricity.domain.YdWarningData;
 import com.ruoyi.electricity.service.IYdWarningDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -90,7 +89,7 @@ public class YdWarningDataController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:data:remove')")
     //@Log(title = "用电预警数据", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(ydWarningDataService.deleteYdWarningDataByIds(ids));
@@ -99,6 +98,31 @@ public class YdWarningDataController extends BaseController
     @GetMapping("/analysisImport")
     public AjaxResult analysisImport()
     {
-        return success(ydWarningDataService.analysisImport());
+        List<YdWarningData> list = ydWarningDataService.analysisImport();
+        //ydWarningDataService.saveBatch(list);
+        return success(list.size());
+    }
+
+    @GetMapping("/getWarningList")
+    public TableDataInfo getWarningList(YdWarningData ydWarningData)
+    {
+        //String meterNumber = ydWarningData.getMeterNumber();
+        //String status = ydWarningData.getStatus();
+        //
+        //QueryWrapper<YdWarningData> qy = new QueryWrapper<>();
+        //qy.ne("status","0");
+        //if (!StringUtils.isEmpty(meterNumber)){
+        //    qy.eq("meter_number",meterNumber);
+        //}
+        //if (!StringUtils.isEmpty(status)){
+        //    qy.eq("status",status);
+        //}
+        //qy.orderByDesc("data_time");
+
+        startPage();
+        //List<YdWarningData> list = ydWarningDataService.list(qy);
+        List<YdWarningData> list = ydWarningDataService.getWarningList(ydWarningData);
+
+        return getDataTable(list);
     }
 }

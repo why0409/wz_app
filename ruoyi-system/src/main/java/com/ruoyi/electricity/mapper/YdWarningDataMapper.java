@@ -1,6 +1,9 @@
 package com.ruoyi.electricity.mapper;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.electricity.domain.YdWarningData;
 
 import java.util.List;
@@ -11,7 +14,8 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
-public interface YdWarningDataMapper
+@DataSource(DataSourceType.GISDB)
+public interface YdWarningDataMapper extends BaseMapper<YdWarningData>
 {
     /**
      * 查询用电预警数据
@@ -68,4 +72,6 @@ public interface YdWarningDataMapper
     public YdWarningData getLatestWarningDataByMeter(String meterNumber);
 
     public List<JSONObject> statisticsByStatus(String meterNumber);
+
+    List<YdWarningData> getWarningList(YdWarningData ydWarningData);
 }
