@@ -114,14 +114,14 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             String time = dataDate + " " + dataTime;
             // 拼接时间
             ydEnterpriseData.setFullTime(formatter.parse(time));
-            // int i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
-            // if (i > 0) {
-            //     // 更新
-            //     int a = ydEnterpriseDataMapper.updateData(ydEnterpriseData);
-            // } else {
-            //     int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
-            // }
-            int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
+            int i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
+            if (i > 0) {
+                // 更新
+                int a = ydEnterpriseDataMapper.updateData(ydEnterpriseData);
+            } else {
+                int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
+            }
+            // int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
         }
         return 1;
     }
