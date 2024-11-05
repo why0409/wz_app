@@ -161,6 +161,39 @@
         </trim>
     </insert>
 
+    <insert id="insertBaths" parameterType="java.util.List">
+        INSERT INTO yd_enterprise_data (meter_number, user_name,data_date,data_time, total_active_power, full_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            <choose>
+                <when test="item.meterNumber != null">#{item.meterNumber}</when>
+                <otherwise>null</otherwise>
+            </choose>,
+            <choose>
+                <when test="item.userName != null">#{item.userName}</when>
+                <otherwise>null</otherwise>
+            </choose>,
+            <choose>
+                <when test="item.dataDate != null">#{item.dataDate}</when>
+                <otherwise>null</otherwise>
+            </choose>,
+            <choose>
+                <when test="item.dataTime != null">#{item.dataTime}</when>
+                <otherwise>null</otherwise>
+            </choose>,
+            <choose>
+                <when test="item.totalActivePower != null">#{item.totalActivePower}</when>
+                <otherwise>null</otherwise>
+            </choose>,
+            <choose>
+                <when test="item.fullTime != null">#{item.fullTime}</when>
+                <otherwise>null</otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
     <update id="updateYdEnterpriseData" parameterType="YdEnterpriseData">
         update yd_enterprise_data
         <trim prefix="SET" suffixOverrides=",">

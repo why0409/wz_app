@@ -1,10 +1,7 @@
 package com.ruoyi.electricity.domain;
 
-import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,13 +13,8 @@ import java.util.Date;
  * @date 2024-11-04
  */
 @Data
-public class YdEnterpriseData implements Serializable {
+public class YdEnterpriseDataVo implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 序号
-     */
-    private Long id;
 
     /**
      * 电表资产编号
@@ -35,9 +27,6 @@ public class YdEnterpriseData implements Serializable {
      */
     @Excel(name = "用户名称")
     private String userName;
-
-    @Excel(name = "数据日期")
-    private String dataDate1;
 
     private Date dataDate;
 
