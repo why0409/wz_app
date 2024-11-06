@@ -29,6 +29,7 @@
             <if test="dataTime != null  and dataTime != ''"> and data_time = #{dataTime}</if>
             <if test="totalActivePower != null "> and total_active_power = #{totalActivePower}</if>
         </where>
+        order by full_time desc
     </select>
 
     <select id="selectYdEnterpriseDataById" parameterType="Long" resultMap="YdEnterpriseDataResult">
