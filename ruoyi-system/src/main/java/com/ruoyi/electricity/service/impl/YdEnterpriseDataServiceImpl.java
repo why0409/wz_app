@@ -1,17 +1,11 @@
 package com.ruoyi.electricity.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.bean.BeanUtils;
-import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
-import com.ruoyi.electricity.domain.YdEnterpriseDataVo;
 import com.ruoyi.electricity.mapper.YdEnterpriseDataMapper;
 import com.ruoyi.electricity.service.IYdEnterpriseDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,7 +60,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
      */
     @Override
     public int insertYdEnterpriseData(YdEnterpriseData ydEnterpriseData) {
-        // ydEnterpriseData.setCreateTime(DateUtils.getNowDate());
+        ydEnterpriseData.setCreateTime(DateUtils.getNowDate());
         return ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
     }
 
@@ -78,7 +72,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
      */
     @Override
     public int updateYdEnterpriseData(YdEnterpriseData ydEnterpriseData) {
-        // ydEnterpriseData.setUpdateTime(DateUtils.getNowDate());
+        ydEnterpriseData.setUpdateTime(DateUtils.getNowDate());
         return ydEnterpriseDataMapper.updateYdEnterpriseData(ydEnterpriseData);
     }
 
@@ -112,41 +106,28 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
         if (StringUtils.isNull(dataList) || dataList.isEmpty()) {
             throw new ServiceException("导入用户数据不能为空！");
         }
-        List<YdEnterpriseDataVo> insertList = new ArrayList<>();
-        // List<YdEnterpriseData> updateList = new ArrayList<>();
         for (YdEnterpriseData ydEnterpriseData : dataList) {
-            YdEnterpriseDataVo ydEnterpriseDataVo = new YdEnterpriseDataVo();
             // 检验如果是同一个电表，同一时间段更新操作
             String meterNumber = ydEnterpriseData.getMeterNumber();
-            String dataDate = ydEnterpriseData.getDataDate1();
-            String dataTime = ydEnterpriseData.getDataTime();
             String totalActivePower = ydEnterpriseData.getTotalActivePower();
-
-            if (StringUtils.isEmpty(meterNumber) || StringUtils.isEmpty(totalActivePower)){
+            if (StringUtils.isEmpty(meterNumber) || StringUtils.isEmpty(totalActivePower)) {
                 continue;
             }
-
+            String dataDate = ydEnterpriseData.getDataDate1();
+            String dataTime = ydEnterpriseData.getDataTime();
             ydEnterpriseData.setDataDate(formatter1.parse(dataDate));
             String time = dataDate + " " + dataTime;
             // 拼接时间
             ydEnterpriseData.setFullTime(formatter.parse(time));
-            BeanUtils.copyBeanProp(ydEnterpriseDataVo,ydEnterpriseData);
+            ydEnterpriseData.setCreateTime(new Date());
             int i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
             if (i > 0) {
-                // updateList.add(ydEnterpriseData);
                 // 更新
                 int a = ydEnterpriseDataMapper.updateData(ydEnterpriseData);
             } else {
-                insertList.add(ydEnterpriseDataVo);
-                // int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
+                int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
             }
         }
-        if(CollectionUtil.isNotEmpty(insertList)){
-            int a = ydEnterpriseDataMapper.insertBaths(insertList);
-        }
-        // if(CollectionUtil.isNotEmpty(insertList)){
-        //     int b = ydEnterpriseDataMapper.updateBaths(updateList);
-        // }
         return 1;
     }
 
