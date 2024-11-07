@@ -65,13 +65,13 @@ public interface YdEnterpriseDataMapper {
      */
     public int deleteYdEnterpriseDataByIds(Long[] ids);
 
-    String getNewDay();
+    String getNewDay(String meterNumber);
 
     List<JSONObject> selectData(@Param("time") String time, @Param("meterNumber") String meterNumber);
 
     String getNewMonth();
 
-    List<JSONObject> selectMonthData(String meterNumber);
+    List<JSONObject> selectMonthData(@Param("time") String time, @Param("meterNumber") String meterNumber);
 
     int selectByParam(@Param("meterNumber") String meterNumber, @Param("dataDate") String dataDate, @Param("dataTime") String dataTime);
 

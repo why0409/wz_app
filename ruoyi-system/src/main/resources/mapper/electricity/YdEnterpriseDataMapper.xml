@@ -38,12 +38,25 @@
     </select>
 
     <select id="getNewDay" resultType="java.lang.String">
-        select DISTINCT data_date from yd_enterprise_data order by data_date desc limit 1
+        select data_date from yd_enterprise_data
+        where meter_number = #{meterNumber}
+        order by data_date desc limit 1
     </select>
 
     <select id="selectData" resultType="com.alibaba.fastjson2.JSONObject">
-        select total_active_power as count,full_time as time from yd_enterprise_data where data_date = #{time} and meter_number = #{meterNumber} order by data_time
+        select total_active_power as count,full_time as time
+        from yd_enterprise_data
+        where data_date = #{time} and meter_number = #{meterNumber}
+        order by data_time
     </select>
+
+    <!-- <select id="selectData" resultType="com.alibaba.fastjson2.JSONObject"> -->
+    <!--     select a.total_active_power as count,a.full_time as time,b.status -->
+    <!--     from yd_enterprise_data a -->
+    <!--     left join yd_warning_data b on a.id = b.data_id -->
+    <!--     where data_date = #{time} and meter_number = #{meterNumber} -->
+    <!--     order by data_time -->
+    <!-- </select> -->
 
     <select id="getNewMonth" resultType="java.lang.String">
         SELECT DISTINCT MONTH(full_time) AS latest_month
@@ -58,13 +71,27 @@
         FROM
             yd_enterprise_data
         WHERE
-            meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = (
-            SELECT DATE_FORMAT(MAX(data_date), '%Y-%m') FROM yd_enterprise_data)
-        GROUP BY
-            time
-        ORDER BY
-            time;
+            meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = DATE_FORMAT(#{time}, '%Y-%m')
+        GROUP BY time
+        ORDER BY time;
     </select>
+
+    <!-- <select id="selectMonthData" resultType="com.alibaba.fastjson2.JSONObject"> -->
+    <!--     SELECT -->
+    <!--         DATE(data_date) AS time, -->
+    <!--         MAX(CASE -->
+    <!--         WHEN TIME(data_time) BETWEEN '00:00:00' AND '06:00:00' -->
+    <!--         OR TIME(data_time) BETWEEN '20:00:00' AND '23:59:59' -->
+    <!--         THEN total_active_power -->
+    <!--         ELSE NULL -->
+    <!--         END) AS max_power -->
+    <!--     FROM -->
+    <!--         yd_enterprise_data -->
+    <!--     WHERE -->
+    <!--         meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = DATE_FORMAT(#{time}, '%Y-%m') -->
+    <!--     GROUP BY time -->
+    <!--     ORDER BY time; -->
+    <!-- </select> -->
 
     <select id="selectByParam" resultType="java.lang.Integer">
         select count(*) from yd_enterprise_data where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
