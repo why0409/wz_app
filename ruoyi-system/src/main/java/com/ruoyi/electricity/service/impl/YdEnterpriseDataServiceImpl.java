@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,11 +25,9 @@ import java.util.List;
  */
 @Service
 public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
-    @Autowired
-    private YdEnterpriseDataMapper ydEnterpriseDataMapper;
 
     @Autowired
-    private RedisCache redisCache;
+    private YdEnterpriseDataMapper ydEnterpriseDataMapper;
 
     /**
      * 查询用电企业数据
@@ -102,7 +101,9 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
     SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
-    public int importData(List<YdEnterpriseData> dataList) throws ParseException {
+    public List<Long> importData(List<YdEnterpriseData> dataList) throws ParseException {
+        List<Long> updateList = new ArrayList<>();
+
         if (StringUtils.isNull(dataList) || dataList.isEmpty()) {
             throw new ServiceException("导入用户数据不能为空！");
         }
@@ -119,16 +120,22 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             String time = dataDate + " " + dataTime;
             // 拼接时间
             ydEnterpriseData.setFullTime(formatter.parse(time));
-            ydEnterpriseData.setCreateTime(new Date());
-            int i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
-            if (i > 0) {
+
+            Long i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
+            if (i != null) {
+                updateList.add(i);
                 // 更新
+                ydEnterpriseData.setUpdateTime(new Date());
                 int a = ydEnterpriseDataMapper.updateData(ydEnterpriseData);
             } else {
+                ydEnterpriseData.setCreateTime(new Date());
+                ydEnterpriseData.setUpdateTime(new Date());
                 int j = ydEnterpriseDataMapper.insertYdEnterpriseData(ydEnterpriseData);
             }
         }
-        return 1;
+
+        System.out.println(updateList);
+        return updateList;
     }
 
     @Override
@@ -136,10 +143,15 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
         // 天
         if ("0".equals(flag)) {
             // 查询最近的一天
-            String time = ydEnterpriseDataMapper.getNewDay();
+            String time = ydEnterpriseDataMapper.getNewDay(meterNumber);
             return ydEnterpriseDataMapper.selectData(time, meterNumber);
         } else {
             return ydEnterpriseDataMapper.selectMonthData(meterNumber);
         }
+    }
+
+    @Override
+    public String getMaxUpdateTime(){
+        return ydEnterpriseDataMapper.getMaxUpdateTime();
     }
 }

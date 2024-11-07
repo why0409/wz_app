@@ -2,6 +2,7 @@ package com.ruoyi.electricity.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.electricity.domain.YdWarningThreshold;
+import com.ruoyi.electricity.mapper.YdWarningDataMapper;
 import com.ruoyi.electricity.mapper.YdWarningThresholdMapper;
 import com.ruoyi.electricity.service.IYdWarningThresholdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class YdWarningThresholdServiceImpl implements IYdWarningThresholdService
 {
     @Autowired
     private YdWarningThresholdMapper ydWarningThresholdMapper;
+
+    @Autowired
+    private YdWarningDataMapper ydWarningDataMapper;
 
     /**
      * 查询用电预警阈值管理
@@ -67,6 +71,31 @@ public class YdWarningThresholdServiceImpl implements IYdWarningThresholdService
     @Override
     public int updateYdWarningThreshold(YdWarningThreshold ydWarningThreshold)
     {
+        //更新预警状态
+        String status = ydWarningThreshold.getStatus();
+        Double yellow;
+        Double red;
+        if ("1".equals(status)) {
+            yellow = ydWarningThreshold.getThreshold();
+            red = ydWarningThresholdMapper.getThresholdByStatus("2");
+        }else if ("2".equals(status)){
+            yellow = ydWarningThresholdMapper.getThresholdByStatus("1");
+            red = ydWarningThreshold.getThreshold();;
+        }else {
+            return 1;
+        }
+
+        Long id = ydWarningThreshold.getId();
+        YdWarningThreshold latestWt = ydWarningThresholdMapper.selectYdWarningThresholdById(id);
+        if (! latestWt.getThreshold().equals(ydWarningThreshold.getThreshold())) {
+            //更新正常
+            ydWarningDataMapper.updateNormalStatus(yellow);
+            //更新黄色预警
+            ydWarningDataMapper.updateYellowStatus(yellow,red);
+            //更新红色预警
+            ydWarningDataMapper.updateRedStatus(red);
+        }
+
         ydWarningThreshold.setUpdateTime(DateUtils.getNowDate());
         return ydWarningThresholdMapper.updateYdWarningThreshold(ydWarningThreshold);
     }

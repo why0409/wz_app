@@ -49,6 +49,7 @@
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
             <if test="monitors != null  and monitors != ''"> and monitors = #{monitors}</if>
         </where>
+        order by ei.sort_num desc
     </select>
 
     <select id="selectYdEnterpriseInfoById" parameterType="Long" resultMap="YdEnterpriseInfoResult">

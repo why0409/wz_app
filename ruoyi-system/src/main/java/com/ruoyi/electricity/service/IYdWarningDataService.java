@@ -65,11 +65,11 @@ public interface IYdWarningDataService extends IService<YdWarningData>
      */
     public int deleteYdWarningDataById(Long id);
 
-    public List<YdWarningData> analysisImport();
+    public int analysisImport(List<Long> updateList);
 
     public YdWarningData getLatestWarningDataByMeter(String meterNumber);
 
     public List<JSONObject> statisticsByStatus(String meterNumber);
 
-    List<YdWarningData> getWarningList(YdWarningData ydWarningData);
+    public List<YdWarningData> getWarningList(YdWarningData ydWarningData);
 }

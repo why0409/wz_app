@@ -17,7 +17,7 @@
     </resultMap>
 
     <sql id="selectYdEnterpriseDataVo">
-        select id, meter_number, user_name,data_date, data_time, total_active_power,  create_time, update_time,full_time from yd_enterprise_data
+        select id, meter_number, user_name, data_date, data_time, total_active_power, create_time, update_time, full_time from yd_enterprise_data
     </sql>
 
     <select id="selectYdEnterpriseDataList" parameterType="YdEnterpriseData" resultMap="YdEnterpriseDataResult">
@@ -38,11 +38,19 @@
     </select>
 
     <select id="getNewDay" resultType="java.lang.String">
-        select DISTINCT data_date from yd_enterprise_data order by data_date desc limit 1
+        select max(data_date)
+        from yd_enterprise_data
+        where meter_number = #{meterNumber}
     </select>
 
     <select id="selectData" resultType="com.alibaba.fastjson2.JSONObject">
-        select total_active_power as count,full_time as time from yd_enterprise_data where data_date = #{time} and meter_number = #{meterNumber} order by data_time
+        select
+            total_active_power as count,
+            full_time as time
+        from yd_enterprise_data
+        where data_date = #{time}
+          and meter_number = #{meterNumber}
+        order by data_time
     </select>
 
     <select id="getNewMonth" resultType="java.lang.String">
@@ -63,11 +71,11 @@
         GROUP BY
             time
         ORDER BY
-            time;
+            time
     </select>
 
-    <select id="selectByParam" resultType="java.lang.Integer">
-        select count(*) from yd_enterprise_data where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
+    <select id="selectByParam" resultType="Long">
+        select id from yd_enterprise_data where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
     </select>
 
     <insert id="insertYdEnterpriseData" parameterType="YdEnterpriseData" useGeneratedKeys="true" keyProperty="id">
@@ -146,6 +154,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="userName != null">user_name = #{userName},</if>
             <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
     </update>
@@ -161,7 +170,7 @@
         </foreach>
     </delete>
 
-    <select id="getMaxId" resultType="Long">
-        SELECT max(id) FROM yd_enterprise_data
+    <select id="getMaxUpdateTime" resultType="String">
+        SELECT max(update_time) FROM yd_enterprise_data
     </select>
 </mapper>

@@ -15,7 +15,6 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
-@DataSource(DataSourceType.GISDB)
 public interface YdEnterpriseDataMapper {
     /**
      * 查询用电企业数据
@@ -65,7 +64,7 @@ public interface YdEnterpriseDataMapper {
      */
     public int deleteYdEnterpriseDataByIds(Long[] ids);
 
-    String getNewDay();
+    String getNewDay(String meterNumber);
 
     List<JSONObject> selectData(@Param("time") String time, @Param("meterNumber") String meterNumber);
 
@@ -73,11 +72,11 @@ public interface YdEnterpriseDataMapper {
 
     List<JSONObject> selectMonthData(String meterNumber);
 
-    int selectByParam(@Param("meterNumber") String meterNumber, @Param("dataDate") String dataDate, @Param("dataTime") String dataTime);
+    Long selectByParam(@Param("meterNumber") String meterNumber, @Param("dataDate") String dataDate, @Param("dataTime") String dataTime);
 
     int updateData(YdEnterpriseData ydEnterpriseData);
 
-    Long getMaxId();
+    String getMaxUpdateTime();
 
     int insertBaths(List<YdEnterpriseDataVo> insertList);
 

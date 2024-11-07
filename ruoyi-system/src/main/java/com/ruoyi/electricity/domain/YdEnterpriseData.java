@@ -20,57 +20,32 @@ import java.util.Date;
 public class YdEnterpriseData implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 序号
-     */
     private Long id;
 
-    /**
-     * 电表资产编号
-     */
     @Excel(name = "电表资产编号")
     private String meterNumber;
 
-    /**
-     * 用户名称
-     */
     @Excel(name = "用户名称")
     private String userName;
 
-
-    /**
-     * 数据日期
-     */
-    // @Excel(name = "数据日期")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dataDate;
 
     @Excel(name = "数据日期")
     private String dataDate1;
 
-    /**
-     * 时间
-     */
     @Excel(name = "时间")
     private String dataTime;
 
-
-    /**
-     * 总有功功率(kW)
-     */
     @Excel(name = "总有功功率(kW)")
     private String totalActivePower;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date fullTime;
 
-    /**
-     * 创建时间
-     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    /**
-     * 更新时间
-     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 

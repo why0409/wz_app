@@ -33,6 +33,8 @@ public class YdWarningData extends Model
     @TableId(value = "id",type= IdType.AUTO)
     private Long id;
 
+    private Long dataId;
+
     /** 电表号 */
     @Excel(name = "电表号")
     private String meterNumber;
