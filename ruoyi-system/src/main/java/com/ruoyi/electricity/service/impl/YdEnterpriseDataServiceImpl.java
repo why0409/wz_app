@@ -140,18 +140,18 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
 
     @Override
     public List<JSONObject> getEleCount(String meterNumber, String flag) {
+        // 查询最近的一天
+        String time = ydEnterpriseDataMapper.getNewDay(meterNumber);
         // 天
         if ("0".equals(flag)) {
-            // 查询最近的一天
-            String time = ydEnterpriseDataMapper.getNewDay(meterNumber);
             return ydEnterpriseDataMapper.selectData(time, meterNumber);
         } else {
-            return ydEnterpriseDataMapper.selectMonthData(meterNumber);
+            return ydEnterpriseDataMapper.selectMonthData(time, meterNumber);
         }
     }
 
     @Override
-    public String getMaxUpdateTime(){
+    public String getMaxUpdateTime() {
         return ydEnterpriseDataMapper.getMaxUpdateTime();
     }
 }

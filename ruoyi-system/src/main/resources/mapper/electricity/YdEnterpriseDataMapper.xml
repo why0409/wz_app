@@ -66,8 +66,7 @@
         FROM
             yd_enterprise_data
         WHERE
-            meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = (
-            SELECT DATE_FORMAT(MAX(data_date), '%Y-%m') FROM yd_enterprise_data)
+            meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = DATE_FORMAT(#{time}, '%Y-%m')
         GROUP BY
             time
         ORDER BY
