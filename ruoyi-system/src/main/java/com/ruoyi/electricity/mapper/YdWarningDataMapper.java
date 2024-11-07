@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.electricity.domain.YdWarningData;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +16,6 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
-@DataSource(DataSourceType.GISDB)
 public interface YdWarningDataMapper extends BaseMapper<YdWarningData>
 {
     /**
@@ -67,11 +68,32 @@ public interface YdWarningDataMapper extends BaseMapper<YdWarningData>
 
     public String getLatestDataTime();
 
-    public List<YdWarningData> getLatestWarningDataList(Long id);
+    public List<YdWarningData> getLatestWarningDataList(@Param("list") List<Long> list,
+                                                        @Param("updateTime") String updateTime);
 
     public YdWarningData getLatestWarningDataByMeter(String meterNumber);
 
     public List<JSONObject> statisticsByStatus(String meterNumber);
 
-    List<YdWarningData> getWarningList(YdWarningData ydWarningData);
+    public List<YdWarningData> getWarningList(YdWarningData ydWarningData);
+
+    public int insertBatchYdWarningData(List<YdWarningData> list);
+
+    public int updateNormalStatus(Double yellow);
+
+    public int updateYellowStatus(@Param("yellow") Double yellow,
+                                  @Param("red") Double red);
+
+    public int updateRedStatus(Double red);
+
+    public int getRepeatCount(@Param("meterNumber") String meterNumber,
+                              @Param("dataTime") Date dataTime);
+
+    public int updateRepeatData(YdWarningData ydWarningData);
+
+    public List<YdWarningData> getWarningDataListByIds(@Param("list") List<Long> list);
+
+    public int updateByDataId(YdWarningData ydWarningData);
+
+    public List<Long> getCorrelationIds(Long id);
 }

@@ -12,7 +12,6 @@ import java.util.List;
  * @author ruoyi
  * @date 2024-11-04
  */
-@DataSource(DataSourceType.GISDB)
 public interface YdEnterpriseInfoMapper
 {
     /**

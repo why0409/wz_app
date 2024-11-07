@@ -63,7 +63,9 @@ public interface IYdEnterpriseDataService
      */
     public int deleteYdEnterpriseDataById(Long id);
 
-    int importData(List<YdEnterpriseData> dataList) throws ParseException;
+    List<Long>  importData(List<YdEnterpriseData> dataList) throws ParseException;
 
     List<JSONObject> getEleCount(String meterNumber, String flag);
+
+    String getMaxUpdateTime();
 }

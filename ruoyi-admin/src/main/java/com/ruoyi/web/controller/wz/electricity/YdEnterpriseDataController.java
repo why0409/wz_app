@@ -5,10 +5,13 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
+import com.ruoyi.electricity.domain.YdWarningData;
 import com.ruoyi.electricity.service.IYdEnterpriseDataService;
+import com.ruoyi.electricity.service.IYdWarningDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,12 @@ import java.util.List;
 public class YdEnterpriseDataController extends BaseController {
     @Autowired
     private IYdEnterpriseDataService ydEnterpriseDataService;
+
+    @Autowired
+    private IYdWarningDataService ydWarningDataService;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 查询用电企业数据列表
@@ -97,10 +106,18 @@ public class YdEnterpriseDataController extends BaseController {
 
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file) throws Exception {
+        //记录上次分析的最大更新时间
+        String maxYdUpdateTime = ydEnterpriseDataService.getMaxUpdateTime();
+        redisCache.setCacheObject("maxYdUpdateTime",maxYdUpdateTime);
+
         ExcelUtil<YdEnterpriseData> util = new ExcelUtil<>(YdEnterpriseData.class);
         List<YdEnterpriseData> dataList = util.importExcel(file.getInputStream());
-        int a = ydEnterpriseDataService.importData(dataList);
-        return toAjax(a);
+        List<Long> updateList = ydEnterpriseDataService.importData(dataList);
+
+        //预警分析已导入的数据
+        ydWarningDataService.analysisImport(updateList);
+
+        return success();
     }
 
 }

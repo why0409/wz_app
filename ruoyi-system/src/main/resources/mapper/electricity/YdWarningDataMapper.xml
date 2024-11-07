@@ -4,9 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.electricity.mapper.YdWarningDataMapper">
 
-
     <resultMap type="YdWarningData" id="YdWarningDataResult">
         <result property="id"    column="id"    />
+        <result property="dataId"    column="data_id"    />
         <result property="meterNumber"    column="meter_number"    />
         <result property="totalActivePower"    column="total_active_power"    />
         <result property="miniActivePower"    column="mini_active_power"    />
@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="selectYdWarningDataVo">
-        select id, meter_number, total_active_power, mini_active_power, volatility_range, status, data_time, create_time, update_time from yd_warning_data
+        select id, data_id, meter_number, total_active_power, mini_active_power, volatility_range, status, data_time, create_time, update_time from yd_warning_data
     </sql>
 
     <select id="selectYdWarningDataList" parameterType="YdWarningData" resultMap="YdWarningDataResult">
@@ -31,6 +31,7 @@
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="dataTime != null "> and data_time = #{dataTime}</if>
         </where>
+        order by data_time desc
     </select>
 
     <select id="selectYdWarningDataById" parameterType="Long" resultMap="YdWarningDataResult">
@@ -41,6 +42,7 @@
     <insert id="insertYdWarningData" parameterType="YdWarningData" useGeneratedKeys="true" keyProperty="id">
         insert into yd_warning_data
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dataId != null">data_id,</if>
             <if test="meterNumber != null">meter_number,</if>
             <if test="totalActivePower != null">total_active_power,</if>
             <if test="miniActivePower != null">mini_active_power,</if>
@@ -51,6 +53,7 @@
             <if test="updateTime != null">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dataId != null">#{dataId},</if>
             <if test="meterNumber != null">#{meterNumber},</if>
             <if test="totalActivePower != null">#{totalActivePower},</if>
             <if test="miniActivePower != null">#{miniActivePower},</if>
@@ -65,6 +68,7 @@
     <update id="updateYdWarningData" parameterType="YdWarningData">
         update yd_warning_data
         <trim prefix="SET" suffixOverrides=",">
+            <if test="dataId != null">data_id = #{dataId},</if>
             <if test="meterNumber != null">meter_number = #{meterNumber},</if>
             <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
             <if test="miniActivePower != null">mini_active_power = #{miniActivePower},</if>
@@ -94,29 +98,62 @@
 
     <select id="getLatestWarningDataList" resultMap="YdWarningDataResult">
         SELECT
-            tp.meter_number,
-            tp.full_time as data_time,
-            tp.total_active_power AS total_active_power,
-            (
-                SELECT GROUP_CONCAT(T.total_active_power ORDER BY T.total_active_power) AS total_active_power_array
-                FROM
-                (
-                    SELECT b.total_active_power
+               tp.id as data_id,
+               tp.meter_number,
+               tp.full_time as data_time,
+               tp.total_active_power AS total_active_power,
+               (
+                   SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.total_active_power ORDER BY b.data_date DESC), ',', 7) AS last_seven_values
+                   FROM yd_enterprise_data b
+                   WHERE b.meter_number = tp.meter_number
+                   AND b.data_time = tp.data_time
+                   AND b.full_time &lt; tp.full_time
+               ) AS mini_active_power
+        FROM
+            yd_enterprise_data tp
+        <where>
+            <if test="list.size() != 0">
+                and tp.id not in
+                <foreach item="id" collection="list" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="updateTime != null">
+                and tp.update_time > #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getWarningDataListByIds" resultMap="YdWarningDataResult">
+        SELECT
+               tp.id as data_id,
+               tp.meter_number,
+               tp.full_time as data_time,
+               tp.total_active_power AS total_active_power,
+               (
+                    SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.total_active_power ORDER BY b.data_date DESC), ',', 7) AS last_seven_values
                     FROM yd_enterprise_data b
                     WHERE b.meter_number = tp.meter_number
                     AND b.data_time = tp.data_time
                     AND b.full_time &lt; tp.full_time
-                    ORDER BY b.data_date DESC
-                    LIMIT 7
-                ) T
-            ) AS mini_active_power
+               ) AS mini_active_power
         FROM
             yd_enterprise_data tp
-        <where>
-            <if test="id != null">
-                tp.id > #{id}
-            </if>
-        </where>
+        where tp.id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getCorrelationIds" resultType="Long">
+        SELECT ed.id
+        FROM yd_enterprise_data ed
+        JOIN yd_enterprise_data base ON base.id = #{id}
+        WHERE ed.meter_number = base.meter_number
+          AND ed.data_time = base.data_time
+          AND ed.full_time >= base.full_time
+        ORDER BY ed.data_date
+        LIMIT 8
     </select>
 
     <select id="getLatestWarningDataByMeter" resultMap="YdWarningDataResult">
@@ -158,6 +195,76 @@
         <if test="miniActivePower != null "> and mini_active_power = #{miniActivePower}</if>
         <if test="volatilityRange != null  and volatilityRange != ''"> and volatility_range = #{volatilityRange}</if>
         <if test="dataTime != null "> and data_time = #{dataTime}</if>
+        <if test="status != null"> and status = #{status}</if>
+        order by data_time desc
     </select>
+
+    <insert id="insertBatchYdWarningData" useGeneratedKeys="true" keyProperty="id">
+        insert into yd_warning_data (meter_number, total_active_power, mini_active_power, volatility_range, status, data_time, create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.dataId},#{item.meterNumber},#{item.totalActivePower},#{item.miniActivePower},#{item.volatilityRange},#{item.status},#{item.dataTime},#{item.createTime})
+        </foreach>
+    </insert>
+
+    <update id="updateNormalStatus" >
+        update yd_warning_data
+        set status = '0'
+        where volatility_range is not null
+          and CONVERT(volatility_range, DOUBLE) &lt; #{yellow}
+    </update>
+
+    <update id="updateYellowStatus" >
+        update yd_warning_data
+        set status = '1'
+        where volatility_range is not null
+          and CONVERT(volatility_range, DOUBLE) &gt;= #{yellow} and CONVERT(volatility_range, DOUBLE) &lt; #{red}
+    </update>
+
+    <update id="updateRedStatus" >
+        update yd_warning_data
+        set status = '2'
+        where volatility_range is not null
+          and CONVERT(volatility_range, DOUBLE) &gt;= #{red}
+    </update>
+
+    <select id="getRepeatCount" resultType="integer">
+        select count(*)
+        from yd_warning_data
+        where meter_number = #{meterNumber} and data_time = #{dataTime}
+    </select>
+
+    <update id="updateRepeatData" parameterType="YdWarningData">
+        update yd_warning_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataId != null">data_id = #{dataId},</if>
+            <if test="meterNumber != null">meter_number = #{meterNumber},</if>
+            <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
+            <if test="miniActivePower != null">mini_active_power = #{miniActivePower},</if>
+            <if test="volatilityRange != null">volatility_range = #{volatilityRange},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="dataTime != null">data_time = #{dataTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where meter_number = #{meterNumber} and data_time = #{dataTime}
+    </update>
+
+    <update id="updateByDataId" parameterType="YdWarningData">
+        update yd_warning_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataId != null">data_id = #{dataId},</if>
+            <if test="meterNumber != null">meter_number = #{meterNumber},</if>
+            <if test="totalActivePower != null">total_active_power = #{totalActivePower},</if>
+            <if test="miniActivePower != null">mini_active_power = #{miniActivePower},</if>
+            <if test="volatilityRange != null">volatility_range = #{volatilityRange},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="dataTime != null">data_time = #{dataTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where data_id = #{dataId}
+    </update>
+
 
 </mapper>

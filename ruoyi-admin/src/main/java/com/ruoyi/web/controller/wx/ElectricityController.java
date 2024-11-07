@@ -4,11 +4,14 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
 import com.ruoyi.electricity.domain.YdEnterpriseInfo;
+import com.ruoyi.electricity.domain.YdWarningThreshold;
 import com.ruoyi.electricity.service.IYdEnterpriseDataService;
 import com.ruoyi.electricity.service.IYdEnterpriseInfoService;
 import com.ruoyi.electricity.service.IYdWarningDataService;
+import com.ruoyi.electricity.service.IYdWarningThresholdService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,12 @@ public class ElectricityController extends BaseController {
 
     @Autowired
     private IYdWarningDataService ydWarningDataService;
+
+    @Autowired
+    private IYdWarningThresholdService ydWarningThresholdService;
+
+    @Autowired
+    private RedisCache redisCache;
 
     @GetMapping("/getYdEnterpriseInfo")
     @ApiOperation("获取列表")
@@ -77,5 +86,17 @@ public class ElectricityController extends BaseController {
     public AjaxResult statisticsByStatus(String meterNumber)
     {
         return success(ydWarningDataService.statisticsByStatus(meterNumber));
+    }
+
+    @GetMapping("/warningData/threshold")
+    public AjaxResult statisticsByStatus(YdWarningThreshold ydWarningThreshold)
+    {
+        return success(ydWarningThresholdService.selectYdWarningThresholdList(ydWarningThreshold));
+    }
+
+    @GetMapping("/removeRedisData")
+    public AjaxResult removeRedisData(String key)
+    {
+        return success(redisCache.deleteObject(key));
     }
 }

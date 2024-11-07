@@ -2,13 +2,10 @@ package com.ruoyi.electricity.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.electricity.domain.YdWarningData;
-import com.ruoyi.electricity.mapper.YdEnterpriseDataMapper;
 import com.ruoyi.electricity.mapper.YdWarningDataMapper;
 import com.ruoyi.electricity.mapper.YdWarningThresholdMapper;
 import com.ruoyi.electricity.service.IYdWarningDataService;
@@ -16,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,9 +29,6 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
 {
     @Autowired
     private YdWarningDataMapper ydWarningDataMapper;
-
-    @Autowired
-    private YdEnterpriseDataMapper ydEnterpriseDataMapper;
 
     @Autowired
     private RedisCache redisCache;
@@ -115,10 +111,38 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
     }
 
     @Override
-    public List<YdWarningData> analysisImport(){
-        Long latestMaxId = redisCache.getCacheObject("maxYdDataId");
-        List<YdWarningData> list = ydWarningDataMapper.getLatestWarningDataList(latestMaxId);
+    public int analysisImport(List<Long> updateList){
+        String maxYdUpdateTime = redisCache.getCacheObject("maxYdUpdateTime");
 
+        //计算插入用电数据
+        List<YdWarningData> insertList = ydWarningDataMapper.getLatestWarningDataList(updateList,maxYdUpdateTime);
+        List<YdWarningData> warningInsertList = warningCalculations(insertList);
+        for (YdWarningData wd : warningInsertList) {
+            wd.setCreateTime(new Date());
+            ydWarningDataMapper.insertYdWarningData(wd);
+        }
+
+        //计算更新用电数据
+        if (updateList.size() > 0){
+            for (Long id : updateList) {
+                //与当前id相关联的id列表
+                List<Long> correlationIds = ydWarningDataMapper.getCorrelationIds(id);
+
+                //获取需要更新的预警数据
+                List<YdWarningData> updateListByIds = ydWarningDataMapper.getWarningDataListByIds(correlationIds);
+                List<YdWarningData> warningUpdatetList = warningCalculations(updateListByIds);
+                for (YdWarningData wd : warningUpdatetList) {
+                    wd.setUpdateTime(new Date());
+                    ydWarningDataMapper.updateByDataId(wd);
+                }
+            }
+        }
+
+        return 1;
+    }
+
+
+    public List<YdWarningData> warningCalculations(List<YdWarningData> list){
         Double yellow = ydWarningThresholdMapper.getThresholdByStatus("1");
         Double red = ydWarningThresholdMapper.getThresholdByStatus("2");
 
@@ -132,8 +156,15 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
                 if (array.length != 7){
                     miniActivePower = null;
                 }else {
+                    Double[] doubleArray = Arrays.stream(array)
+                            .map(Double::parseDouble)
+                            .toArray(Double[]::new);
+
+                    // 对 Double[] 进行升序排序
+                    Arrays.sort(doubleArray);
+
                     DecimalFormat df = new DecimalFormat("0.0000");
-                    double avgValue = (Double.parseDouble(array[2])+Double.parseDouble(array[3])+Double.parseDouble(array[4]))/3;
+                    double avgValue = (doubleArray[2]+doubleArray[3]+doubleArray[4])/3;
                     miniActivePower = df.format(avgValue);
                 }
             }
@@ -143,12 +174,12 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
             if (miniActivePower == null){
                 volatilityRange = null;
             }else {
+                Double miniValue = Double.parseDouble(miniActivePower);
                 Double totalValue = Double.parseDouble(wd.getTotalActivePower());
-                if (totalValue == 0){
-                    volatilityRange = null;
-                }else {
-                    Double miniValue = Double.parseDouble(miniActivePower);
 
+                if (miniValue == 0){
+                    volatilityRange = red + 10 + "";
+                }else {
                     DecimalFormat df = new DecimalFormat("0.00");
                     double value =  Math.abs((totalValue - miniValue) * 100 / miniValue);
                     volatilityRange = df.format(value);
@@ -173,14 +204,7 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
             wd.setMiniActivePower(miniActivePower);
             wd.setVolatilityRange(volatilityRange);
             wd.setStatus(status);
-            wd.setCreateTime(new Date());
-
-            ydWarningDataMapper.insertYdWarningData(wd);
         }
-
-        //记录上次分析的最大Id
-        Long maxYdDataId = ydEnterpriseDataMapper.getMaxId();
-        redisCache.setCacheObject("maxYdDataId",maxYdDataId);
 
         return list;
     }

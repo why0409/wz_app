@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.electricity.domain.YdWarningData;
+import com.ruoyi.electricity.service.IYdEnterpriseDataService;
 import com.ruoyi.electricity.service.IYdWarningDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,12 @@ public class YdWarningDataController extends BaseController
 {
     @Autowired
     private IYdWarningDataService ydWarningDataService;
+
+    @Autowired
+    private IYdEnterpriseDataService ydEnterpriseDataService;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 查询用电预警数据列表
@@ -95,34 +103,24 @@ public class YdWarningDataController extends BaseController
         return toAjax(ydWarningDataService.deleteYdWarningDataByIds(ids));
     }
 
-    @GetMapping("/analysisImport")
-    public AjaxResult analysisImport()
-    {
-        List<YdWarningData> list = ydWarningDataService.analysisImport();
-        //ydWarningDataService.saveBatch(list);
-        return success(list.size());
-    }
+    //@GetMapping("/analysisImport")
+    //public AjaxResult analysisImport()
+    //{
+    //    List<YdWarningData> list = ydWarningDataService.analysisImport();
+    //    ydWarningDataService.saveBatch(list);
+    //
+    //    //记录上次分析的最大更新时间
+    //    String maxUpdateTime = ydEnterpriseDataService.getMaxUpdateTime();
+    //    redisCache.setCacheObject("maxUpdateTime",maxUpdateTime);
+    //
+    //    return success(list.size());
+    //}
 
     @GetMapping("/getWarningList")
     public TableDataInfo getWarningList(YdWarningData ydWarningData)
     {
-        //String meterNumber = ydWarningData.getMeterNumber();
-        //String status = ydWarningData.getStatus();
-        //
-        //QueryWrapper<YdWarningData> qy = new QueryWrapper<>();
-        //qy.ne("status","0");
-        //if (!StringUtils.isEmpty(meterNumber)){
-        //    qy.eq("meter_number",meterNumber);
-        //}
-        //if (!StringUtils.isEmpty(status)){
-        //    qy.eq("status",status);
-        //}
-        //qy.orderByDesc("data_time");
-
         startPage();
-        //List<YdWarningData> list = ydWarningDataService.list(qy);
         List<YdWarningData> list = ydWarningDataService.getWarningList(ydWarningData);
-
         return getDataTable(list);
     }
 }
