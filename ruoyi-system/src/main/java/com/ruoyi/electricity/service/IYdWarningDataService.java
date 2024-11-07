@@ -65,7 +65,7 @@ public interface IYdWarningDataService extends IService<YdWarningData>
      */
     public int deleteYdWarningDataById(Long id);
 
-    public int analysisImport(List<Long> updateList);
+    public int analysisImport(List<Long> updateList, String maxYdUpdateTime);
 
     public YdWarningData getLatestWarningDataByMeter(String meterNumber);
 

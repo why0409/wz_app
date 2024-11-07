@@ -106,16 +106,17 @@ public class YdEnterpriseDataController extends BaseController {
 
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file) throws Exception {
-        //记录上次分析的最大更新时间
+        //记录导入前的最大更新时间
         String maxYdUpdateTime = ydEnterpriseDataService.getMaxUpdateTime();
         redisCache.setCacheObject("maxYdUpdateTime",maxYdUpdateTime);
 
+        //导入数据
         ExcelUtil<YdEnterpriseData> util = new ExcelUtil<>(YdEnterpriseData.class);
         List<YdEnterpriseData> dataList = util.importExcel(file.getInputStream());
         List<Long> updateList = ydEnterpriseDataService.importData(dataList);
 
         //预警分析已导入的数据
-        ydWarningDataService.analysisImport(updateList);
+        ydWarningDataService.analysisImport(updateList,maxYdUpdateTime);
 
         return success();
     }

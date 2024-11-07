@@ -1,7 +1,6 @@
 package com.ruoyi.electricity.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -108,12 +107,14 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             throw new ServiceException("导入用户数据不能为空！");
         }
         for (YdEnterpriseData ydEnterpriseData : dataList) {
-            // 检验如果是同一个电表，同一时间段更新操作
             String meterNumber = ydEnterpriseData.getMeterNumber();
             String totalActivePower = ydEnterpriseData.getTotalActivePower();
+
+            //过滤无效数据
             if (StringUtils.isEmpty(meterNumber) || StringUtils.isEmpty(totalActivePower)) {
                 continue;
             }
+
             String dataDate = ydEnterpriseData.getDataDate1();
             String dataTime = ydEnterpriseData.getDataTime();
             ydEnterpriseData.setDataDate(formatter1.parse(dataDate));
@@ -121,6 +122,7 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             // 拼接时间
             ydEnterpriseData.setFullTime(formatter.parse(time));
 
+            //更新或者插入数据
             Long i = ydEnterpriseDataMapper.selectByParam(meterNumber, dataDate, dataTime);
             if (i != null) {
                 updateList.add(i);
@@ -134,7 +136,6 @@ public class YdEnterpriseDataServiceImpl implements IYdEnterpriseDataService {
             }
         }
 
-        System.out.println(updateList);
         return updateList;
     }
 

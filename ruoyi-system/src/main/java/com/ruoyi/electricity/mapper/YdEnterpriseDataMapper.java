@@ -1,10 +1,7 @@
 package com.ruoyi.electricity.mapper;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.common.annotation.DataSource;
-import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
-import com.ruoyi.electricity.domain.YdEnterpriseDataVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -78,6 +75,6 @@ public interface YdEnterpriseDataMapper {
 
     String getMaxUpdateTime();
 
-    int insertBaths(List<YdEnterpriseDataVo> insertList);
+    int insertBaths(List<YdEnterpriseData> insertList);
 
 }

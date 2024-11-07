@@ -31,9 +31,6 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
     private YdWarningDataMapper ydWarningDataMapper;
 
     @Autowired
-    private RedisCache redisCache;
-
-    @Autowired
     private YdWarningThresholdMapper ydWarningThresholdMapper;
 
     /**
@@ -111,18 +108,8 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
     }
 
     @Override
-    public int analysisImport(List<Long> updateList){
-        String maxYdUpdateTime = redisCache.getCacheObject("maxYdUpdateTime");
-
-        //计算插入用电数据
-        List<YdWarningData> insertList = ydWarningDataMapper.getLatestWarningDataList(updateList,maxYdUpdateTime);
-        List<YdWarningData> warningInsertList = warningCalculations(insertList);
-        for (YdWarningData wd : warningInsertList) {
-            wd.setCreateTime(new Date());
-            ydWarningDataMapper.insertYdWarningData(wd);
-        }
-
-        //计算更新用电数据
+    public int analysisImport(List<Long> updateList, String maxYdUpdateTime){
+        //需更新的用电预警数据
         if (updateList.size() > 0){
             for (Long id : updateList) {
                 //与当前id相关联的id列表
@@ -136,6 +123,14 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
                     ydWarningDataMapper.updateByDataId(wd);
                 }
             }
+        }
+
+        //需插入的用电预警数据
+        List<YdWarningData> insertList = ydWarningDataMapper.getLatestWarningDataList(updateList,maxYdUpdateTime);
+        List<YdWarningData> warningInsertList = warningCalculations(insertList);
+        for (YdWarningData wd : warningInsertList) {
+            wd.setCreateTime(new Date());
+            ydWarningDataMapper.insertYdWarningData(wd);
         }
 
         return 1;
