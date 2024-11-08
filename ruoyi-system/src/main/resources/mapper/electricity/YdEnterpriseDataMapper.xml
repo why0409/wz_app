@@ -44,13 +44,11 @@
     </select>
 
     <select id="selectData" resultType="com.alibaba.fastjson2.JSONObject">
-        select
-            total_active_power as count,
-            full_time as time
-        from yd_enterprise_data
-        where data_date = #{time}
-          and meter_number = #{meterNumber}
-        order by data_time
+        select a.meter_number as meterNumber,a.total_active_power as count,a.full_time as time,b.status
+        from yd_enterprise_data a
+        left join yd_warning_data b on a.id = b.data_id
+        where a.data_date = #{time} and a.meter_number = #{meterNumber}
+        order by a.data_time
     </select>
 
     <select id="getNewMonth" resultType="java.lang.String">
@@ -61,17 +59,33 @@
 
     <select id="selectMonthData" resultType="com.alibaba.fastjson2.JSONObject">
         SELECT
+            meter_number as meterNumber,
             DATE(data_date) AS time,
-            SUM(total_active_power) / COUNT(*) AS count
-        FROM
-            yd_enterprise_data
-        WHERE
-            meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = DATE_FORMAT(#{time}, '%Y-%m')
-        GROUP BY
-            time
-        ORDER BY
-            time
+            MAX(CASE
+                WHEN TIME(data_time) BETWEEN '00:00:00' AND '06:00:00'
+                OR TIME(data_time) BETWEEN '20:00:00' AND '23:59:59'
+                THEN total_active_power
+                ELSE NULL
+                END) AS count
+        FROM yd_enterprise_data
+        WHERE meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = DATE_FORMAT(#{time}, '%Y-%m')
+        GROUP BY time
+        ORDER BY time;
     </select>
+
+    <!-- <select id="selectMonthData" resultType="com.alibaba.fastjson2.JSONObject"> -->
+    <!--     SELECT -->
+    <!--         DATE(data_date) AS time, -->
+    <!--         SUM(total_active_power) / COUNT(*) AS count -->
+    <!--     FROM -->
+    <!--         yd_enterprise_data -->
+    <!--     WHERE -->
+    <!--         meter_number = #{meterNumber} AND DATE_FORMAT(data_date, '%Y-%m') = DATE_FORMAT(#{time}, '%Y-%m') -->
+    <!--     GROUP BY -->
+    <!--         time -->
+    <!--     ORDER BY -->
+    <!--         time -->
+    <!-- </select> -->
 
     <select id="selectByParam" resultType="Long">
         select id from yd_enterprise_data where meter_number = #{meterNumber} and data_date = #{dataDate} and data_time = #{dataTime}
