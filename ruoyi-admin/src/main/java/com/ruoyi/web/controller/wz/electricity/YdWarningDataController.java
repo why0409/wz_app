@@ -29,12 +29,6 @@ public class YdWarningDataController extends BaseController
     @Autowired
     private IYdWarningDataService ydWarningDataService;
 
-    @Autowired
-    private IYdEnterpriseDataService ydEnterpriseDataService;
-
-    @Autowired
-    private RedisCache redisCache;
-
     /**
      * 查询用电预警数据列表
      */

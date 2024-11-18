@@ -145,7 +145,7 @@ public class UserInfoController extends BaseController {
         }
 
         //解密sessionKey
-        sessionKey = RsaUtils.decryptByPrivateKey(sessionKey);
+        sessionKey = RsaUtils.decryptByPublicKey(sessionKey);
 
         //解密用户信息
         String result = userInfoService.decrypt(encryptedData, sessionKey, ivParameter);

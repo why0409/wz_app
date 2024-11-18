@@ -73,7 +73,7 @@ public class RsaUtils
      * @param text 待解密的文本
      * @return 解密后的文本
      */
-    public static   String decryptByPrivateKey(String text) throws Exception
+    public static String decryptByPrivateKey(String text) throws Exception
     {
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec5 = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKeyStr));
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");

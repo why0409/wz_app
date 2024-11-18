@@ -7,6 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.electricity.domain.YdEnterpriseData;
 import com.ruoyi.electricity.domain.YdEnterpriseInfo;
+import com.ruoyi.electricity.domain.YdWarningData;
 import com.ruoyi.electricity.domain.YdWarningThreshold;
 import com.ruoyi.electricity.service.IYdEnterpriseDataService;
 import com.ruoyi.electricity.service.IYdEnterpriseInfoService;
@@ -98,5 +99,17 @@ public class ElectricityController extends BaseController {
     public AjaxResult removeRedisData(String key)
     {
         return success(redisCache.deleteObject(key));
+    }
+
+    /**
+     * 查询用电预警数据列表
+     */
+    //@PreAuthorize("@ss.hasPermi('system:data:list')")
+    @GetMapping("/warningData/list")
+    public TableDataInfo list(YdWarningData ydWarningData)
+    {
+        startPage();
+        List<YdWarningData> list = ydWarningDataService.selectYdWarningDataList(ydWarningData);
+        return getDataTable(list);
     }
 }

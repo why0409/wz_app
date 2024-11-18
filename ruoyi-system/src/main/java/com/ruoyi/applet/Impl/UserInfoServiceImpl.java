@@ -3,6 +3,7 @@ package com.ruoyi.applet.Impl;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.applet.UserInfoService;
+import com.ruoyi.common.utils.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,11 @@ public class UserInfoServiceImpl implements UserInfoService {
             String returnvalue = GET(url);
 
             convertvalue = (JSONObject) JSON.parse(returnvalue);
+
+            String session_key = convertvalue.getString("session_key");
+            //加密session_key
+            convertvalue.put("session_key",RsaUtils.encryptByPrivateKey(session_key));
+
         } catch (Exception e){
             e.printStackTrace();
         }

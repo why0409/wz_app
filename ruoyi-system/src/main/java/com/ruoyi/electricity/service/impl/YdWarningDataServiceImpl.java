@@ -154,8 +154,7 @@ public class YdWarningDataServiceImpl extends ServiceImpl<YdWarningDataMapper, Y
                     Double[] doubleArray = Arrays.stream(array)
                             .map(Double::parseDouble)
                             .toArray(Double[]::new);
-
-                    // 对 Double[] 进行升序排序
+                    //升序排序
                     Arrays.sort(doubleArray);
 
                     DecimalFormat df = new DecimalFormat("0.0000");
