@@ -19,10 +19,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isCarousel"    column="is_carousel"    />
         <result property="isHmwz"    column="is_hmwz"    />
         <result property="isRecommendRead"    column="is_recommend_read"    />
+        <result property="type"    column="type"    />
+        <result property="appId"    column="app_id"    />
     </resultMap>
 
     <sql id="selectWxNewsVo">
-        select uuid, title, subtitle, label, link, picture_name, publish_time, sort_num, update_time, remark, is_show, is_carousel, is_hmwz, is_recommend_read from wx_news
+        select uuid, title, subtitle, label, link, picture_name, publish_time, sort_num, update_time, remark, is_show, is_carousel, is_hmwz, is_recommend_read, type, app_id from wx_news
     </sql>
 
     <select id="selectWxNewsList" parameterType="WxNews" resultMap="WxNewsResult">
@@ -37,6 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCarousel != null"> and is_carousel = #{isCarousel}</if>
             <if test="isHmwz != null"> and is_hmwz = #{isHmwz}</if>
             <if test="isRecommendRead != null"> and is_recommend_read = #{isRecommendRead}</if>
+            <if test="type != null"> and type = #{type}</if>
+            <if test="appId != null"> and app_id = #{appId}</if>
         </where>
         order by sort_num desc, publish_time desc
     </select>
@@ -63,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCarousel != null">is_carousel,</if>
             <if test="isHmwz != null">is_hmwz,</if>
             <if test="isRecommendRead != null">is_recommend_read,</if>
+            <if test="type != null">type,</if>
+            <if test="appId != null">app_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="uuid != null">#{uuid},</if>
@@ -79,6 +85,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCarousel != null">#{isCarousel},</if>
             <if test="isHmwz != null">#{isHmwz},</if>
             <if test="isRecommendRead != null">#{isRecommendRead},</if>
+            <if test="type != null">#{type},</if>
+            <if test="appId != null">#{appId},</if>
          </trim>
     </insert>
 
@@ -98,6 +106,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCarousel != null">is_carousel = #{isCarousel},</if>
             <if test="isHmwz != null">is_hmwz = #{isHmwz},</if>
             <if test="isRecommendRead != null">is_recommend_read = #{isRecommendRead},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="appId != null">app_id = #{appId},</if>
         </trim>
         where uuid = #{uuid}
     </update>
