@@ -62,6 +62,10 @@ public class WxNews extends BaseEntity
     @Excel(name = "是否推荐阅读")
     private Long isRecommendRead;
 
+    private Integer type;
+
+    private String appId;
+
     public Long getIsRecommendRead() {
         return this.isRecommendRead;
     }
@@ -164,6 +168,22 @@ public class WxNews extends BaseEntity
 
     public void setIsShow(Long isShow) {
         this.isShow = isShow;
+    }
+
+    public Integer getType() {
+        return this.type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getAppId() {
+        return this.appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     @Override
