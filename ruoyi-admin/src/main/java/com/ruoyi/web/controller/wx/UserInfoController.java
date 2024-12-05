@@ -25,6 +25,7 @@ import com.ruoyi.system.service.IWxClickmoduleInfoService;
 import com.ruoyi.system.service.IWxUserLogininfoService;
 import com.ruoyi.system.service.IWxUserMenuService;
 import com.ruoyi.web.annotation.ClickLog;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 小程序----用户相关接口
@@ -96,25 +94,25 @@ public class UserInfoController extends BaseController {
     public AjaxResult getOpenId(HttpServletRequest request) {
         String code = request.getParameter("code");
 
-        if (StringUtils.isEmpty(code)){
+        if (StringUtils.isEmpty(code)) {
             log.error("code参数为空");
             return error("code参数为空");
         }
 
-        //获取openId
+        // 获取openId
         JSONObject jsonObject;
         try {
             jsonObject = userInfoService.getOpenId(code);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return error("获取微信小程序OpenId失败");
         }
 
-        //存入redis
+        // 存入redis
         try {
             redisTemplate.opsForSet().add("VALIDATE_KEYS", Md5Utils.encryptDES(code, Constants.DEFAULT_DES_KEY));
         } catch (Exception e) {
-            log.error("Redis连接异常，请确认Redis是否正常连接！\n"+e.getMessage());
+            log.error("Redis连接异常，请确认Redis是否正常连接！\n" + e.getMessage());
             e.printStackTrace();
         }
 
@@ -123,33 +121,33 @@ public class UserInfoController extends BaseController {
 
     @RequestMapping("/decrypt")
     public AjaxResult decrypt(HttpServletRequest request) throws Exception {
-        //获得encryptedData
+        // 获得encryptedData
         String encryptedData = request.getParameter("encryptedData");
-        if (StringUtils.isEmpty(encryptedData)){
+        if (StringUtils.isEmpty(encryptedData)) {
             log.error("encryptedData参数为空");
             return error("encryptedData参数为空");
         }
 
-        //获得ivParameter
+        // 获得ivParameter
         String ivParameter = request.getParameter("iv");
-        if (StringUtils.isEmpty(ivParameter)){
+        if (StringUtils.isEmpty(ivParameter)) {
             log.error("ivParameter参数为空");
             return error("ivParameter参数为空");
         }
 
-        //获得加密后的sessionKey
+        // 获得加密后的sessionKey
         String sessionKey = request.getParameter("sessionKey");
-        if (StringUtils.isEmpty(encryptedData)){
+        if (StringUtils.isEmpty(encryptedData)) {
             log.error("sessionKey参数为空");
             return error("sessionKey参数为空");
         }
 
-        //解密sessionKey
+        // 解密sessionKey
         sessionKey = RsaUtils.decryptByPublicKey(sessionKey);
 
-        //解密用户信息
+        // 解密用户信息
         String result = userInfoService.decrypt(encryptedData, sessionKey, ivParameter);
-        log.info("解密用户信息："+result);
+        log.info("解密用户信息：" + result);
 
         return success(result);
     }
@@ -214,7 +212,7 @@ public class UserInfoController extends BaseController {
             String filePath = RuoYiConfig.getUploadPath();
             String[] strs = file.getOriginalFilename().split("\\.");
 
-            if (! Arrays.asList("jpg","png","jpeg","mp4").contains(strs[1])) {
+            if (!Arrays.asList("jpg", "png", "jpeg", "mp4").contains(strs[1])) {
                 return error("不支持的文件类型");
             }
 
@@ -247,16 +245,16 @@ public class UserInfoController extends BaseController {
     @RequestMapping("/updatePerCen")
     public AjaxResult updatePerCen(@RequestBody WxUserLogininfo wxUserLogininfo) {
         try {
-            logger.info("更新用户信息："+JSONObject.toJSONString(wxUserLogininfo));
+            logger.info("更新用户信息：" + JSONObject.toJSONString(wxUserLogininfo));
             // 同步用户信息给极视角
             String resp = HttpUtil.post(ApiUrl, JSONObject.toJSONString(wxUserLogininfo));
 
             int count = wxUserLogininfoService.getCountByPhone(wxUserLogininfo.getPhone());
             if (count > 0) {
-                //更新本地库
+                // 更新本地库
                 wxUserLogininfoService.updateWxUserLogininfo(wxUserLogininfo);
-            }else {
-                //插入本地库
+            } else {
+                // 插入本地库
                 wxUserLogininfo.setRegisterTime(new Date());
                 wxUserLogininfo.setLoginTime(new Date());
                 wxUserLogininfoService.insertWxUserLogininfo(wxUserLogininfo);
@@ -265,7 +263,7 @@ public class UserInfoController extends BaseController {
             logger.info("============= 更新用户信息成功 =============");
             return AjaxResult.success();
         } catch (Exception e) {
-            logger.error("============= 更新用户信息失败 =============\n"+e.getMessage());
+            logger.error("============= 更新用户信息失败 =============\n" + e.getMessage());
             e.printStackTrace();
             return AjaxResult.error(e.getMessage());
         }
@@ -278,10 +276,10 @@ public class UserInfoController extends BaseController {
     public AjaxResult getPerCen(@Param("phone") String phone) {
         String resp = "";
         try {
-            String requst_url = "http://"+host+":"+8200+"/api/open/wxUser/detail?phone="+phone;
+            String requst_url = "http://" + host + ":" + 8200 + "/api/open/wxUser/detail?phone=" + phone;
             resp = HttpRequest.get(requst_url).execute().body();
-        }catch (Exception e){
-            log.error("=============== 查询微信用户失败 ===============\n"+e.getMessage());
+        } catch (Exception e) {
+            log.error("=============== 查询微信用户失败 ===============\n" + e.getMessage());
             e.printStackTrace();
         }
         return AjaxResult.success(JSON.parseObject(resp));
@@ -290,7 +288,7 @@ public class UserInfoController extends BaseController {
 
     @RequestMapping("/setWxOnLine")
     public AjaxResult setWxOnLine(@RequestParam("phone") String phone) {
-        if (StringUtils.isEmpty(phone)){
+        if (StringUtils.isEmpty(phone)) {
             return error("phone参数为空");
         }
 
@@ -301,23 +299,23 @@ public class UserInfoController extends BaseController {
 
         int count = wxUserLogininfoService.getCountByPhone(phone);
 
-        //上线用户存入redis
-        //SetOperations setOperations = redisTemplate.opsForSet();
-        //setOperations.add("wxOnline", phone);
+        // 上线用户存入redis
+        // SetOperations setOperations = redisTemplate.opsForSet();
+        // setOperations.add("wxOnline", phone);
 
-        //不是第一次登录
-        if (count > 0){
+        // 不是第一次登录
+        if (count > 0) {
             wxUserLogininfoService.updateWxUserLogininfo(wxUserLogininfo);
-            logger.info(phone+"微信用户已上线");
+            logger.info(phone + "微信用户已上线");
 
             return AjaxResult.success();
         }
-        //第一次登录
+        // 第一次登录
         else {
             wxUserLogininfo.setRegisterTime(new Date());
 
             try {
-                logger.info("新用户信息："+JSONObject.toJSONString(wxUserLogininfo));
+                logger.info("新用户信息：" + JSONObject.toJSONString(wxUserLogininfo));
                 // 同步用户信息给极视角
                 String resp = HttpUtil.post(ApiUrl, JSONObject.toJSONString(wxUserLogininfo));
 
@@ -325,29 +323,77 @@ public class UserInfoController extends BaseController {
                 wxUserLogininfoService.insertWxUserLogininfo(wxUserLogininfo);
 
                 logger.info("============= 用户信息新增成功 =============");
-                logger.info(phone+"微信用户已上线");
+                logger.info(phone + "微信用户已上线");
                 return AjaxResult.success();
             } catch (Exception e) {
-                logger.error("============= 用户信息新增失败 =============\n"+e.getMessage());
+                logger.error("============= 用户信息新增失败 =============\n" + e.getMessage());
                 e.printStackTrace();
                 return AjaxResult.error(e.getMessage());
             }
         }
     }
 
+    @GetMapping("/isOnline")
+    @ApiOperation("isOnline")
+    public AjaxResult isOnline(String sign) {
+        // 解析签名
+        String string;
+        try {
+            string = RsaUtils.decryptByPublicKey(sign);
+        } catch (Exception e) {
+            return AjaxResult.error("解析参数失败");
+        }
+        JSONObject jsonObject = JSONObject.parseObject(string);
+        String appId = jsonObject.getString("appId");
+        if (StringUtils.isEmpty(appId)) {
+            return AjaxResult.error("appId不能为空");
+        }
+        if (!"wz_app".equals(appId)) {
+            return AjaxResult.error("appId不正确");
+        }
+        String secret = jsonObject.getString("secret");
+        if (StringUtils.isEmpty(secret)) {
+            return AjaxResult.error("secret不能为空");
+        }
+        if (!"QpeHjk6HJA7ZVKpyN".equals(secret)) {
+            return AjaxResult.error("secret不正确");
+        }
+        String phone = jsonObject.getString("phone");
+        if (StringUtils.isEmpty(phone)) {
+            return AjaxResult.error("手机号不能为空");
+        }
+        WxUserLogininfo wxUserLogininfo = wxUserLogininfoService.selectWxUserLogininfoByPhone(phone);
+        if (wxUserLogininfo != null && "1".equals(wxUserLogininfo.getOnline())) {
+            return AjaxResult.success("true");
+        }
+        return AjaxResult.success("false");
+    }
+
+    // public static void main(String[] args) throws Exception {
+    //     JSONObject jsonObject = new JSONObject();
+    //     jsonObject.put("appId", "wz_app");
+    //     jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
+    //     jsonObject.put("phone", "19156379157");
+    //     String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
+    //     System.out.println(sign);
+    //
+    //     String string = RsaUtils.decryptByPublicKey(sign);
+    //     System.out.println(string);
+    // }
+
     @RequestMapping("/removeWxOnLine")
     public AjaxResult removeWxOnLine(@RequestParam("phone") String phone) {
         try {
-            //redisTemplate.opsForSet().remove("wxOnline", phone);
+            // redisTemplate.opsForSet().remove("wxOnline", phone);
 
             WxUserLogininfo wxUserLogininfo = new WxUserLogininfo();
             wxUserLogininfo.setPhone(phone);
             wxUserLogininfo.setOnline("0");
             wxUserLogininfoService.updateWxUserLogininfo(wxUserLogininfo);
-            logger.info(phone+"微信用户已下线");
+            logger.info(phone + "微信用户已下线");
 
-            //Set<String> wxOnlineSet = redisTemplate.opsForSet().members("wxOnline");
-            //wxUserLogininfoService.updateOfflineStatus(wxOnlineSet);
+            // Set<String> wxOnlineSet = redisTemplate.opsForSet().members("wxOnline");
+            // wxUserLogininfoService.updateOfflineStatus(wxOnlineSet);
 
             return AjaxResult.success();
         } catch (Exception exception) {
@@ -356,25 +402,21 @@ public class UserInfoController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/clickmoduleInfo",method = RequestMethod.POST)
-    public AjaxResult clickmoduleInfo(WxClickmoduleInfo wxClickmoduleInfo)
-    {
+    @RequestMapping(value = "/clickmoduleInfo", method = RequestMethod.POST)
+    public AjaxResult clickmoduleInfo(WxClickmoduleInfo wxClickmoduleInfo) {
         try {
-            SimpleDateFormat format =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             wxClickmoduleInfo.setClickTime(new Date());
             int i = wxClickmoduleInfoService.insertWxClickmoduleInfo(wxClickmoduleInfo);
             return AjaxResult.success();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return AjaxResult.error();
         }
     }
 
     @GetMapping("/menu/treeselectByAdmin")
-    public AjaxResult treeselectByAdmin(SysMenu menu)
-    {
+    public AjaxResult treeselectByAdmin(SysMenu menu) {
         List<SysMenu> menus = menuService.selectMenuList(menu, 1L);
         return success(menuService.buildMenuTreeSelect(menus));
     }
