@@ -156,7 +156,8 @@ public class JishijiaoController extends BaseController {
         String mobile = request.getParameter("mobile");
         String page = request.getParameter("page");
         String size = request.getParameter("size");
-        return success(sspService.eventList(mobile, page, size));
+        String paiYiPaiClient = request.getParameter("paiYiPaiClient");
+        return success(sspService.eventList(mobile, page, size,paiYiPaiClient));
     }
 
     @RequestMapping("/paiList")
@@ -459,7 +460,8 @@ public class JishijiaoController extends BaseController {
         String deptId = request.getParameter("deptId");
         String eventStatus = request.getParameter("eventStatus");
         String deviceId = request.getParameter("deviceId");
-        return success(sspService.cityRunEventList(mobile, page, size,title,sourceFrom,deptId,eventStatus,deviceId));
+        String paiYiPaiClientStr = request.getParameter("paiYiPaiClient");
+        return success(sspService.cityRunEventList(mobile, page, size,title,sourceFrom,deptId,eventStatus,deviceId,paiYiPaiClientStr));
     }
     /**
      * 城市运行事件总览

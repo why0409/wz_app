@@ -3,11 +3,12 @@ package com.ruoyi.common.utils.sign;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Base64;
 
+import cn.hutool.core.codec.Base64Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -16,7 +17,7 @@ import javax.crypto.spec.DESKeySpec;
 
 /**
  * Md5加密方法
- * 
+ *
  * @author ruoyi
  */
 public class Md5Utils
@@ -100,7 +101,7 @@ public class Md5Utils
             //开始加密
             byte[] result = cipher.doFinal(source.getBytes());
             //Base64加密
-            return  new BASE64Encoder().encode(result) ;
+            return  new Base64Encoder().encode(result) ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +128,8 @@ public class Md5Utils
             Cipher cipher = Cipher.getInstance(DES_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, secretkey, random);
             //Base64对
-            byte[] result = new BASE64Decoder().decodeBuffer(cryptograph);
+//            byte[] result = new BASE64Decoder().decodeBuffer(cryptograph);
+            byte[] result = Base64.getDecoder().decode(cryptograph);
             return new String(cipher.doFinal(result));
         } catch (Exception e) {
             e.printStackTrace();

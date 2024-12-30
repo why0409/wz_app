@@ -1,5 +1,6 @@
 package com.ruoyi.applet.Impl;
 
+import cn.hutool.core.codec.Base64Encoder;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.applet.UserInfoService;
@@ -7,7 +8,6 @@ import com.ruoyi.common.utils.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -73,13 +74,14 @@ public class UserInfoServiceImpl implements UserInfoService {
         String res = null;
         String encodingFormat="utf-8";
         try {
-            BASE64Decoder decoder = new BASE64Decoder();
-            byte[] raw = decoder.decodeBuffer(sessionKe);
+            Base64Encoder decoder = new Base64Encoder();
+//            byte[] raw = decoder.decodeBuffer(sessionKe);
+            byte[] raw = Base64.getDecoder().decode(sessionKe);
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-            IvParameterSpec iv = new IvParameterSpec(decoder.decodeBuffer(ivParameter));
+            IvParameterSpec iv = new IvParameterSpec( Base64.getDecoder().decode(ivParameter));
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-            byte[] myendicod = decoder.decodeBuffer(encryptedData);
+            byte[] myendicod = Base64.getDecoder().decode(encryptedData);
             byte[] original = cipher.doFinal(myendicod);
             System.out.println(new String(original, encodingFormat));
             res = new String(original, encodingFormat);

@@ -291,7 +291,7 @@ public class HomestayActivitiesController extends BaseController
     }
 
     ///**
-    // * 摇号抽奖
+    // * 摇号抽奖 -- 第一次抽奖逻辑
     // */
     //@GetMapping("/lottery")
     //public void lottery(int round, Long activitiesId) throws Exception {
@@ -368,6 +368,12 @@ public class HomestayActivitiesController extends BaseController
     //    homestayRegisteredInfoService.updateIsLotteryingShowByIds("1",winIds);
     //}
 
+    /**
+     * 抽奖---十月份抽奖逻辑
+     * @param allIds
+     * @param winCount
+     * @return
+     */
     //@GetMapping("/lottery")
     //public void lottery(Long activitiesId) throws Exception {
     //    log.info(DateUtil.now()+"---开始抽奖---");

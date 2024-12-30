@@ -25,6 +25,7 @@ import com.ruoyi.system.service.IWxClickmoduleInfoService;
 import com.ruoyi.system.service.IWxUserLogininfoService;
 import com.ruoyi.system.service.IWxUserMenuService;
 import com.ruoyi.web.annotation.ClickLog;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/applet")
+@Api(tags = "小程序----用户相关接口")
 public class UserInfoController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(UserInfoController.class);
 
@@ -137,7 +139,7 @@ public class UserInfoController extends BaseController {
 
         // 获得加密后的sessionKey
         String sessionKey = request.getParameter("sessionKey");
-        if (StringUtils.isEmpty(encryptedData)) {
+        if (StringUtils.isEmpty(sessionKey)) {
             log.error("sessionKey参数为空");
             return error("sessionKey参数为空");
         }
@@ -333,12 +335,13 @@ public class UserInfoController extends BaseController {
         }
     }
 
-    @GetMapping("/isOnline")
+    @PostMapping("/isOnline")
     @ApiOperation("isOnline")
-    public AjaxResult isOnline(String sign) {
+    public AjaxResult isOnline(@RequestBody Map<String,String> map) {
         // 解析签名
         String string;
         try {
+            String sign = map.get("sign");
             string = RsaUtils.decryptByPublicKey(sign);
         } catch (Exception e) {
             return AjaxResult.error("解析参数失败");
@@ -369,17 +372,18 @@ public class UserInfoController extends BaseController {
         return AjaxResult.success("false");
     }
 
-    // public static void main(String[] args) throws Exception {
-    //     JSONObject jsonObject = new JSONObject();
-    //     jsonObject.put("appId", "wz_app");
-    //     jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
-    //     jsonObject.put("phone", "19156379157");
-    //     String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
-    //     System.out.println(sign);
-    //
-    //     String string = RsaUtils.decryptByPublicKey(sign);
-    //     System.out.println(string);
-    // }
+     public static void main(String[] args) throws Exception {
+//         OcKINC80NZ49mgyZUWjWmoJBrumZ2LM3fGapSygikT7dC08fGlCbUr80r70AXV3mnfZI0jJJ+09tarSgwlVT41k+Qmht2pAtoIpF/YLor2mNLJXf6kYjdfJPFTfMKhEB9IqPtEstfliT27U7FN6922eNwxZR262JXjL/OcqByCE=
+         JSONObject jsonObject = new JSONObject();
+         jsonObject.put("appId", "wz_app");
+         jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
+         jsonObject.put("phone", "19156379157");
+         String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
+         System.out.println(sign);
+
+         String string = RsaUtils.decryptByPublicKey(sign);
+         System.out.println(string);
+     }
 
     @RequestMapping("/removeWxOnLine")
     public AjaxResult removeWxOnLine(@RequestParam("phone") String phone) {

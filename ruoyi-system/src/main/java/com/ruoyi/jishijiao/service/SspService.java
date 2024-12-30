@@ -20,7 +20,7 @@ public interface SspService {
 
      JSONObject topFive(String mobile);
 
-     JSONObject eventList(String mobile,String page,String size);
+     JSONObject eventList(String mobile,String page,String size,String paiYiPaiClient);
 
      /**
       *
@@ -34,7 +34,7 @@ public interface SspService {
       * @return
       */
      JSONObject cityRunEventList(String mobile,String page,String size,String title,String sourceFrom,
-                                 String deptId,String eventStatus,String deviceId);
+                                 String deptId,String eventStatus,String deviceId,String paiYiPaiClientStr);
 
      JSONObject cityRunEventOverView(String mobile);
 

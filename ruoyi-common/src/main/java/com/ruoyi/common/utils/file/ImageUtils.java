@@ -6,13 +6,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+
+import cn.hutool.core.codec.Base64Encoder;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
-import sun.misc.BASE64Encoder;
+//import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
@@ -61,7 +63,7 @@ public class ImageUtils
 
     /**
      * 读取文件为字节数据
-     * 
+     *
      * @param url 地址
      * @return 字节数据
      */
@@ -151,7 +153,8 @@ public class ImageUtils
             e.printStackTrace();
         }
         //对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
+//        BASE64Encoder encoder = new BASE64Encoder();
+        Base64Encoder encoder = new Base64Encoder();
         //返回Base64编码过的字节数组字符串
         String encode = encoder.encode(data.toByteArray());
         /*encode = encode.replaceAll("[\\s*\t\n\r]", "");*/

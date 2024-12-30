@@ -62,6 +62,7 @@ public class SspServiceImpl implements SspService {
         paramMap.put("realName",reportDto.getRealName());
         paramMap.put("longitude",reportDto.getLongitude());
         paramMap.put("latitude",reportDto.getLatitude());
+        paramMap.put("paiYiPaiClient",reportDto.getPaiYiPaiClient());
         StringBuffer stringBuffer = new StringBuffer();
 
         String resp = "";
@@ -90,6 +91,7 @@ public class SspServiceImpl implements SspService {
                     .form("realName",reportDto.getRealName())
                     .form("longitude",reportDto.getLongitude())
                     .form("latitude",reportDto.getLatitude())
+                    .form("paiYiPaiClient",reportDto.getPaiYiPaiClient())
                     .form("appId",appId)
                     .form("timestamp",now)
                     .form("files", JSONUtil.toJsonStr(reportDto.getFileReturnDtoList()))
@@ -200,7 +202,7 @@ public class SspServiceImpl implements SspService {
      * @return
      */
     @Override
-    public JSONObject eventList(String mobile,String page,String size) {
+    public JSONObject eventList(String mobile,String page,String size,String paiYiPaiClient) {
         //解密-手机号码
         try {
             mobile = RsaUtils.decryptByPrivateKey(mobile);
@@ -218,6 +220,9 @@ public class SspServiceImpl implements SspService {
         paramMap.put("mobile",mobile);
         paramMap.put("page",page);
         paramMap.put("size",size);
+        if (StringUtils.isNotEmpty(paiYiPaiClient)){
+            paramMap.put("paiYiPaiClient",paiYiPaiClient);
+        }
         String resp = "";
         try {
             String param = this.dealPostParams(paramMap);
@@ -250,7 +255,7 @@ public class SspServiceImpl implements SspService {
      */
     @Override
     public JSONObject cityRunEventList(String mobile,String page,String size,String title,
-                                       String sourceFrom,String deptId,String eventStatus,String deviceId) {
+                                       String sourceFrom,String deptId,String eventStatus,String deviceId,String paiYiPaiClientStr) {
         if(StringUtils.isEmpty(page)){
             page = "1";
         }
@@ -280,6 +285,9 @@ public class SspServiceImpl implements SspService {
 
         if(StringUtils.isNotEmpty(deviceId)&&deviceId!="") {
             paramMap.put("deviceId", deviceId);
+        }
+        if (StringUtils.isNotEmpty(paiYiPaiClientStr)){
+            paramMap.put("paiYiPaiClient", paiYiPaiClientStr);
         }
 
         String resp = "";

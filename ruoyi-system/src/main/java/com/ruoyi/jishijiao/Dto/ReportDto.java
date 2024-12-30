@@ -16,6 +16,9 @@ public class ReportDto {
 
     private String realName;
 
+//    拍一拍来源类型
+    private Integer paiYiPaiClient;
+
 
     /**
      * 经度
@@ -100,5 +103,13 @@ public class ReportDto {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public Integer getPaiYiPaiClient() {
+        return paiYiPaiClient;
+    }
+
+    public void setPaiYiPaiClient(Integer paiYiPaiClient) {
+        this.paiYiPaiClient = paiYiPaiClient;
     }
 }
