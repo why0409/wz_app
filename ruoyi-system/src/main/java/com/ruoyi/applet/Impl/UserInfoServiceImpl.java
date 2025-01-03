@@ -46,12 +46,14 @@ public class UserInfoServiceImpl implements UserInfoService {
                     + "&secret=" + SECRET + "&js_code=" + code + "&grant_type=authorization_code";
             //调用get方法发起get请求，并把返回值赋值给returnvalue
             String returnvalue = GET(url);
-
+            log.info("微信获取的returnvalue："+returnvalue);
             convertvalue = (JSONObject) JSON.parse(returnvalue);
-
+            log.info("解析后获取的convertvalue："+convertvalue);
             String session_key = convertvalue.getString("session_key");
+            log.info("session_key："+session_key);
             //加密session_key
             convertvalue.put("session_key",RsaUtils.encryptByPrivateKey(session_key));
+//            convertvalue.put("session_key",session_key);
 
         } catch (Exception e){
             e.printStackTrace();

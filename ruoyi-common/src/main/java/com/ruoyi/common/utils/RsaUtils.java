@@ -64,6 +64,14 @@ public class RsaUtils
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
         byte[] result = cipher.doFinal(text.getBytes());
+        System.out.println("加密后:"+Base64.encodeBase64String(result));
+        try {
+            System.out.println("解密后:"+decryptByPublicKey(Base64.encodeBase64String(result)));
+
+        }catch (Exception e){
+            System.out.println("解密加密后的密文失败");
+            e.printStackTrace();
+        }
         return Base64.encodeBase64String(result);
     }
 
