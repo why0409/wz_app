@@ -374,72 +374,72 @@ public class HomestayActivitiesController extends BaseController
      * @param winCount
      * @return
      */
-//    @GetMapping("/lottery")
-//    public void lottery(Long activitiesId) throws Exception {
-//        log.info(DateUtil.now()+"---开始抽奖---");
-//
-//        ActivitiesInfo activitiesInfo = activitiesInfoService.selectActivitiesInfoById(activitiesId);
-//        int prizesCount = activitiesInfo.getSecuritiesRestNumber();
-//
-//        List<Long> allIds;
-//        List<Long> whiteListIds;
-//        int winCount;
-////        int prizesCountByRound = 1000;
-//        //体验券总数
-//        int prizesCountByRound = activitiesInfo.getSecuritiesTotalNumber();
-//        //体验券剩余数---小于等于0不给摇号
-//        Integer securitiesRestNumber = activitiesInfo.getSecuritiesRestNumber();
-//        if (securitiesRestNumber<=0){
-//            return;
-//        }
-//
-//
-//        //白名单
-//        List<String> whiteList = Arrays.asList("15656937512","15555432829");
-//        whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteList);
-//
-//        //待抽奖名单
-//        allIds = homestayRegisteredInfoService.selectNotWinIds(activitiesId);
-//
-//        //待抽奖名单中移除白名单人员
-//        allIds.removeAll(whiteListIds);
-//        winCount = prizesCountByRound - whiteListIds.size();
-//
-//
-//        //随机抽奖
-//        List<Long> winIds = getRandomlyDraw(allIds,winCount);
-//        winIds.addAll(whiteListIds);
-//
-//        //更新中奖用户中奖状态和未兑奖状态
-//        homestayRegisteredInfoService.updateIsWinByIds("1","0", winIds);
-//
-//        //更新本次抽奖后剩余奖品数量
-//        ActivitiesInfo ac = new ActivitiesInfo();
-//        ac.setId(activitiesInfo.getId());
-//        ac.setSecuritiesRestNumber(prizesCount - winIds.size());
-//        activitiesInfoService.updateActivitiesInfo(ac);
-//
-//        //模拟逐条抽奖并向前端发送信息
-//        List<HomestayRegisteredInfo> list = homestayRegisteredInfoService.selectHomestayRegisteredInfoByIds(winIds);
-//        for (HomestayRegisteredInfo h : list) {
-//            JSONObject msg = JSONObject.parse(h.toString());
-//            msg.put("winTime",new Date());
-//            msg.put("name", DesensitizedUtils.desensitizeName(msg.getString("name")));
-//            msg.put("wxPhone", DesensitizedUtil.mobilePhone(msg.getString("wxPhone")));
-//            msg.put("contactPhone", DesensitizedUtil.mobilePhone(msg.getString("contactPhone")));
-//            msg.put("idNumber", DesensitizedUtil.idCardNum(msg.getString("idNumber"), 3, 4));
-//
-//            webSocketServer.sendInfo(msg.toJSONString(),"wzLottery");
-//
-//            Thread.sleep(20);
-//        }
-//
-//        //抽奖结束
-//        webSocketServer.sendInfo("over","wzLottery");
-//
-//        //更新摇号中可查看
-//        homestayRegisteredInfoService.updateIsLotteryingShowByIds("1",winIds);
-//    }
+    @GetMapping("/lottery")
+    public void lottery(Long activitiesId) throws Exception {
+        log.info(DateUtil.now()+"---开始抽奖---");
+
+        ActivitiesInfo activitiesInfo = activitiesInfoService.selectActivitiesInfoById(activitiesId);
+        int prizesCount = activitiesInfo.getSecuritiesRestNumber();
+
+        List<Long> allIds;
+        List<Long> whiteListIds;
+        int winCount;
+//        int prizesCountByRound = 1000;
+        //体验券总数
+        int prizesCountByRound = activitiesInfo.getSecuritiesTotalNumber();
+        //体验券剩余数---小于等于0不给摇号
+        Integer securitiesRestNumber = activitiesInfo.getSecuritiesRestNumber();
+        if (securitiesRestNumber<=0){
+            return;
+        }
+
+
+        //白名单
+        List<String> whiteList = Arrays.asList("");
+        whiteListIds = homestayRegisteredInfoService.selectNotWinIdsByWxPhones(activitiesId,whiteList);
+
+        //待抽奖名单
+        allIds = homestayRegisteredInfoService.selectNotWinIds(activitiesId);
+
+        //待抽奖名单中移除白名单人员
+        allIds.removeAll(whiteListIds);
+        winCount = prizesCountByRound - whiteListIds.size();
+
+
+        //随机抽奖
+        List<Long> winIds = getRandomlyDraw(allIds,winCount);
+        winIds.addAll(whiteListIds);
+
+        //更新中奖用户中奖状态和未兑奖状态
+        homestayRegisteredInfoService.updateIsWinByIds("1","0", winIds);
+
+        //更新本次抽奖后剩余奖品数量
+        ActivitiesInfo ac = new ActivitiesInfo();
+        ac.setId(activitiesInfo.getId());
+        ac.setSecuritiesRestNumber(prizesCount - winIds.size());
+        activitiesInfoService.updateActivitiesInfo(ac);
+
+        //模拟逐条抽奖并向前端发送信息
+        List<HomestayRegisteredInfo> list = homestayRegisteredInfoService.selectHomestayRegisteredInfoByIds(winIds);
+        for (HomestayRegisteredInfo h : list) {
+            JSONObject msg = JSONObject.parse(h.toString());
+            msg.put("winTime",new Date());
+            msg.put("name", DesensitizedUtils.desensitizeName(msg.getString("name")));
+            msg.put("wxPhone", DesensitizedUtil.mobilePhone(msg.getString("wxPhone")));
+            msg.put("contactPhone", DesensitizedUtil.mobilePhone(msg.getString("contactPhone")));
+            msg.put("idNumber", DesensitizedUtil.idCardNum(msg.getString("idNumber"), 3, 4));
+
+            webSocketServer.sendInfo(msg.toJSONString(),"wzLottery");
+
+            Thread.sleep(20);
+        }
+
+        //抽奖结束
+        webSocketServer.sendInfo("over","wzLottery");
+
+        //更新摇号中可查看
+        homestayRegisteredInfoService.updateIsLotteryingShowByIds("1",activitiesId,winIds);
+    }
 
     public List<Long> getRandomlyDraw(List<Long> allIds, int winCount) {
         List<Long> winIds;

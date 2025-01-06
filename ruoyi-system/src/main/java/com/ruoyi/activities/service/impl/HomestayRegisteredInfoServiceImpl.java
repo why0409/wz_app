@@ -286,8 +286,8 @@ public class HomestayRegisteredInfoServiceImpl implements IHomestayRegisteredInf
     }
 
     @Override
-    public int updateIsLotteryingShowByIds(String isLotteryingShow, List<Long> ids){
-        return homestayRegisteredInfoMapper.updateIsLotteryingShowByIds(isLotteryingShow, ids);
+    public int updateIsLotteryingShowByIds(String isLotteryingShow,Long activitiesId, List<Long> ids){
+        return homestayRegisteredInfoMapper.updateIsLotteryingShowByIds(isLotteryingShow,activitiesId, ids);
     }
 
     @Override

@@ -224,13 +224,17 @@
     <update id="updateIsLotteryingShowByIds" >
         update homestay_registered_info
         set is_lotterying_show = #{isLotteryingShow}
-        where update_time = now()
+        <where>
+        <if test="activitiesId!=null">
+            activities_id = #{activitiesId}
+        </if>
         <if test="ids != null and ids.size > 0">
             and id in
             <foreach collection="ids" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
+        </where>
     </update>
 
     <select id="selectNotWinIds" resultType="Long">

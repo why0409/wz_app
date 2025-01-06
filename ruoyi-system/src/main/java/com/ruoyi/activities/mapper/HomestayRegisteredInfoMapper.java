@@ -111,6 +111,7 @@ public interface HomestayRegisteredInfoMapper
     public int getWinCount(Long activitiesId);
 
     public int updateIsLotteryingShowByIds(@Param("isLotteryingShow") String isLotteryingShow,
+                                           @Param("activitiesId") Long activitiesId,
                                            @Param("ids") List<Long> ids);
 
     public List<JSONObject> getStaticsCountByProvince(Long activitiesId);

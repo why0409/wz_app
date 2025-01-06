@@ -64,7 +64,7 @@ public class HomestayActivitiesTask {
         ////调试
         //List<String> phonesList = Arrays.asList("15979096269","15656937512");
 
-        String content = "\"湾沚区文旅惠民精品民宿体验季2024年10-12月\"摇号活动已结束，请您前往智慧湾沚小程序\"民宿体验劵\"查看中奖详情！";
+        String content = "\"湾沚区文旅惠民精品民宿体验季\"摇号活动已结束，请您前往智慧湾沚小程序\"民宿体验劵\"查看中奖详情！";
         String base64 = SmsUtils.getBase64(content, String.join(",", phonesList), ecName, apId, secretKey, sign);
         String msg = SmsUtils.sendMsg(base64, url);
 

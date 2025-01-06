@@ -103,5 +103,5 @@ public interface IHomestayRegisteredInfoService
 
     public List<HomestayRegisteredInfo> selectHomestayRegisteredInfoByIds(List<Long> ids);
 
-    public int updateIsLotteryingShowByIds(String isLotteryingShow, List<Long> ids);
+    public int updateIsLotteryingShowByIds(String isLotteryingShow,Long activitiesId, List<Long> ids);
 }
