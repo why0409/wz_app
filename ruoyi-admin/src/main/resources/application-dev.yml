@@ -269,3 +269,7 @@ zhwz:
 wxApp:
   validate: false
 
+#转发接口地址
+interface:
+  url: https://zcgl.wzqdsj.cn/admin-api/biz/plant-screen/plantAssetList
+

@@ -115,6 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/jsj/**").permitAll()
                 .antMatchers("/singlePoint/**").permitAll()
                 .antMatchers("/applet/**").permitAll()
+//                .antMatchers("/plant/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .antMatchers("/maintenance/wxUser/*").permitAll()
                 // 静态资源，可匿名访问

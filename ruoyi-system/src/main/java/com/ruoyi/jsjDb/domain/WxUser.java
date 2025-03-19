@@ -68,11 +68,21 @@ public class WxUser extends BaseEntity
     @Excel(name = "账号创建者用户id")
     private Long creatorId;
 
+    private Integer isPlant;
+
     /** 最后修改者用户id */
     @Excel(name = "最后修改者用户id")
     private Long updateId;
 
     private String videoPermissions;
+
+    public Integer getIsPlant() {
+        return isPlant;
+    }
+
+    public void setIsPlant(Integer isPlant) {
+        this.isPlant = isPlant;
+    }
 
     public String getVideoPermissions() {
         return videoPermissions;

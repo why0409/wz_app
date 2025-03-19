@@ -202,7 +202,7 @@ public class SspServiceImpl implements SspService {
      * @return
      */
     @Override
-    public JSONObject eventList(String mobile,String page,String size,String paiYiPaiClient) {
+    public JSONObject eventList(String mobile,String page,String size,String paiYiPaiClient,String type) {
         //解密-手机号码
         try {
             mobile = RsaUtils.decryptByPrivateKey(mobile);
@@ -222,6 +222,9 @@ public class SspServiceImpl implements SspService {
         paramMap.put("size",size);
         if (StringUtils.isNotEmpty(paiYiPaiClient)){
             paramMap.put("paiYiPaiClient",paiYiPaiClient);
+        }
+        if (StringUtils.isNotEmpty(type)){
+            paramMap.put("type",type);
         }
         String resp = "";
         try {
@@ -255,7 +258,7 @@ public class SspServiceImpl implements SspService {
      */
     @Override
     public JSONObject cityRunEventList(String mobile,String page,String size,String title,
-                                       String sourceFrom,String deptId,String eventStatus,String deviceId,String paiYiPaiClientStr) {
+                                       String sourceFrom,String deptId,String eventStatus,String deviceId,String paiYiPaiClientStr,String type) {
         if(StringUtils.isEmpty(page)){
             page = "1";
         }
@@ -288,6 +291,9 @@ public class SspServiceImpl implements SspService {
         }
         if (StringUtils.isNotEmpty(paiYiPaiClientStr)){
             paramMap.put("paiYiPaiClient", paiYiPaiClientStr);
+        }
+        if (StringUtils.isNotEmpty(type)){
+            paramMap.put("type", type);
         }
 
         String resp = "";

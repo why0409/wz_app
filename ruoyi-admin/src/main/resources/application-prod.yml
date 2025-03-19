@@ -115,7 +115,7 @@ spring:
           enabled: true
           url: jdbc:mysql://172.19.166.130:3306/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
           username: root
-          password: y#cPZXfTfZZCBv4
+          password: terra@20250228
         # 初始连接数
         initialSize: 5
         # 最小连接池数量
@@ -265,6 +265,9 @@ zhwz:
 #微信小程序接口验证
 wxApp:
   validate: false
+
+interface:
+  url: https://zcgl.wzqdsj.cn/admin-api/biz/plant-screen/plantAssetList
 
 
 
