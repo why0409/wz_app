@@ -196,6 +196,7 @@ public class UserInfoController extends BaseController {
     public void deleteFile(@RequestBody JSONObject jsonObject) {
         try {
             String fileName = jsonObject.getString("fileName");
+            fileName = Md5Utils.encryptDES(fileName, Constants.DEFAULT_DES_KEY);
             fileName = fileName.replace(Constants.RESOURCE_PREFIX + "/upload", "");
             String filePath = RuoYiConfig.getUploadPath() + fileName;
             FileUtils.deleteFile(filePath);
