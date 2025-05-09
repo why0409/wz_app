@@ -33,7 +33,7 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
-#  ssl:
+  #  ssl:
   #    jks方式
 #    key-store: classpath:aichazhang.jks
 #    key-store-password: 18wSslTf
@@ -60,11 +60,11 @@ spring:
     basename: i18n/messages
   # 文件上传
   servlet:
-     multipart:
-       # 单个文件大小
-       max-file-size:  1024MB
-       # 设置总上传的文件大小
-       max-request-size:  1024MB
+    multipart:
+      # 单个文件大小
+      max-file-size: 1024MB
+      # 设置总上传的文件大小
+      max-request-size: 1024MB
   # 服务模块
   devtools:
     restart:
@@ -94,84 +94,84 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
     druid:
-        # 主库数据源
-        master:
-            url: jdbc:mysql://172.29.9.215:3306/wz_csdn?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-            username: tairui
-            password: y#cPZXfTfZZCBv4
-        # 从库数据源
-        slave:
-            # 从数据源开关/默认关闭
-            enabled: false
-            url:
-            username:
-            password:
-        mydb:
-            enabled: true
-            url: jdbc:mysql://172.29.9.215:3306/dispatch_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-            username: tairui
-            password: y#cPZXfTfZZCBv4
-        gisdb:
+      # 主库数据源
+      master:
+        url: jdbc:mysql://172.29.9.215:3306/wz_csdn?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: tairui
+        password: y#cPZXfTfZZCBv4
+      # 从库数据源
+      slave:
+        # 从数据源开关/默认关闭
+        enabled: false
+        url:
+        username:
+        password:
+      mydb:
+        enabled: true
+        url: jdbc:mysql://172.29.9.215:3306/dispatch_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: tairui
+        password: y#cPZXfTfZZCBv4
+      gisdb:
+        enabled: true
+        url: jdbc:mysql://172.19.166.130:3306/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: terra@20250228
+      # 初始连接数
+      initialSize: 5
+      # 最小连接池数量
+      minIdle: 50
+      # 最大连接池数量
+      maxActive: 100
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      webStatFilter:
+        enabled: true
+      statViewServlet:
+        enabled: true
+        # 设置白名单，不填则允许所有访问
+        allow:
+        url-pattern: /druid/*
+        # 控制台管理用户名和密码
+        login-username: ruoyi
+        login-password: 123456
+      filter:
+        stat:
           enabled: true
-          url: jdbc:mysql://172.19.166.130:3306/wz_screen?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-          username: root
-          password: terra@20250228
-        # 初始连接数
-        initialSize: 5
-        # 最小连接池数量
-        minIdle: 50
-        # 最大连接池数量
-        maxActive: 100
-        # 配置获取连接等待超时的时间
-        maxWait: 60000
-        # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-        timeBetweenEvictionRunsMillis: 60000
-        # 配置一个连接在池中最小生存的时间，单位是毫秒
-        minEvictableIdleTimeMillis: 300000
-        # 配置一个连接在池中最大生存的时间，单位是毫秒
-        maxEvictableIdleTimeMillis: 900000
-        # 配置检测连接是否有效
-        validationQuery: SELECT 1 FROM DUAL
-        testWhileIdle: true
-        testOnBorrow: false
-        testOnReturn: false
-        webStatFilter:
-            enabled: true
-        statViewServlet:
-            enabled: true
-            # 设置白名单，不填则允许所有访问
-            allow:
-            url-pattern: /druid/*
-            # 控制台管理用户名和密码
-            login-username: ruoyi
-            login-password: 123456
-        filter:
-            stat:
-                enabled: true
-                # 慢SQL记录
-                log-slow-sql: true
-                slow-sql-millis: 1000
-                merge-sql: true
-            wall:
-                config:
-                    multi-statement-allow: true
+          # 慢SQL记录
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
 # token配置
 token:
-    # 令牌自定义标识
-    header: Authorization
-    # 令牌密钥
-    secret: abcdefghijklmnopqrstuvwxyz
-    # 令牌有效期（默认30分钟）
-    expireTime: 30
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
 
 # MyBatis配置
 mybatis-plus:
-    # 搜索指定包别名
-    typeAliasesPackage: com.ruoyi.**.domain
-    # 配置mapper的扫描，找到所有的mapper.xml映射文件
-    mapperLocations: classpath*:mapper/**/*Mapper.xml
-    # 加载全局的配置文件
-    configLocation: classpath:mybatis/mybatis-config.xml
+  # 搜索指定包别名
+  typeAliasesPackage: com.ruoyi.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
 
 # PageHelper分页插件
 pagehelper:
@@ -225,13 +225,13 @@ applet:
 wx:
   miniapp:
     configs:
-        - appid: wxbfd823f44767d21c
-          secret: 3d0e780f7f93a4ef821eeb6b1937db3a
-          #微信小程序消息服务器配置的token
-          token:
-          #微信小程序消息服务器配置的EncodingAESKey
-          aesKey:
-          msgDataFormat: JSON
+      - appid: wxbfd823f44767d21c
+        secret: 3d0e780f7f93a4ef821eeb6b1937db3a
+        #微信小程序消息服务器配置的token
+        token:
+        #微信小程序消息服务器配置的EncodingAESKey
+        aesKey:
+        msgDataFormat: JSON
 
 hk:
   http:
@@ -245,8 +245,8 @@ hk:
 
 uccp:
   client:
-#    appCode: e2a307503d064215a63b90a440f6f499
-#    appSecret: 960D6595788173DE66CE0DB8FCA383AE
+    #    appCode: e2a307503d064215a63b90a440f6f499
+    #    appSecret: 960D6595788173DE66CE0DB8FCA383AE
     appCode: test
     appSecret: 1234567812345678
   userInfo:
@@ -268,7 +268,14 @@ wxApp:
 
 interface:
   url: https://zcgl.wzqdsj.cn/admin-api/biz/plant-screen/plantAssetList
+  #厂房列表
+  assetPlantUrl: https://zcgl.wzqdsj.cn/admin-api/biz/asset-screen/asset-plant
+  #新建留言
+  createCommentUrl: https://zcgl.wzqdsj.cn/admin-api/biz/asset-screen/create-comment
 
-
-
-
+App:
+  #  appkey: dHdAWwAk
+  #  appsecret: f916732c907090126b2302faf2ab3737
+  appkey: pVpaf8yS
+  appsecret: bcdf4033d925d3c66b2302faf2ab3737
+  Authorization: Bearer 0eeb5bd3c88c410a89925657842e9c62

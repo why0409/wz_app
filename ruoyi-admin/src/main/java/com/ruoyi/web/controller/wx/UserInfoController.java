@@ -11,6 +11,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.AESEncryptorUtils;
 import com.ruoyi.common.utils.RsaUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
@@ -151,7 +152,8 @@ public class UserInfoController extends BaseController {
         String result = userInfoService.decrypt(encryptedData, sessionKey, ivParameter);
         log.info("解密用户信息：" + result);
 
-        return success(result);
+//        return success(AESEncryptorUtils.encrypt(result));
+        return success(Md5Utils.encryptDES(result, Constants.DEFAULT_DES_KEY));
     }
 
     /**
@@ -338,7 +340,7 @@ public class UserInfoController extends BaseController {
 
     @PostMapping("/isOnline")
     @ApiOperation("isOnline")
-    public AjaxResult isOnline(@RequestBody Map<String,String> map) {
+    public AjaxResult isOnline(@RequestBody Map<String, String> map) {
         // 解析签名
         String string;
         try {
@@ -373,18 +375,18 @@ public class UserInfoController extends BaseController {
         return AjaxResult.success("false");
     }
 
-     public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 //         OcKINC80NZ49mgyZUWjWmoJBrumZ2LM3fGapSygikT7dC08fGlCbUr80r70AXV3mnfZI0jJJ+09tarSgwlVT41k+Qmht2pAtoIpF/YLor2mNLJXf6kYjdfJPFTfMKhEB9IqPtEstfliT27U7FN6922eNwxZR262JXjL/OcqByCE=
-         JSONObject jsonObject = new JSONObject();
-         jsonObject.put("appId", "wz_app");
-         jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
-         jsonObject.put("phone", "19156379157");
-         String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
-         System.out.println(sign);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("appId", "wz_app");
+        jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
+        jsonObject.put("phone", "19156379157");
+        String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
+        System.out.println(sign);
 
-         String string = RsaUtils.decryptByPublicKey(sign);
-         System.out.println(string);
-     }
+        String string = RsaUtils.decryptByPublicKey(sign);
+        System.out.println(string);
+    }
 
     @RequestMapping("/removeWxOnLine")
     public AjaxResult removeWxOnLine(@RequestParam("phone") String phone) {

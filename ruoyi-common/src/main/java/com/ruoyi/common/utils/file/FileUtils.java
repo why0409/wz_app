@@ -29,6 +29,18 @@ public class FileUtils
     public static String FILENAME_PATTERN = "[a-zA-Z0-9_\\-\\|\\.\\u4e00-\\u9fa5]+";
 
     /**
+     * 获取文件扩展名
+     */
+    public static String getFileExtension(String filename)
+    {
+        if (filename == null)
+        {
+            return "";
+        }
+        int lastDotIndex = filename.lastIndexOf('.');
+        return lastDotIndex == -1 ? "" : filename.substring(lastDotIndex + 1);
+    }
+    /**
      * 输出指定文件的byte数组
      * 
      * @param filePath 文件路径

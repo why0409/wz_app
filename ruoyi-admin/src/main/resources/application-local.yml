@@ -271,11 +271,11 @@ wxApp:
 
 #转发接口地址
 interface:
-  url: http://223.247.149.79:19300/admin-api/biz/plant-screen/plantAssetList
+  url: https://zcgl.wzqdsj.cn/admin-api/biz/plant-screen/plantAssetList
   #厂房列表
-  assetPlantUrl: http://223.247.149.79:19300/admin-api/biz/asset-screen/asset-plant
+  assetPlantUrl: https://zcgl.wzqdsj.cn/admin-api/biz/asset-screen/asset-plant
   #新建留言
-  createCommentUrl: http://223.247.149.79:19300/admin-api/biz/asset-screen/create-comment
+  createCommentUrl: https://zcgl.wzqdsj.cn/admin-api/biz/asset-screen/create-comment
 
 App:
   appkey: pVpaf8yS
