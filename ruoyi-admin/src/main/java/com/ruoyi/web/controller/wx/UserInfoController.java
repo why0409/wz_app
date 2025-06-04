@@ -278,7 +278,8 @@ public class UserInfoController extends BaseController {
      * 根据手机号查询个人中心信息
      */
     @RequestMapping("/getPerCen")
-    public AjaxResult getPerCen(@Param("phone") String phone) {
+    public AjaxResult getPerCen(@Param("phone") String phone) throws Exception {
+        phone =  Md5Utils.decryptDES(phone, Constants.DEFAULT_DES_KEY);
         String resp = "";
         try {
             String requst_url = "http://" + host + ":" + 8200 + "/api/open/wxUser/detail?phone=" + phone;
@@ -377,15 +378,17 @@ public class UserInfoController extends BaseController {
 
     public static void main(String[] args) throws Exception {
 //         OcKINC80NZ49mgyZUWjWmoJBrumZ2LM3fGapSygikT7dC08fGlCbUr80r70AXV3mnfZI0jJJ+09tarSgwlVT41k+Qmht2pAtoIpF/YLor2mNLJXf6kYjdfJPFTfMKhEB9IqPtEstfliT27U7FN6922eNwxZR262JXjL/OcqByCE=
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("appId", "wz_app");
-        jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
-        jsonObject.put("phone", "19156379157");
-        String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
-        System.out.println(sign);
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("appId", "wz_app");
+//        jsonObject.put("secret", "QpeHjk6HJA7ZVKpyN");
+//        jsonObject.put("phone", "19156379157");
+//        String sign = RsaUtils.encryptByPrivateKey(jsonObject.toJSONString());
+//        System.out.println(sign);
+//
+//        String string = RsaUtils.decryptByPublicKey(sign);
+//        System.out.println(string);
 
-        String string = RsaUtils.decryptByPublicKey(sign);
-        System.out.println(string);
+        System.out.println( Md5Utils.decryptDES("GsSJX6nX7tmmd88NYPdbvg==", Constants.DEFAULT_DES_KEY));
     }
 
     @RequestMapping("/removeWxOnLine")

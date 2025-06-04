@@ -265,6 +265,7 @@ public class CommonController
     {
         try
         {
+
             if (!FileUtils.checkAllowDownload(resource))
             {
                 throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));

@@ -142,9 +142,14 @@ public class Constants
      * 前后端md5加密固定值
      */
     public static final String DEFAULT_DES_KEY = "6y8SwEs8Fu8YXwvq";
+//    /**
+//     * 定时任务违规的字符
+//     */
+//    public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
+//            "org.springframework", "org.apache", "com.ruoyi.common.utils.file" };
     /**
      * 定时任务违规的字符
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
-            "org.springframework", "org.apache", "com.ruoyi.common.utils.file" };
+            "org.springframework", "org.apache", "com.ruoyi.common.utils.file", "com.ruoyi.common.config" };
 }
