@@ -116,8 +116,13 @@ public class WxUserLogininfoController extends BaseController {
             String[] moduleItems = item.getClickCount().split(",");
             for (int i = 0; i < moduleItems.length; i++) {
                 HashMap<String, String> moduleMap1 = new HashMap<>();
-                String key = moduleItems[i].split(":")[0];
-                String value = moduleItems[i].split(":")[1];
+                String moduleItem = moduleItems[i];
+                String[] split = moduleItem.split(":");
+                String key = split[0];
+                String value = "";
+                if (split.length>=2){
+                    value = split[1];
+                }
                 moduleMap1.put("name", key);
                 moduleMap1.put("value", value);
                 modules.add(moduleMap1);

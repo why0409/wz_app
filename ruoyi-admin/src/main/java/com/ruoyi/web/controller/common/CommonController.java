@@ -1,8 +1,8 @@
 package com.ruoyi.web.controller.common;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +11,7 @@ import com.ruoyi.onePicture.domain.XcxFile;
 import com.ruoyi.onePicture.service.IFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,39 @@ public class CommonController
     {
         try
         {
+
+            // ========== 新增安全校验开始 ==========
+            // 校验文件名不能为空
+            if (StringUtils.isEmpty(fileName))
+            {
+                throw new Exception("文件名不能为空");
+            }
+
+            // 校验文件名合法性（防止路径遍历）
+            if (fileName.contains("../") || fileName.contains("..\\"))
+            {
+                throw new Exception("文件名包含非法字符");
+            }
+            // 2. 黑名单校验
+            if (isBlacklisted(fileName))
+            {
+                throw new Exception("禁止下载该类型文件");
+            }
+
+            // 2. 规范化文件名，防止路径遍历
+            String normalizedFileName = FilenameUtils.normalize(fileName);
+            String ALLOWED_DOWNLOAD_DIR = RuoYiConfig.getDownloadPath();
+            // 4. 构建完整文件路径并校验
+            Path filePath1 = Paths.get(ALLOWED_DOWNLOAD_DIR, normalizedFileName).normalize();
+
+            // 5. 验证路径是否在允许的目录内
+            if (!filePath1.startsWith(ALLOWED_DOWNLOAD_DIR)) {
+                throw new SecurityException("非法文件访问: 尝试访问非授权目录");
+            }
+
+            // ========== 新增安全校验结束 ==========
+
+
             if (!FileUtils.checkAllowDownload(fileName))
             {
                 throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
@@ -75,7 +109,50 @@ public class CommonController
             log.error("下载文件失败", e);
         }
     }
+    /**
+     * 黑名单检查
+     */
+    private boolean isBlacklisted(String fileName)
+    {
+        // 文件黑名单 - 禁止下载的文件扩展名
+        Set<String> FILE_BLACKLIST_EXTENSIONS = new HashSet<>(Arrays.asList(
+                "jsp", "jspx", "exe", "sh", "bat", "cmd", "php", "py", "pl", "asp", "aspx",
+                "dll", "so", "jar", "war", "class", "properties", "yml", "yaml", "xml",
+                "conf", "cfg", "ini", "log", "sql", "db", "mdb", "bak", "tmp"
+        ));
 
+        // 路径黑名单 - 禁止访问的路径关键词
+        Set<String> PATH_BLACKLIST_KEYWORDS = new HashSet<>(Arrays.asList(
+                "WEB-INF", "META-INF", "/etc/", "/bin/", "/usr/", "/root/", "/boot/",
+                "windows/", "system32/", "passwd", "shadow", "hosts", "env", "profile"
+        ));
+
+
+        // 检查文件扩展名
+        String ext = FileUtils.getFileExtension(fileName).toLowerCase();
+        if (FILE_BLACKLIST_EXTENSIONS.contains(ext))
+        {
+            return true;
+        }
+
+        // 检查路径关键词
+        String normalizedPath = fileName.replace('\\', '/').toLowerCase();
+        for (String keyword : PATH_BLACKLIST_KEYWORDS)
+        {
+            if (normalizedPath.contains(keyword.toLowerCase()))
+            {
+                return true;
+            }
+        }
+
+        // 检查路径遍历
+        if (fileName.contains("../") || fileName.contains("..\\"))
+        {
+            return true;
+        }
+
+        return false;
+    }
     /**
      * 文件删除
      *
@@ -188,6 +265,7 @@ public class CommonController
     {
         try
         {
+
             if (!FileUtils.checkAllowDownload(resource))
             {
                 throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
