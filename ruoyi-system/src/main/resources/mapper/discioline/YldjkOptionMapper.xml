@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.discioline.mapper.YldjkOptionMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.discioline.domain.YldjkOption">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="sort" column="sort" jdbcType="INTEGER"/>
+            <result property="vid" column="vid" jdbcType="VARCHAR"/>
+            <result property="wxshow" column="show" jdbcType="INTEGER"/>
+            <result property="wztshow" column="wztshow" jdbcType="INTEGER"/>
+            <result property="common" column="common" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,sort,vid,
+        wxshow,wztshow,common
+    </sql>
+    <select id="selectByEntity" parameterType="com.ruoyi.discioline.domain.YldjkOption" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from yldjk_option
+
+        where 1=1
+        <if test="id != null">
+           and id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="sort != null">
+            and sort = #{sort,jdbcType=INTEGER}
+        </if>
+        <if test="vid != null">
+            and vid = #{vid,jdbcType=VARCHAR}
+        </if>
+        <if test="wxshow != null">
+            and wxshow = #{wxshow,jdbcType=INTEGER}
+        </if>
+        <if test="wztshow != null">
+            and wztshow = #{wztshow,jdbcType=INTEGER}
+        </if>
+    </select>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.discioline.domain.YldjkOption">
+        update yldjk_option
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="vid != null">
+                vid = #{vid,jdbcType=VARCHAR},
+            </if>
+            <if test="wxshow != null">
+                wxshow = #{wxshow,jdbcType=INTEGER},
+            </if>
+            <if test="wztshow != null">
+                wztshow = #{wztshow,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                common = #{common,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where   id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>
