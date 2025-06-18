@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.wx;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.discioline.domain.YldjkOption;
@@ -28,7 +29,9 @@ public class YldjkOptionController extends BaseController {
     @GetMapping("/getYldjkOptionList")
     @ApiOperation("获取配置列表")
     public AjaxResult getYldjkOptionList() {
-        List<YldjkOption> list = YldjkOptionService.list();
+        QueryWrapper<YldjkOption> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("sort");
+        List<YldjkOption> list = YldjkOptionService.list(wrapper);
 
         return success(list);
     }

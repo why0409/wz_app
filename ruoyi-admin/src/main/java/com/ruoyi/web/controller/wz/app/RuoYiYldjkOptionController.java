@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.wz.app;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -26,7 +27,9 @@ public class RuoYiYldjkOptionController extends BaseController {
     @ApiOperation("获取模板列表")
     public TableDataInfo getYldjkOptionList() {
         startPage();
-        List<YldjkOption> list = YldjkOptionService.list();
+        QueryWrapper<YldjkOption> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("sort");
+        List<YldjkOption> list = YldjkOptionService.list(wrapper);
 
         return getDataTable(list);
     }

@@ -8,7 +8,7 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="sort" column="sort" jdbcType="INTEGER"/>
             <result property="vid" column="vid" jdbcType="VARCHAR"/>
-            <result property="wxshow" column="show" jdbcType="INTEGER"/>
+            <result property="wxshow" column="wxshow" jdbcType="INTEGER"/>
             <result property="wztshow" column="wztshow" jdbcType="INTEGER"/>
             <result property="common" column="common" jdbcType="VARCHAR"/>
     </resultMap>
@@ -57,7 +57,7 @@
             <if test="wztshow != null">
                 wztshow = #{wztshow,jdbcType=INTEGER},
             </if>
-            <if test="createTime != null">
+            <if test="common != null">
                 common = #{common,jdbcType=VARCHAR},
             </if>
 
