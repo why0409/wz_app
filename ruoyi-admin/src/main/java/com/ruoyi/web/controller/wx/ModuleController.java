@@ -61,6 +61,9 @@ public class ModuleController extends BaseController {
     private IWxWzWeatherService wxWzWeatherService;
 
     @Autowired
+    private IWxHousePoliciesService housePoliciesService;
+
+    @Autowired
     private IWzBenefitEnterpriseService wzBenefitEnterpriseService;
 
     @Autowired
@@ -268,6 +271,27 @@ public class ModuleController extends BaseController {
     public AjaxResult getWxWzWeatherInfo(@PathVariable("uuid") String uuid)
     {
         return success(wxWzWeatherService.selectWxWzWeatherByUuid(uuid));
+    }
+
+
+    /**
+     * 查询湾沚湾沚房源政策列表
+     */
+    @GetMapping("/housePolicies/list")
+    public TableDataInfo list(HousePolicies housePolicies)
+    {
+        startPage();
+        List<HousePolicies> list = housePoliciesService.selectHousePoliciesList(housePolicies);
+        return getDataTable(list);
+    }
+
+    /**
+     * 获取湾沚湾沚房源政策详细信息
+     */
+    @GetMapping(value = "/housePolicies/{uuid}")
+    public AjaxResult gethousePolicies(@PathVariable("uuid") String uuid)
+    {
+        return success(housePoliciesService.selectHousePoliciesByUuid(uuid));
     }
 
     /**
