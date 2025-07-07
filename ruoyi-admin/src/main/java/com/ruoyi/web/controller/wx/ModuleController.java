@@ -61,6 +61,12 @@ public class ModuleController extends BaseController {
     private IWxWzWeatherService wxWzWeatherService;
 
     @Autowired
+    IWxOtherProjectService otherProjectService;
+
+    @Autowired
+    private ISysConfigService configService;
+
+    @Autowired
     private IWxHousePoliciesService housePoliciesService;
 
     @Autowired
@@ -293,6 +299,37 @@ public class ModuleController extends BaseController {
     {
         return success(housePoliciesService.selectHousePoliciesByUuid(uuid));
     }
+
+
+    /**
+     * 查询其他项目列表
+     */
+    @GetMapping("/otherProject/list")
+    public TableDataInfo list(OtherProject otherProject)
+    {
+        startPage();
+        List<OtherProject> list = otherProjectService.selectOtherProjectList(otherProject);
+        return getDataTable(list);
+    }
+
+    /**
+     * 获取其他项目详细信息
+     */
+    @GetMapping(value = "/OtherProject/{uuid}")
+    public AjaxResult getOtherProject(@PathVariable("uuid") String uuid)
+    {
+        return success(otherProjectService.selectOtherProjectByUuid(uuid));
+    }
+
+    /**
+     * 根据参数键名查询参数值
+     */
+    @GetMapping(value = "/configKey/{configKey}")
+    public AjaxResult getConfigKey(@PathVariable String configKey)
+    {
+        return success(configService.selectConfigByKey(configKey));
+    }
+
 
     /**
      * 查询湾沚航空马拉松列表
