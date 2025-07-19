@@ -8,7 +8,12 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.iflytek.fsp.shield.java.sdk.model.ApiResponse;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.utils.AESUtils;
@@ -240,11 +245,10 @@ public class ThirdPartyController extends BaseController {
         json.remove("message");
         String resultStr = (String) json.get("result");
         String resultDecrypt = AESUtils.decrypt(resultStr, key, iv);
-        String replace = resultDecrypt.replace("name","parkName")
-                        .replace("lon","lng");
         try {
             ObjectMapper mapper = new ObjectMapper();
-            json.put("result", mapper.readTree(replace));
+            JsonNode jsonNode = mapper.readTree(dealJsonStr(resultDecrypt));
+            json.put("result", jsonNode);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -252,6 +256,35 @@ public class ThirdPartyController extends BaseController {
     }
 
 
+    private String dealJsonStr(String jsonStr) {
+        String jsonInput = jsonStr.replace("name","parkName")
+                .replace("lon","lng")
+                .replace("blockId","parkId")
+                .replace("spaceCount","parkNum")
+                .replace("freeSpaceCount","idleNum");
+
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonArray parkingList = gson.fromJson(jsonInput, JsonArray.class);
+
+        // 处理每个停车场对象
+        for (int i = 0; i < parkingList.size(); i++) {
+            JsonObject parking = parkingList.get(i).getAsJsonObject();
+
+            // 获取可用车位和总车位数
+            int idleNum = parking.get("idleNum").getAsInt();
+            int parkNum = parking.get("parkNum").getAsInt();
+
+            // 计算占用车位数
+            int occupancyNum = parkNum - idleNum;
+
+            // 添加占用车位数到 JSON 对象
+            parking.addProperty("occupancyNum", occupancyNum);
+        }
+
+        // 输出处理后的 JSON
+        return gson.toJson(parkingList);
+    }
 
     private JSONObject smartParkInfo(String gpslng, String gpslat, String lng, String lat){
         Map<String, Object>  paramMap = new HashMap<>();
