@@ -1,6 +1,7 @@
 package com.ruoyi.activities.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.DesensitizedUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.activities.domain.ActivitiesInfo;
 import com.ruoyi.activities.domain.HomestayRegisteredInfo;
@@ -257,7 +258,17 @@ public class HomestayRegisteredInfoServiceImpl implements IHomestayRegisteredInf
 
     @Override
     public List<RegisteredInfoVoByGovernment> selectRegisteredInfoVoByGovernmentList(HomestayRegisteredInfo homestayRegisteredInfo){
-        return homestayRegisteredInfoMapper.selectRegisteredInfoVoByGovernmentList(homestayRegisteredInfo);
+        List<RegisteredInfoVoByGovernment> result =
+                homestayRegisteredInfoMapper.selectRegisteredInfoVoByGovernmentList(homestayRegisteredInfo);
+        //脱敏
+        result.forEach(item -> {
+            item.setName(DesensitizedUtil.chineseName(item.getName()));
+            item.setContactPhone(DesensitizedUtil.mobilePhone(item.getContactPhone()));
+            item.setVerifyPhone(DesensitizedUtil.mobilePhone(item.getVerifyPhone()));
+            item.setWxPhone(DesensitizedUtil.mobilePhone(item.getWxPhone()));
+            item.setIdNumber(DesensitizedUtil.idCardNum(item.getIdNumber(), 6, 4));
+        });
+        return result;
     }
 
     @Override

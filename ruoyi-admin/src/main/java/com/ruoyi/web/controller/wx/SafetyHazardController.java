@@ -1,12 +1,17 @@
 package com.ruoyi.web.controller.wx;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.sign.Md5Utils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.safetyHazard.domain.*;
 import com.ruoyi.safetyHazard.domain.dto.SafetyHazardManifestSchoolDto;
@@ -65,6 +70,21 @@ public class SafetyHazardController extends BaseController {
 
         List<SafetyHazardUser> list = safetyHazardUserService.selectSafetyHazardUserList(shu);
         return AjaxResult.success(list);
+    }
+
+    /**
+     * 根据手机号查询信息
+     */
+    @ApiOperation("根据手机号查询信息")
+    @GetMapping("/getUserByPhoneNew")
+    public AjaxResult getUserByPhoneNew(String phone) {
+        SafetyHazardUser shu = new SafetyHazardUser();
+        shu.setContactGroup(phone);
+
+        List<SafetyHazardUser> list = safetyHazardUserService.selectSafetyHazardUserList(shu);
+        String jsonString = JSON.toJSONString(list);
+        String encrypted = Md5Utils.encryptDES(jsonString, Constants.DEFAULT_DES_KEY);
+        return AjaxResult.success(encrypted);
     }
 
     /**
@@ -359,6 +379,13 @@ public class SafetyHazardController extends BaseController {
     @GetMapping("/exportSafetyHazardData")
     public AjaxResult export(SafetyHazardUser safetyHazardUser)
     {
+
+        if (StrUtil.isEmpty(safetyHazardUser.getWxPhone())){
+            throw new ServiceException("手机号不能为空");
+        }
+        if (safetyHazardUserService.selectSafetyHazardUserList(safetyHazardUser).isEmpty()){
+            throw new ServiceException("需要管理员权限导出数据");
+        }
         List<ExportSafetyHazardUserVo> list = safetyHazardUserService.exportSafetyHazardUserList(safetyHazardUser);
         ExcelUtil<ExportSafetyHazardUserVo> util = new ExcelUtil<>(ExportSafetyHazardUserVo.class);
         util.init(list, "隐患排查填报数据", StringUtils.EMPTY, Excel.Type.EXPORT);

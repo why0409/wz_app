@@ -19,6 +19,7 @@ import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.ImageUtils;
+import com.ruoyi.common.utils.sign.Md5Utils;
 import com.ruoyi.framework.config.ServerConfig;
 import com.ruoyi.jishijiao.Dto.FileReturnDto;
 import com.ruoyi.jishijiao.Dto.ReportDto;
@@ -585,6 +586,12 @@ public class JishijiaoController extends BaseController {
     @GetMapping("/envProtectDetail")
     public AjaxResult envProtectDetail(String eventNumber) {
         return success(sspService.envProtectDetail(eventNumber));
+    }
+
+    @GetMapping("/envProtectDetailNew")
+    public AjaxResult envProtectDetailNew(String eventNumber) {
+        JSONObject json = sspService.envProtectDetail(eventNumber);
+        return success(Md5Utils.encryptDES(json.toString(), Constants.DEFAULT_DES_KEY));
     }
 
     /**
