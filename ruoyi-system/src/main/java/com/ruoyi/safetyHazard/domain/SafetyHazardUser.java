@@ -33,6 +33,8 @@ public class SafetyHazardUser extends BaseEntity
     @Excel(name = "填报人手机号")
     private String wxPhone;
 
+    private String phone;
+
     /** 地址 */
     private String address;
 
@@ -208,5 +210,13 @@ public class SafetyHazardUser extends BaseEntity
                 .append("createTime", getCreateTime())
                 .append("updateTime", getUpdateTime())
                 .toString();
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

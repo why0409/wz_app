@@ -380,10 +380,18 @@ public class SafetyHazardController extends BaseController {
     public AjaxResult export(SafetyHazardUser safetyHazardUser)
     {
 
-        if (StrUtil.isEmpty(safetyHazardUser.getWxPhone())){
+        if (StrUtil.isEmpty(safetyHazardUser.getPhone())){
             throw new ServiceException("手机号不能为空");
         }
-        if (safetyHazardUserService.selectSafetyHazardUserList(safetyHazardUser).isEmpty()){
+        List<SafetyHazardUser> userList = safetyHazardUserService.selectSafetyHazardUserList(new SafetyHazardUser());
+        boolean isAdmin = false;
+        for (SafetyHazardUser user : userList){
+            if (user.getContactGroup().contains(safetyHazardUser.getPhone())){
+                isAdmin = true;
+                break;
+            }
+        }
+        if (!isAdmin){
             throw new ServiceException("需要管理员权限导出数据");
         }
         List<ExportSafetyHazardUserVo> list = safetyHazardUserService.exportSafetyHazardUserList(safetyHazardUser);
