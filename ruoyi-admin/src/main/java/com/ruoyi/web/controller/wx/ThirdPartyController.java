@@ -7,12 +7,16 @@ import cn.hutool.http.Method;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iflytek.fsp.shield.java.sdk.model.ApiResponse;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.utils.AESUtils;
 import com.ruoyi.web.controller.wx.common.RequestVo;
 import com.ruoyi.web.controller.wx.common.ShieldSyncApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +35,16 @@ import java.util.Random;
 @RequestMapping("/applet")
 public class ThirdPartyController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(ThirdPartyController.class);
+
+    @Value("${smartPark.key}")
+    private String key;
+
+    @Value("${smartPark.iv}")
+    private String iv;
+
+    @Value("${smartPark.url}")
+    private String url;
+
 
 //    @Value("${uccp.userInfo.url:}")
 //    private String userInfoUrl ;
@@ -205,6 +219,41 @@ public class ThirdPartyController extends BaseController {
 
     @GetMapping("/smartPark/list")
     public JSONObject smartParkList(String gpslng, String gpslat, String lng, String lat){
+        return smartParkInfo(gpslng,gpslat,lng,lat);
+        //return smartParkInfoNew(gpslng,gpslat,lng,lat);
+    }
+
+
+    private JSONObject smartParkInfoNew(String gpslng, String gpslat, String lng, String lat) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("gpslon", gpslng);
+        paramMap.put("gpslat", gpslat);
+        paramMap.put("lon", lng);
+        paramMap.put("lat", lat);
+
+        String data = HttpRequest.get(url)
+                .form(paramMap)
+                .timeout(10000)
+                .execute().body();
+
+        JSONObject json = JSON.parseObject(data);
+        json.remove("message");
+        String resultStr = (String) json.get("result");
+        String resultDecrypt = AESUtils.decrypt(resultStr, key, iv);
+        String replace = resultDecrypt.replace("name","parkName")
+                        .replace("lon","lng");
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            json.put("result", mapper.readTree(replace));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return json;
+    }
+
+
+
+    private JSONObject smartParkInfo(String gpslng, String gpslat, String lng, String lat){
         Map<String, Object>  paramMap = new HashMap<>();
         paramMap.put("gpslng", gpslng);
         paramMap.put("gpslat", gpslat);

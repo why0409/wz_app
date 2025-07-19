@@ -282,4 +282,7 @@ App:
   appsecret: bcdf4033d925d3c66b2302faf2ab3737
   Authorization: Bearer 0eeb5bd3c88c410a89925657842e9c62
 
-
+smartPark:
+  key: f7bd2e3dc2805826f0c31c4bb0644a75
+  iv: b7ae9e748fa6e4e8aa3298905d221f5b
+  url: https://lianluzhixing.com/ipark/v3/spi/block/getAllBlockInfo
