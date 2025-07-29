@@ -24,7 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/applet")
 public class SinglePointController {
-    private Logger logger = LoggerFactory.getLogger(UserInfoController.class);
+    private Logger logger = LoggerFactory.getLogger(SinglePointController.class);
 
 //    @PostMapping(value = "getUserInfo")
 //    public String getUserInfo(HttpServletRequest request) throws Exception{
@@ -97,7 +97,14 @@ public class SinglePointController {
         //RSA加密后的字符串
         String secretStr = "";
         if (StringUtils.isNotEmpty(token)){
-             ApiResponse apiResponse = WstRestClient.getInstance().getUserInfoByToken(token);
+            ApiResponse apiResponse = new ApiResponse(500, "token为空", null);
+            try {
+                logger.info("======根据token获取用户信息:token={} ========：", token);
+                apiResponse = WstRestClient.getInstance().getUserInfoByToken(token);
+                logger.info("======成功获取用户信息{}========：", token);
+            } catch (Exception e) {
+                logger.info("======失败获取用户信息{}========：", e.getMessage());
+            }
              //RSA加密
             String resultStr = getResultString(apiResponse);
             Map<String,Object> resultMap = new HashMap<>();

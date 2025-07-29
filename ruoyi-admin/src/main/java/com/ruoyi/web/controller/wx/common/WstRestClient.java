@@ -44,7 +44,9 @@ public class WstRestClient extends ApacheHttpClient {
         httpClientBuilderParams.setScheme(scheme);
         httpClientBuilderParams.setHost(host);
         httpClientBuilderParams.setContextPath(contextPath);
-
+        httpClientBuilderParams.setConnectionTimeout(2000L);
+        httpClientBuilderParams.setReadTimeout(2000L);
+        httpClientBuilderParams.setWriteTimeout(2000L);
         // HTTPS客户端需要单独设置，禁用证书校验
         if (scheme == Scheme.HTTPS) {
             //HTTPS Client init
