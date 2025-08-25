@@ -224,8 +224,8 @@ public class ThirdPartyController extends BaseController {
 
     @GetMapping("/smartPark/list")
     public JSONObject smartParkList(String gpslng, String gpslat, String lng, String lat){
-        return smartParkInfo(gpslng,gpslat,lng,lat);
-        //return smartParkInfoNew(gpslng,gpslat,lng,lat);
+        //return smartParkInfo(gpslng,gpslat,lng,lat);
+        return smartParkInfoNew(gpslng,gpslat,lng,lat);
     }
 
 
