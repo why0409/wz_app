@@ -1,6 +1,11 @@
 package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +32,8 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
+import java.util.Base64;
+
 /**
  * 登录校验方法
  * 
@@ -50,6 +57,10 @@ public class SysLoginService
     @Autowired
     private ISysConfigService configService;
 
+    private static final String AES_KEY = "1234567890abcdef";
+
+    private static final Logger log = LoggerFactory.getLogger(SysLoginService.class);
+
     /**
      * 登录验证
      * 
@@ -67,6 +78,14 @@ public class SysLoginService
         {
             validateCaptcha(username, code, uuid);
         }
+        String decryptedPassword = password;
+        try {
+            decryptedPassword = aesDecrypt(password);
+            log.info("登录解密结果：" + decryptedPassword);
+        } catch (Exception e) {
+            log.error("登录解密失败", e);
+        }
+        password = decryptedPassword;
         // 用户验证
         Authentication authentication = null;
         try
@@ -100,6 +119,22 @@ public class SysLoginService
         return tokenService.createToken(loginUser);
     }
 
+    public static String aesDecrypt(String encryptedData) throws Exception {
+        // 创建密钥规格，AES密钥长度为128位(16字节)、192位(24字节)或256位(32字节)
+        SecretKeySpec keySpec = new SecretKeySpec(AES_KEY.getBytes("UTF-8"), "AES");
+
+        // 创建密码器，使用ECB模式和PKCS5Padding（对应CryptoJS的Pkcs7）
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+
+        // 初始化解密模式
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+        // 先Base64解码，再解密
+        byte[] decodedData = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+
+        // 将解密后的字节数组转为字符串
+        return new String(decodedData, "UTF-8");
+    }
     /**
      * 校验验证码
      * 
