@@ -197,7 +197,6 @@ public class AssessmentPublicServiceImpl implements IAssessmentPublicService {
             int posCount = item.getPositiveOptions().size();
             int negCount = item.getNegativeOptions().size();
             if (posCount < 1 || posCount > 3 || negCount < 1 || negCount > 3) {
-                // TODO: 应该把干部姓名也返回
                 throw new ServiceException("选项数不符合规定(1-3项)，请重新选择");
             }
         }

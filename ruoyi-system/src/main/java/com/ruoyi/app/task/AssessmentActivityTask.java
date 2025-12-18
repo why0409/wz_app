@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
  * * @author wanghongyu
  */
 @Component
-public class AssessmentActivityTask
-{
+public class AssessmentActivityTask {
     private static final Logger log = LoggerFactory.getLogger(AssessmentActivityTask.class);
 
     @Autowired
@@ -23,23 +22,16 @@ public class AssessmentActivityTask
      * 每5分钟执行一次
      */
     @Scheduled(cron = "0 */5 * * * ?")
-    public void handleCloseExpiredActivities()
-    {
+    public void handleCloseExpiredActivities() {
         log.info("Spring Scheduled：正在关闭已过期的测评活动...");
-        try
-        {
+        try {
             int updatedRows = activityService.closeExpiredActivities();
-            if (updatedRows > 0)
-            {
+            if (updatedRows > 0) {
                 log.info("Spring Scheduled：成功关闭了 {} 个已过期的测评活动。", updatedRows);
-            }
-            else
-            {
+            } else {
                 log.info("Spring Scheduled：没有需要关闭的测评活动。");
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Spring Scheduled[handleCloseExpiredActivities]执行异常: ", e);
         }
     }

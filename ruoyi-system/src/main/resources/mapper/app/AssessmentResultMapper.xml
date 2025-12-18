@@ -32,4 +32,42 @@
             r.cadre_id, o.option_type, votes DESC
     </select>
 
+    <!--
+        跨年份区间统计
+        逻辑：关联活动表 -> 按年份筛选 -> 按选项名称(content)聚合 -> 忽略option_id差异
+    -->
+    <select id="selectStatsByYearRange" resultType="java.util.Map">
+        SELECT
+        c.cadre_id,
+        c.cadre_name,
+        c.post_title,
+        c.unit_name,
+        o.option_content,
+        o.option_type,
+        COUNT(r.result_id) AS votes
+        FROM
+        assessment_result r
+        LEFT JOIN
+        assessment_cadre c ON r.cadre_id = c.cadre_id
+        LEFT JOIN
+        assessment_option o ON r.option_id = o.option_id
+        LEFT JOIN
+        assessment_activity a ON r.activity_id = a.activity_id
+        <where>
+            <if test="startYear != null and startYear != ''">
+                AND a.activity_year &gt;= #{startYear}
+            </if>
+            <if test="endYear != null and endYear != ''">
+                AND a.activity_year &lt;= #{endYear}
+            </if>
+            <if test="cadreName != null and cadreName != ''">
+                AND c.cadre_name LIKE concat('%', #{cadreName}, '%')
+            </if>
+        </where>
+        GROUP BY
+        c.cadre_id, c.cadre_name, c.post_title, c.unit_name, o.option_content, o.option_type
+        ORDER BY
+        c.cadre_id, o.option_type, votes DESC
+    </select>
+
 </mapper>

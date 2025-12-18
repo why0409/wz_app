@@ -43,6 +43,19 @@ public class XcxController extends BaseController {
     @Autowired
     private IXcxModuleCoverService xcxModuleCoverService;
 
+    @Autowired
+    private IXcxColumnService xcxColumnService;
+
+    /**
+     * 获取小程序栏目列表
+     */
+    @ApiOperation("栏目列表")
+    @GetMapping("/getXcxColumnList")
+    public List<XcxColumn> list(XcxColumn xcxColumn)
+    {
+        return xcxColumnService.selectXcxColumnList(xcxColumn);
+    }
+
     /**
      * 获取小程序类型树
      * @return

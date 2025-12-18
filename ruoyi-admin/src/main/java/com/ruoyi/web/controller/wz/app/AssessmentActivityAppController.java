@@ -96,7 +96,7 @@ public class AssessmentActivityAppController extends BaseController {
     @Log(title = "测评活动", businessType = BusinessType.DELETE)
     @DeleteMapping("/{activityIds}")
     public AjaxResult remove(@PathVariable Long[] activityIds) {
-        return toAjax(assessmentActivityService.removeByIds(Arrays.asList(activityIds)));
+        return toAjax(assessmentActivityService.deleteAssessmentActivityByIds(activityIds));
     }
 
     // --- 以下是自定义业务接口 ---

@@ -62,7 +62,7 @@ public class AssessmentCadreController extends BaseController {
     public void export(HttpServletResponse response, AssessmentCadre assessmentCadre) {
         List<AssessmentCadre> list = assessmentCadreService.selectAssessmentCadreList(assessmentCadre);
         ExcelUtil<AssessmentCadre> util = new ExcelUtil<AssessmentCadre>(AssessmentCadre.class);
-        util.exportExcel(response, list, "被测评干部数据");
+        util.exportExcel(response, list, "花名册");
     }
 
     /**
@@ -119,7 +119,7 @@ public class AssessmentCadreController extends BaseController {
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
         ExcelUtil<AssessmentCadre> util = new ExcelUtil<AssessmentCadre>(AssessmentCadre.class);
-        List<AssessmentCadre> cadreList = util.importExcel(file.getInputStream(), 1);
+        List<AssessmentCadre> cadreList = util.importExcel(file.getInputStream(), 0);
         String operName = getUsername();
 //        String operName = "wzqadmin";
         String message = assessmentCadreService.importCadres(cadreList, updateSupport, operName);

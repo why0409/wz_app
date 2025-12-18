@@ -112,7 +112,6 @@ public class AssessmentCadreAppController extends BaseController {
         ExcelUtil<AssessmentCadre> util = new ExcelUtil<AssessmentCadre>(AssessmentCadre.class);
         List<AssessmentCadre> cadreList = util.importExcel(file.getInputStream(), 1);
         String operName = getUsername();
-//        String operName = "wzqadmin";
         String message = assessmentCadreService.importCadres(cadreList, updateSupport, operName);
         return success(message);
     }

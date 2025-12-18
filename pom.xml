@@ -32,11 +32,18 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
+        <easyexcel.version>3.3.2</easyexcel.version>
     </properties>
 
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
+            <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
 
             <!-- SpringBoot的依赖配置-->
             <dependency>

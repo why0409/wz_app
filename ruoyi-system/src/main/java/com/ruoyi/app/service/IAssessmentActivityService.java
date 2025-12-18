@@ -51,4 +51,11 @@ public interface IAssessmentActivityService extends IService<AssessmentActivity>
      * @return 更新的条数
      */
     public int closeExpiredActivities();
+
+    /**
+     * 批量删除测评活动 (级联删除关联数据)
+     * @param activityIds 需要删除的活动ID
+     * @return 结果
+     */
+    public int deleteAssessmentActivityByIds(Long[] activityIds);
 }

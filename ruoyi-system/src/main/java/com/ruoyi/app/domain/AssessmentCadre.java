@@ -49,4 +49,9 @@ public class AssessmentCadre extends BaseEntity {
      */
 //    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
+
+    /**
+     * 排序号 (用于保持导入时的顺序)
+     */
+    private Integer sortNum;
 }

@@ -23,10 +23,10 @@ public interface IAssessmentCadreService extends IService<AssessmentCadre> {
     /**
      * 导入干部数据
      *
-     * @param cadreList       干部数据列表
-     * @param isUpdateSupport 是否支持更新
-     * @param operName        操作用户
+     * @param cadreList     干部数据列表
+     * @param updateSupport 是否更新支持，如果已存在，则进行更新数据
+     * @param operName      操作用户
      * @return 结果
      */
-    public String importCadres(List<AssessmentCadre> cadreList, Boolean isUpdateSupport, String operName);
+    public String importCadres(List<AssessmentCadre> cadreList, boolean updateSupport, String operName);
 }
