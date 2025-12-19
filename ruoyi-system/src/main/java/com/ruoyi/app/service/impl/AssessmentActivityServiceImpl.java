@@ -120,20 +120,20 @@ public class AssessmentActivityServiceImpl extends ServiceImpl<AssessmentActivit
 
         String token = UUID.randomUUID().toString().replaceAll("-", "");
 
-        // --- 逻辑优化：处理结束时间 ---
-        if (activity.getQrExpireTime() == null) {
-            // 如果新增时未设置结束时间，默认 10 分钟过期
-            LocalDateTime expireTime = LocalDateTime.now().plusMinutes(10);
-            activity.setQrExpireTime(Date.from(expireTime.atZone(ZoneId.systemDefault()).toInstant()));
+        // --- 逻辑优化：根据时长计算过期时间 ---
+        LocalDateTime expireTime;
+        if (activity.getDuration() != null && activity.getDuration() > 0) {
+            // 使用用户设置的时长计算：当前时间 + N 分钟
+            expireTime = LocalDateTime.now().plusMinutes(activity.getDuration());
         } else {
-            // 如果已设置结束时间，校验该时间是否已过期
-            if (activity.getQrExpireTime().before(new Date())) {
-                throw new ServiceException("预设的结束时间已过期，请在“修改”中调整后再开通");
-            }
+            // 如果没设置，兜底使用默认 10 分钟
+            expireTime = LocalDateTime.now().plusMinutes(10);
         }
-        // --- 结束 ---
 
-        activity.setStatus("1"); // 设置为进行中
+        activity.setQrExpireTime(Date.from(expireTime.atZone(ZoneId.systemDefault()).toInstant()));
+        // --- 逻辑结束 ---
+
+        activity.setStatus("1"); // 1=进行中
         activity.setQrToken(token);
 
         this.updateById(activity);

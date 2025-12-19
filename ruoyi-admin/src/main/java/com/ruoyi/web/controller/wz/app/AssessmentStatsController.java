@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.wz.app;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
@@ -86,14 +87,26 @@ public class AssessmentStatsController extends BaseController {
     }
 
     /**
-     * 导出统计结果 (单活动) - 保持原有逻辑
+     * 导出统计结果 (单活动) - 改为流式直接输出
      */
     @ApiOperation("导出测评统计结果")
     @Log(title = "统计结果", businessType = BusinessType.EXPORT)
-    @PostMapping("/export/{activityId:[0-9]+}")
-    public AjaxResult export(HttpServletResponse response, @PathVariable("activityId") Long activityId) throws IOException {
+    @GetMapping("/export/{activityId:[0-9]+}")
+    public void export(HttpServletResponse response, @PathVariable("activityId") Long activityId) throws IOException {
+        // 1. 获取数据
         AssessmentStatsDTO statsDTO = statsService.getStats(activityId);
-        return exportExcel(statsDTO, "测评统计数据");
+        List<StatsExportVO> exportData = convertToExportData(statsDTO);
+
+        // 2. 设置响应头
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode("测评统计数据", "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
+
+        // 3. 使用 EasyExcel 直接写入输出流
+        EasyExcel.write(response.getOutputStream(), StatsExportVO.class)
+                .sheet("测评统计数据")
+                .doWrite(exportData);
     }
 
     /**
@@ -265,17 +278,6 @@ public class AssessmentStatsController extends BaseController {
         }
     }
 
-    /**
-     * 提取公共导出逻辑 (旧接口保持不变)
-     */
-    private AjaxResult exportExcel(AssessmentStatsDTO statsDTO, String sheetName) {
-        List<StatsExportVO> exportData = convertToExportData(statsDTO);
-        ExcelUtil<StatsExportVO> util = new ExcelUtil<>(StatsExportVO.class);
-        util.init(exportData, sheetName, StringUtils.EMPTY, Excel.Type.EXPORT);
-        AjaxResult ajaxResult = util.exportExcel();
-        String filename = (String) ajaxResult.get("msg");
-        return AjaxResult.success(filename);
-    }
 
     private List<StatsExportVO> convertToExportData(AssessmentStatsDTO statsDTO) {
         List<StatsExportVO> result = new ArrayList<>();
@@ -290,7 +292,7 @@ public class AssessmentStatsController extends BaseController {
                         exportVO.setOptionContent(vote.getContent());
                         exportVO.setOptionType("正面");
                         exportVO.setVotes(vote.getVotes());
-                        exportVO.setTotalParticipants(statsDTO.getTotalParticipants());
+//                        exportVO.setTotalParticipants(statsDTO.getTotalParticipants());
                         result.add(exportVO);
                     }
                 }
@@ -303,7 +305,7 @@ public class AssessmentStatsController extends BaseController {
                         exportVO.setOptionContent(vote.getContent());
                         exportVO.setOptionType("负面");
                         exportVO.setVotes(vote.getVotes());
-                        exportVO.setTotalParticipants(statsDTO.getTotalParticipants());
+//                        exportVO.setTotalParticipants(statsDTO.getTotalParticipants());
                         result.add(exportVO);
                     }
                 }
@@ -314,19 +316,25 @@ public class AssessmentStatsController extends BaseController {
 
     @Data
     public static class StatsExportVO {
-        @Excel(name = "干部姓名")
+        @ExcelProperty("干部姓名")
         private String cadreName;
-        @Excel(name = "单位名称")
+
+        @ExcelProperty("单位名称")
         private String unitName;
-        @Excel(name = "考核职务")
+
+        @ExcelProperty("考核职务")
         private String postTitle;
-        @Excel(name = "选项内容")
+
+        @ExcelProperty("选项内容")
         private String optionContent;
-        @Excel(name = "选项类型")
+
+        @ExcelProperty("选项类型")
         private String optionType;
-        @Excel(name = "得票数")
+
+        @ExcelProperty("得票数")
         private Long votes;
-        @Excel(name = "总参与人数")
-        private Long totalParticipants;
+
+//        @ExcelProperty("总参与人数")
+//        private Long totalParticipants;
     }
 }
