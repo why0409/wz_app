@@ -32,5 +32,6 @@ public interface AssessmentResultMapper extends BaseMapper<AssessmentResult> {
      */
     List<Map<String, Object>> selectStatsByYearRange(@Param("startYear") String startYear,
                                                      @Param("endYear") String endYear,
-                                                     @Param("cadreName") String cadreName);
+                                                     @Param("cadreName") String cadreName,
+                                                     @Param("excludeStatus") String excludeStatus);
 }

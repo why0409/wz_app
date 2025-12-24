@@ -45,17 +45,45 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
     @Autowired
     private IAssessmentLogService logService;
 
+    @Autowired
+    private IAssessmentActivityReportService reportService;
+
+
     @Override
     public AssessmentStatsDTO getStats(Long activityId) {
-        // 1. 统计参与人数
+        // 1. 检查活动状态
+        AssessmentActivity activity = activityMapper.selectById(activityId);
+        if (activity != null && "2".equals(activity.getStatus())) {
+            // 已结束，尝试查询报告
+            AssessmentActivityReport report = reportService.getOne(
+                    new LambdaQueryWrapper<AssessmentActivityReport>()
+                            .eq(AssessmentActivityReport::getActivityId, activityId)
+            );
+
+            if (report != null && StringUtils.isNotEmpty(report.getStatsJson())) {
+                try {
+                    return com.alibaba.fastjson2.JSON.parseObject(report.getStatsJson(), AssessmentStatsDTO.class);
+                } catch (Exception e) {
+                    // 解析失败，降级为实时计算
+                }
+            } else {
+                // 如果没有报告（可能是旧数据），尝试生成并补录（懒加载策略）
+                // 这里我们先实时计算，计算完后暂不强制保存，避免查询接口副作用太大
+                // 或者可以异步保存。为简单起见，这里仅实时计算。
+                // 如果需要补录，建议通过专门的脚本或管理功能触发。
+            }
+        }
+
+        // 2. 实时计算逻辑
+        // 2.1 统计参与人数
         long totalParticipants = logService.count(
                 new LambdaQueryWrapper<AssessmentLog>().eq(AssessmentLog::getActivityId, activityId)
         );
 
-        // 2. 查询原始统计数据
+        // 2.2 查询原始统计数据
         List<Map<String, Object>> rawStats = resultMapper.selectStatsByActivityId(activityId);
 
-        // 3. 调用统一处理逻辑（包含数据补全）
+        // 2.3 调用统一处理逻辑（包含数据补全）
         return getStatsInternal(rawStats, totalParticipants);
     }
 
@@ -64,8 +92,100 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
      */
     @Override
     public AssessmentStatsDTO getStatsByYearRange(String startYear, String endYear, String cadreName) {
-        List<Map<String, Object>> rawStats = resultMapper.selectStatsByYearRange(startYear, endYear, cadreName);
-        return getStatsInternal(rawStats, 0L);
+        AssessmentStatsDTO finalStats = new AssessmentStatsDTO();
+        finalStats.setTotalParticipants(0L);
+        finalStats.setCadreStats(new ArrayList<>());
+
+        // 1. 查询该年份范围内的所有活动
+        List<AssessmentActivity> activities = activityMapper.selectList(
+                new LambdaQueryWrapper<AssessmentActivity>()
+                        .ge(AssessmentActivity::getActivityYear, startYear)
+                        .le(AssessmentActivity::getActivityYear, endYear)
+        );
+
+        if (activities.isEmpty()) {
+            return finalStats;
+        }
+
+        // 2. 分离已结束（需要查报告）和未结束（需要查实时）的活动
+        List<Long> finishedIds = activities.stream()
+                .filter(a -> "2".equals(a.getStatus()))
+                .map(AssessmentActivity::getActivityId)
+                .collect(Collectors.toList());
+
+        // 3. 处理已结束的活动：从报告表中查询
+        if (!finishedIds.isEmpty()) {
+            List<AssessmentActivityReport> reports = reportService.list(
+                    new LambdaQueryWrapper<AssessmentActivityReport>()
+                            .in(AssessmentActivityReport::getActivityId, finishedIds)
+            );
+
+            for (AssessmentActivityReport report : reports) {
+                if (StringUtils.isNotEmpty(report.getStatsJson())) {
+                    try {
+                        AssessmentStatsDTO reportStats = com.alibaba.fastjson2.JSON.parseObject(report.getStatsJson(), AssessmentStatsDTO.class);
+                        mergeStats(finalStats, reportStats);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        // 4. 处理未结束的活动：查实时数据库 (排除状态为2的)
+        List<Map<String, Object>> liveRawStats = resultMapper.selectStatsByYearRange(startYear, endYear, cadreName, "2");
+        AssessmentStatsDTO liveStats = getStatsInternal(liveRawStats, 0L);
+
+        // 5. 合并结果
+        mergeStats(finalStats, liveStats);
+
+        return finalStats;
+    }
+
+    /**
+     * 辅助方法：合并两个统计结果
+     */
+    private void mergeStats(AssessmentStatsDTO target, AssessmentStatsDTO source) {
+        if (source == null) return;
+
+        target.setTotalParticipants(target.getTotalParticipants() + source.getTotalParticipants());
+
+        if (source.getCadreStats() == null || source.getCadreStats().isEmpty()) return;
+        if (target.getCadreStats() == null) target.setCadreStats(new ArrayList<>());
+
+        Map<Long, AssessmentStatsDTO.CadreStat> targetMap = target.getCadreStats().stream()
+                .collect(Collectors.toMap(AssessmentStatsDTO.CadreStat::getCadreId, c -> c));
+
+        for (AssessmentStatsDTO.CadreStat srcStat : source.getCadreStats()) {
+            AssessmentStatsDTO.CadreStat targetStat = targetMap.get(srcStat.getCadreId());
+            if (targetStat == null) {
+                target.getCadreStats().add(srcStat);
+            } else {
+                // 合并选项票数
+                targetStat.setPositiveResults(mergeOptionVotes(targetStat.getPositiveResults(), srcStat.getPositiveResults()));
+                targetStat.setNegativeResults(mergeOptionVotes(targetStat.getNegativeResults(), srcStat.getNegativeResults()));
+            }
+        }
+        
+        // 可选：对最终列表重新排序?
+    }
+
+    private List<AssessmentStatsDTO.OptionVote> mergeOptionVotes(List<AssessmentStatsDTO.OptionVote> list1, List<AssessmentStatsDTO.OptionVote> list2) {
+        if (list1 == null) list1 = new ArrayList<>();
+        if (list2 == null) return list1;
+
+        Map<String, AssessmentStatsDTO.OptionVote> map1 = list1.stream()
+                .collect(Collectors.toMap(AssessmentStatsDTO.OptionVote::getContent, v -> v, (v1, v2) -> v1));
+        
+        for (AssessmentStatsDTO.OptionVote v2 : list2) {
+            AssessmentStatsDTO.OptionVote v1 = map1.get(v2.getContent());
+            if (v1 != null) {
+                v1.setVotes(v1.getVotes() + v2.getVotes());
+            } else {
+                list1.add(v2);
+            }
+        }
+        return list1;
     }
 
     /**
@@ -104,6 +224,17 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
         // 3. 读取 Excel
         HistoryImportListener listener = new HistoryImportListener(activityId, type, operName, cadreMap, optionMap, resultMapper, optionMapper, cadreMapper);
         EasyExcel.read(file.getInputStream(), listener).sheet(0).headRowNumber(2).doRead();
+
+        // 4. 生成持久化报告
+        AssessmentStatsDTO stats = getStats(activityId);
+        AssessmentActivityReport report = new AssessmentActivityReport();
+        report.setActivityId(activityId);
+        report.setStatsJson(com.alibaba.fastjson2.JSON.toJSONString(stats));
+        report.setCreateTime(new java.util.Date());
+        
+        // 先删旧的（理论上没有，但为了健壮性）
+        reportService.remove(new LambdaQueryWrapper<AssessmentActivityReport>().eq(AssessmentActivityReport::getActivityId, activityId));
+        reportService.save(report);
 
         return "导入成功，共处理 " + listener.getCount() + " 条记录";
     }

@@ -59,10 +59,15 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
         }
 
         try {
-            // 1. 获取数据库中所有现有的干部数据 (用于比对 ID，防止 ID 变化)
+            // 1. 获取数据库中所有现有的干部数据 (用于比对 ID)
             List<AssessmentCadre> dbList = this.list();
 
-            // 建立 Key -> ID 的映射，Key = 姓名 + "_" + 单位 (唯一标识)
+            // 建立 ID Card -> ID 的映射
+            Map<String, Long> idCardMap = dbList.stream()
+                    .filter(c -> StringUtils.isNotEmpty(c.getIdCard()))
+                    .collect(Collectors.toMap(AssessmentCadre::getIdCard, AssessmentCadre::getCadreId, (k1, k2) -> k1));
+
+            // 建立 Name + Unit -> ID 的映射 (作为兜底)
             // 如果有重名的，toMap 的第三个参数保证取已有的
             Map<String, Long> existMap = dbList.stream().collect(Collectors.toMap(
                     c -> c.getCadreName() + "_" + c.getUnitName(),
@@ -88,9 +93,17 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
                 // 设置排序号
                 cadre.setSortNum(sortIndex++);
 
-                // 生成唯一 Key
-                String key = cadre.getCadreName() + "_" + cadre.getUnitName();
-                Long existId = existMap.get(key);
+                // 优先尝试匹配身份证号
+                Long existId = null;
+                if (StringUtils.isNotEmpty(cadre.getIdCard())) {
+                    existId = idCardMap.get(cadre.getIdCard());
+                }
+
+                // 如果没匹配到，尝试匹配 姓名 + 单位
+                if (existId == null) {
+                    String key = cadre.getCadreName() + "_" + cadre.getUnitName();
+                    existId = existMap.get(key);
+                }
 
                 if (existId != null) {
                     // --- 关键逻辑：匹配到了，复用旧 ID ---

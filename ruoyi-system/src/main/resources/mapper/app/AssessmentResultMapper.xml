@@ -63,6 +63,9 @@
             <if test="cadreName != null and cadreName != ''">
                 AND c.cadre_name LIKE concat('%', #{cadreName}, '%')
             </if>
+            <if test="excludeStatus != null and excludeStatus != ''">
+                AND a.status != #{excludeStatus}
+            </if>
         </where>
         GROUP BY
         c.cadre_id, c.cadre_name, c.post_title, c.unit_name, o.option_content, o.option_type

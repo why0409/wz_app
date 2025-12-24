@@ -43,6 +43,13 @@ public class AssessmentActivityServiceImpl extends ServiceImpl<AssessmentActivit
     @Autowired
     private IAssessmentLogService logService;
 
+    @Autowired
+    private IAssessmentStatsService statsService;
+
+    @Autowired
+    private IAssessmentActivityReportService reportService;
+
+
     @Override
     public List<AssessmentActivity> selectAssessmentActivityList(AssessmentActivity assessmentActivity) {
         LambdaQueryWrapper<AssessmentActivity> lqw = new LambdaQueryWrapper<AssessmentActivity>();
@@ -144,16 +151,72 @@ public class AssessmentActivityServiceImpl extends ServiceImpl<AssessmentActivit
         return startDTO;
     }
 
+    @Override
+    public boolean updateById(AssessmentActivity entity) {
+        // 如果状态变更为已结束，生成并保存报告
+        if ("2".equals(entity.getStatus())) {
+            generateAndSaveReport(entity.getActivityId());
+        }
+        return super.updateById(entity);
+    }
+
     /**
      * 定时任务调用：关闭已过期的活动
      */
     @Override
     public int closeExpiredActivities() {
-        LambdaUpdateWrapper<AssessmentActivity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(AssessmentActivity::getStatus, "2") // 2=已结束
-                .eq(AssessmentActivity::getStatus, "1")     // 仅处理进行中的
-                .le(AssessmentActivity::getQrExpireTime, new Date()); // 过期时间 <= 当前时间
-        return baseMapper.update(null, updateWrapper);
+        // 1. 查询所有即将过期的活动
+        List<AssessmentActivity> expiredList = this.list(new LambdaQueryWrapper<AssessmentActivity>()
+                .eq(AssessmentActivity::getStatus, "1")
+                .le(AssessmentActivity::getQrExpireTime, new Date()));
+
+        if (expiredList.isEmpty()) {
+            return 0;
+        }
+
+        // 2. 逐生成报告并更新状态
+        int count = 0;
+        for (AssessmentActivity activity : expiredList) {
+            try {
+                // 生成报告
+                generateAndSaveReport(activity.getActivityId());
+
+                // 更新状态
+                activity.setStatus("2");
+                this.baseMapper.updateById(activity);
+                count++;
+            } catch (Exception e) {
+                log.error("关闭过期活动失败: " + activity.getActivityId(), e);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 生成并保存活动报告
+     */
+    private void generateAndSaveReport(Long activityId) {
+        try {
+            // 检查是否已存在报告
+            long count = reportService.count(new LambdaQueryWrapper<AssessmentActivityReport>()
+                    .eq(AssessmentActivityReport::getActivityId, activityId));
+            if (count > 0) {
+                return;
+            }
+
+            // 获取统计数据
+            AssessmentStatsDTO stats = statsService.getStats(activityId);
+
+            // 保存报告
+            AssessmentActivityReport report = new AssessmentActivityReport();
+            report.setActivityId(activityId);
+            report.setStatsJson(com.alibaba.fastjson2.JSON.toJSONString(stats));
+            report.setCreateTime(new Date());
+            reportService.save(report);
+        } catch (Exception e) {
+            log.error("生成活动报告失败: " + activityId, e);
+            throw new ServiceException("生成活动报告失败");
+        }
     }
 
     /**
@@ -172,6 +235,7 @@ public class AssessmentActivityServiceImpl extends ServiceImpl<AssessmentActivit
         logService.remove(new LambdaQueryWrapper<AssessmentLog>().in(AssessmentLog::getActivityId, ids));
         activityCadreService.remove(new LambdaQueryWrapper<AssessmentActivityCadre>().in(AssessmentActivityCadre::getActivityId, ids));
         activityOptionService.remove(new LambdaQueryWrapper<AssessmentActivityOption>().in(AssessmentActivityOption::getActivityId, ids));
+        reportService.remove(new LambdaQueryWrapper<AssessmentActivityReport>().in(AssessmentActivityReport::getActivityId, ids));
 
         return baseMapper.deleteBatchIds(ids);
     }
