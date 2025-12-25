@@ -1,8 +1,7 @@
 package com.ruoyi.app.service.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.app.domain.*;
 import com.ruoyi.app.domain.dto.AssessmentStatsDTO;
@@ -10,6 +9,7 @@ import com.ruoyi.app.mapper.AssessmentActivityMapper;
 import com.ruoyi.app.mapper.AssessmentCadreMapper;
 import com.ruoyi.app.mapper.AssessmentOptionMapper;
 import com.ruoyi.app.mapper.AssessmentResultMapper;
+import com.ruoyi.app.service.IAssessmentActivityReportService;
 import com.ruoyi.app.service.IAssessmentLogService;
 import com.ruoyi.app.service.IAssessmentStatsService;
 import com.ruoyi.common.utils.StringUtils;
@@ -138,7 +138,12 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
 
         // 5. 合并结果
         mergeStats(finalStats, liveStats);
-
+        if (StringUtils.isNotEmpty(cadreName) && finalStats.getCadreStats() != null) {
+            List<AssessmentStatsDTO.CadreStat> filteredList = finalStats.getCadreStats().stream()
+                    .filter(c -> c.getCadreName() != null && c.getCadreName().contains(cadreName)) // 使用 contains 实现模糊查询
+                    .collect(Collectors.toList());
+            finalStats.setCadreStats(filteredList);
+        }
         return finalStats;
     }
 
@@ -166,7 +171,7 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
                 targetStat.setNegativeResults(mergeOptionVotes(targetStat.getNegativeResults(), srcStat.getNegativeResults()));
             }
         }
-        
+
         // 可选：对最终列表重新排序?
     }
 
@@ -176,7 +181,7 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
 
         Map<String, AssessmentStatsDTO.OptionVote> map1 = list1.stream()
                 .collect(Collectors.toMap(AssessmentStatsDTO.OptionVote::getContent, v -> v, (v1, v2) -> v1));
-        
+
         for (AssessmentStatsDTO.OptionVote v2 : list2) {
             AssessmentStatsDTO.OptionVote v1 = map1.get(v2.getContent());
             if (v1 != null) {
@@ -204,39 +209,53 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
             activity = new AssessmentActivity();
             activity.setActivityName(year + "年度历史数据补录");
             activity.setActivityYear(year);
-            activity.setStatus("2"); // 已结束
+            activity.setStatus("2"); // 状态：已结束
             activity.setCreateBy(operName);
-            activity.setCreateTime(new java.util.Date());
+            activity.setCreateTime(new Date());
             activityMapper.insert(activity);
         }
         Long activityId = activity.getActivityId();
 
-        // 2. 预加载基础数据缓存
-        List<AssessmentCadre> cadreList = cadreMapper.selectList(null);
-        Map<String, Long> cadreMap = cadreList.stream()
+        // 2. 获取现有的统计报告（如果已存在，则在此基础上合并；如果不存在，则新建）
+        AssessmentActivityReport report = reportService.getOne(new LambdaQueryWrapper<AssessmentActivityReport>()
+                .eq(AssessmentActivityReport::getActivityId, activityId));
+
+        AssessmentStatsDTO currentStats;
+        if (report != null && StringUtils.isNotEmpty(report.getStatsJson())) {
+            // 解析已有数据以便合并（例如先导了正面，现在导负面）
+            currentStats = JSON.parseObject(report.getStatsJson(), AssessmentStatsDTO.class);
+        } else {
+            currentStats = new AssessmentStatsDTO();
+            currentStats.setTotalParticipants(0L); // 历史数据通常无法确切知道总参与人数，置0或预估
+            currentStats.setCadreStats(new ArrayList<>());
+        }
+
+        // 3. 准备基础数据映射（用于匹配数据库中已存在的人员和选项 ID，匹配不到的生成虚拟ID）
+        // 即使不插入新数据，尽量匹配已有数据是个好习惯
+        List<AssessmentCadre> dbCadres = cadreMapper.selectList(null);
+        Map<String, Long> cadreNameIdMap = dbCadres.stream()
                 .collect(Collectors.toMap(AssessmentCadre::getCadreName, AssessmentCadre::getCadreId, (k1, k2) -> k1));
 
-        List<AssessmentOption> optionList = optionMapper.selectList(new LambdaQueryWrapper<AssessmentOption>()
-                .eq(AssessmentOption::getOptionType, type));
-        Map<String, Long> optionMap = optionList.stream()
+        List<AssessmentOption> dbOptions = optionMapper.selectList(new LambdaQueryWrapper<AssessmentOption>().eq(AssessmentOption::getOptionType, type));
+        Map<String, Long> optionNameIdMap = dbOptions.stream()
                 .collect(Collectors.toMap(AssessmentOption::getOptionContent, AssessmentOption::getOptionId, (k1, k2) -> k1));
 
-        // 3. 读取 Excel
-        HistoryImportListener listener = new HistoryImportListener(activityId, type, operName, cadreMap, optionMap, resultMapper, optionMapper, cadreMapper);
-        EasyExcel.read(file.getInputStream(), listener).sheet(0).headRowNumber(2).doRead();
+        // 4. 读取 Excel 并更新 stats 对象
+        HistoryImportListener listener = new HistoryImportListener(currentStats, type, cadreNameIdMap, optionNameIdMap);
+        EasyExcel.read(file.getInputStream(), listener).sheet(0).headRowNumber(2).doRead(); // 假设表头在第2行
 
-        // 4. 生成持久化报告
-        AssessmentStatsDTO stats = getStats(activityId);
-        AssessmentActivityReport report = new AssessmentActivityReport();
-        report.setActivityId(activityId);
-        report.setStatsJson(com.alibaba.fastjson2.JSON.toJSONString(stats));
-        report.setCreateTime(new java.util.Date());
-        
-        // 先删旧的（理论上没有，但为了健壮性）
-        reportService.remove(new LambdaQueryWrapper<AssessmentActivityReport>().eq(AssessmentActivityReport::getActivityId, activityId));
-        reportService.save(report);
+        // 5. 保存更新后的报告
+        if (report == null) {
+            report = new AssessmentActivityReport();
+            report.setActivityId(activityId);
+            report.setCreateTime(new Date());
+        }
+        // 更新 JSON
+        report.setStatsJson(JSON.toJSONString(currentStats));
+        reportService.saveOrUpdate(report, new LambdaQueryWrapper<AssessmentActivityReport>().eq(AssessmentActivityReport::getActivityId, activityId));
 
-        return "导入成功，共处理 " + listener.getCount() + " 条记录";
+//        return "导入处理完成，当前活动包含 " + currentStats.getCadreStats().size() + " 名干部的考评数据。";
+        return "导入处理完成。";
     }
 
     // 内部私有方法：转换DTO + 补全缺失选项列
@@ -278,8 +297,8 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
 
             cadreStat.setCadreId(((Number) firstRow.get("cadre_id")).longValue());
             cadreStat.setCadreName((String) firstRow.get("cadre_name"));
-            cadreStat.setUnitName((String) firstRow.get("unit_name"));
-            cadreStat.setPostTitle((String) firstRow.get("post_title"));
+//            cadreStat.setUnitName((String) firstRow.get("unit_name"));
+//            cadreStat.setPostTitle((String) firstRow.get("post_title"));
 
             // 将当前干部的实际得票转为 Map<OptionContent, OptionVote>，方便查找
             // 使用 Content 作为 Key 是因为跨年份统计时 ID 可能不一致，但名称通常一致
@@ -358,115 +377,129 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
     /**
      * Excel 读取监听器
      */
-    public static class HistoryImportListener extends AnalysisEventListener<Map<Integer, String>> {
-        private Long activityId;
-        private String type; // 1正面 2负面
-        private String operName;
+    public static class HistoryImportListener extends com.alibaba.excel.event.AnalysisEventListener<Map<Integer, String>> {
+        private AssessmentStatsDTO statsDTO;
+        private String type; // "1"=正面, "2"=负面
         private Map<String, Long> cadreMap;
         private Map<String, Long> optionMap;
-        private AssessmentResultMapper resultMapper;
-        private AssessmentOptionMapper optionMapper;
-        private AssessmentCadreMapper cadreMapper;
 
+        // 缓存表头：列索引 -> 选项名称
         private Map<Integer, String> headMap = new HashMap<>();
-        private int count = 0;
 
-        public HistoryImportListener(Long activityId, String type, String operName,
-                                     Map<String, Long> cadreMap, Map<String, Long> optionMap,
-                                     AssessmentResultMapper resultMapper, AssessmentOptionMapper optionMapper,
-                                     AssessmentCadreMapper cadreMapper) {
-            this.activityId = activityId;
+        public HistoryImportListener(AssessmentStatsDTO statsDTO, String type,
+                                     Map<String, Long> cadreMap, Map<String, Long> optionMap) {
+            this.statsDTO = statsDTO;
             this.type = type;
-            this.operName = operName;
             this.cadreMap = cadreMap;
             this.optionMap = optionMap;
-            this.resultMapper = resultMapper;
-            this.optionMapper = optionMapper;
-            this.cadreMapper = cadreMapper;
         }
 
         @Override
-        public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
+        public void invokeHeadMap(Map<Integer, String> headMap, com.alibaba.excel.context.AnalysisContext context) {
             this.headMap.putAll(headMap);
         }
 
         @Override
-        public void invoke(Map<Integer, String> data, AnalysisContext context) {
+        public void invoke(Map<Integer, String> data, com.alibaba.excel.context.AnalysisContext context) {
+            // 假设第0列是姓名
             String cadreName = data.get(0);
-            if (StringUtils.isEmpty(cadreName) || "姓名".equals(cadreName) || (cadreName != null && cadreName.contains("评价"))) {
+            if (StringUtils.isEmpty(cadreName) || "姓名".equals(cadreName)) {
                 return;
             }
 
-            Long cadreId = cadreMap.get(cadreName);
-            if (cadreId == null) {
-                AssessmentCadre newCadre = new AssessmentCadre();
-                newCadre.setCadreName(cadreName);
-                newCadre.setUnitName("未设置");
-                newCadre.setPostTitle("未设置");
-                newCadre.setStatus("0");
-                newCadre.setCreateBy(operName);
-                newCadre.setCreateTime(new java.util.Date());
-                cadreMapper.insert(newCadre);
+            // 1. 在 DTO 中查找该干部是否存在（实现跨类型导入时的合并）
+            AssessmentStatsDTO.CadreStat targetStat = findOrCreateCadreStat(cadreName, data);
 
-                cadreId = newCadre.getCadreId();
-                cadreMap.put(cadreName, cadreId);
+            // 2. 遍历列，处理选项票数
+            List<AssessmentStatsDTO.OptionVote> targetVoteList = "1".equals(type) ?
+                    targetStat.getPositiveResults() :
+                    targetStat.getNegativeResults();
+            if (targetVoteList == null) {
+                targetVoteList = new ArrayList<>();
+                if ("1".equals(type)) targetStat.setPositiveResults(targetVoteList);
+                else targetStat.setNegativeResults(targetVoteList);
             }
 
             for (Map.Entry<Integer, String> cell : data.entrySet()) {
                 Integer colIndex = cell.getKey();
-                if (colIndex == 0) continue;
+                if (colIndex == 0) continue; // 跳过姓名列
+
+                String optionName = headMap.get(colIndex);
+                if (StringUtils.isEmpty(optionName)) continue;
 
                 String voteStr = cell.getValue();
-                if (StringUtils.isEmpty(voteStr)) continue;
-
+                long votes = 0;
                 try {
-                    long votes = Double.valueOf(voteStr).longValue();
-                    if (votes <= 0) continue;
-
-                    String optionName = headMap.get(colIndex);
-                    if (StringUtils.isEmpty(optionName)) continue;
-
-                    Long optionId = getOrCreateOptionId(optionName);
-
-                    for (int i = 0; i < votes; i++) {
-                        AssessmentResult record = new AssessmentResult();
-                        record.setActivityId(activityId);
-                        record.setCadreId(cadreId);
-                        record.setOptionId(optionId);
-                        record.setOptionType(type);
-                        record.setCreateTime(new java.util.Date());
-                        resultMapper.insert(record);
+                    if (StringUtils.isNotEmpty(voteStr)) {
+                        votes = Double.valueOf(voteStr).longValue();
                     }
-                    count++;
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
                 }
+
+                // 即使票数为0，如果为了保持列完整，也可以选择添加，这里仅添加有票数或存在的列
+                // 查找或创建 OptionVote 对象
+                addOrUpdateOptionVote(targetVoteList, optionName, votes);
             }
         }
 
-        private Long getOrCreateOptionId(String optionName) {
-            Long id = optionMap.get(optionName);
-            if (id == null) {
-                AssessmentOption newOption = new AssessmentOption();
-                newOption.setOptionContent(optionName);
-                newOption.setOptionType(type);
-                // newOption.setOrderNum(99);
-                newOption.setStatus("0");
-                newOption.setCreateBy(operName);
-                newOption.setCreateTime(new java.util.Date());
-                optionMapper.insert(newOption);
+        /**
+         * 辅助方法：在统计列表中根据姓名查找对象，没有则创建
+         */
+        private AssessmentStatsDTO.CadreStat findOrCreateCadreStat(String name, Map<Integer, String> rowData) {
+            // 尝试在现有列表中查找
+            Optional<AssessmentStatsDTO.CadreStat> exist = statsDTO.getCadreStats().stream()
+                    .filter(c -> name.equals(c.getCadreName()))
+                    .findFirst();
 
-                id = newOption.getOptionId();
-                optionMap.put(optionName, id);
+            if (exist.isPresent()) {
+                return exist.get();
             }
-            return id;
+
+            // 创建新的干部统计对象
+            AssessmentStatsDTO.CadreStat newStat = new AssessmentStatsDTO.CadreStat();
+
+            // 处理 ID：如果数据库有，用数据库的；没有，生成基于 Name 的负数 HashCode 作为临时 ID
+            // 这样能保证同一个名字每次导入生成的 ID 一致，前端 Key 不会乱
+            Long realId = cadreMap.get(name);
+            newStat.setCadreId(realId != null ? realId : Math.abs(name.hashCode()) * -1L);
+
+            newStat.setCadreName(name);
+            // 尝试从 Excel 读取其他信息（如果有对应列，假设1是单位，2是职务，根据实际 Excel 调整）
+            // 这里简单处理，设为“历史导入”
+//            newStat.setUnitName("历史导入");
+//            newStat.setPostTitle("历史导入");
+            newStat.setPositiveResults(new ArrayList<>());
+            newStat.setNegativeResults(new ArrayList<>());
+
+            statsDTO.getCadreStats().add(newStat);
+            return newStat;
+        }
+
+        /**
+         * 辅助方法：更新选项得票
+         */
+        private void addOrUpdateOptionVote(List<AssessmentStatsDTO.OptionVote> list, String optionName, long votes) {
+            Optional<AssessmentStatsDTO.OptionVote> existOpt = list.stream()
+                    .filter(o -> optionName.equals(o.getContent()))
+                    .findFirst();
+
+            if (existOpt.isPresent()) {
+                // 如果已存在（可能是重复导入），选择覆盖或累加，这里采用覆盖最新值
+                existOpt.get().setVotes(votes);
+            } else {
+                AssessmentStatsDTO.OptionVote newVote = new AssessmentStatsDTO.OptionVote();
+                // 同理，选项 ID 处理
+                Long realOptId = optionMap.get(optionName);
+                newVote.setOptionId(realOptId != null ? realOptId : Math.abs(optionName.hashCode()) * -1L);
+                newVote.setContent(optionName);
+                newVote.setVotes(votes);
+                list.add(newVote);
+            }
         }
 
         @Override
-        public void doAfterAllAnalysed(AnalysisContext context) {
-        }
-
-        public int getCount() {
-            return count;
+        public void doAfterAllAnalysed(com.alibaba.excel.context.AnalysisContext context) {
+            // 解析完成
         }
     }
 }

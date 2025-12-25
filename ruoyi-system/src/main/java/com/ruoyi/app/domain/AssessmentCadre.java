@@ -27,16 +27,16 @@ public class AssessmentCadre extends BaseEntity {
     private Long cadreId;
 
     /**
-     * 身份证号
-     */
-    @Excel(name = "身份证号")
-    private String idCard;
-
-    /**
      * 干部姓名
      */
     @Excel(name = "姓名")
     private String cadreName;
+
+    /**
+     * 身份证号
+     */
+    @Excel(name = "身份证号")
+    private String idCard;
 
     /**
      * 单位名称

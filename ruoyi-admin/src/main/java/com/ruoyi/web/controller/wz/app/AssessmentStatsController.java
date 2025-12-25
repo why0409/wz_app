@@ -197,8 +197,8 @@ public class AssessmentStatsController extends BaseController {
 
         // 固定列：大标题 -> 字段名
         heads.add(Arrays.asList(mainTitle, "姓名"));
-        heads.add(Arrays.asList(mainTitle, "单位"));
-        heads.add(Arrays.asList(mainTitle, "职务"));
+//        heads.add(Arrays.asList(mainTitle, "单位"));
+//        heads.add(Arrays.asList(mainTitle, "职务"));
 
         // 动态列：大标题 -> 选项名
         for (String option : dynamicOptions) {
@@ -211,8 +211,8 @@ public class AssessmentStatsController extends BaseController {
             List<Object> row = new ArrayList<>();
             // 固定列数据
             row.add(cadre.getCadreName());
-            row.add(cadre.getUnitName());
-            row.add(cadre.getPostTitle());
+//            row.add(cadre.getUnitName());
+//            row.add(cadre.getPostTitle());
 
             // 动态列数据
             // 直接遍历该干部的结果列表，因为顺序已经由 Service 保证与 dynamicOptions 一致
@@ -287,8 +287,8 @@ public class AssessmentStatsController extends BaseController {
                     for (AssessmentStatsDTO.OptionVote vote : cadreStat.getPositiveResults()) {
                         StatsExportVO exportVO = new StatsExportVO();
                         exportVO.setCadreName(cadreStat.getCadreName());
-                        exportVO.setUnitName(cadreStat.getUnitName());
-                        exportVO.setPostTitle(cadreStat.getPostTitle());
+//                        exportVO.setUnitName(cadreStat.getUnitName());
+//                        exportVO.setPostTitle(cadreStat.getPostTitle());
                         exportVO.setOptionContent(vote.getContent());
                         exportVO.setOptionType("正面");
                         exportVO.setVotes(vote.getVotes());
@@ -300,8 +300,8 @@ public class AssessmentStatsController extends BaseController {
                     for (AssessmentStatsDTO.OptionVote vote : cadreStat.getNegativeResults()) {
                         StatsExportVO exportVO = new StatsExportVO();
                         exportVO.setCadreName(cadreStat.getCadreName());
-                        exportVO.setUnitName(cadreStat.getUnitName());
-                        exportVO.setPostTitle(cadreStat.getPostTitle());
+//                        exportVO.setUnitName(cadreStat.getUnitName());
+//                        exportVO.setPostTitle(cadreStat.getPostTitle());
                         exportVO.setOptionContent(vote.getContent());
                         exportVO.setOptionType("负面");
                         exportVO.setVotes(vote.getVotes());
@@ -319,10 +319,10 @@ public class AssessmentStatsController extends BaseController {
         @ExcelProperty("干部姓名")
         private String cadreName;
 
-        @ExcelProperty("单位名称")
+//        @ExcelProperty("单位名称")
         private String unitName;
 
-        @ExcelProperty("考核职务")
+//        @ExcelProperty("考核职务")
         private String postTitle;
 
         @ExcelProperty("选项内容")

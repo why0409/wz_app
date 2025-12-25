@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.app.domain.*;
 import com.ruoyi.app.domain.dto.ActivityConfigDetailDTO;
 import com.ruoyi.app.domain.dto.AssessmentConfigDTO;
 import com.ruoyi.app.domain.dto.AssessmentStartDTO;
+import com.ruoyi.app.domain.dto.AssessmentStatsDTO;
 import com.ruoyi.app.mapper.AssessmentActivityMapper;
 import com.ruoyi.app.service.*;
 import com.ruoyi.common.exception.ServiceException;

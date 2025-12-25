@@ -24,8 +24,8 @@ public class AssessmentStatsDTO {
     public static class CadreStat {
         private Long cadreId;
         private String cadreName;
-        private String unitName;
-        private String postTitle;
+//        private String unitName;
+//        private String postTitle;
         private List<OptionVote> positiveResults;
         private List<OptionVote> negativeResults;
     }
