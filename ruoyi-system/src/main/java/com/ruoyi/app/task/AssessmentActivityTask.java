@@ -19,9 +19,9 @@ public class AssessmentActivityTask {
     private IAssessmentActivityService activityService;
 
     /**
-     * 每5分钟执行一次
+     * 每分钟执行一次
      */
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void handleCloseExpiredActivities() {
         log.info("Spring Scheduled：正在关闭已过期的测评活动...");
         try {

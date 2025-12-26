@@ -320,10 +320,10 @@ public class AssessmentStatsController extends BaseController {
         private String cadreName;
 
 //        @ExcelProperty("单位名称")
-        private String unitName;
+//        private String unitName;
 
 //        @ExcelProperty("考核职务")
-        private String postTitle;
+//        private String postTitle;
 
         @ExcelProperty("选项内容")
         private String optionContent;

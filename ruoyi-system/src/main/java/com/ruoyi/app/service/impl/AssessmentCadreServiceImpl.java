@@ -35,6 +35,7 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
         lqw.like(StringUtils.isNotEmpty(assessmentCadre.getCadreName()), AssessmentCadre::getCadreName, assessmentCadre.getCadreName());
         lqw.like(StringUtils.isNotEmpty(assessmentCadre.getUnitName()), AssessmentCadre::getUnitName, assessmentCadre.getUnitName());
         lqw.like(StringUtils.isNotEmpty(assessmentCadre.getPostTitle()), AssessmentCadre::getPostTitle, assessmentCadre.getPostTitle());
+        lqw.like(StringUtils.isNotEmpty(assessmentCadre.getIdCard()),  AssessmentCadre::getIdCard, assessmentCadre.getIdCard());
         lqw.eq(StringUtils.isNotEmpty(assessmentCadre.getStatus()), AssessmentCadre::getStatus, assessmentCadre.getStatus());
 
         // --- 修改说明 ---
@@ -84,6 +85,11 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
             int insertCount = 0;
 
             for (AssessmentCadre cadre : cadreList) {
+
+                if (StringUtils.isEmpty(cadre.getIdCard())) {
+                    cadre.setIdCard(null);
+                }
+
                 // 设置基础字段
                 cadre.setCreateBy(operName);
                 if (StringUtils.isEmpty(cadre.getStatus())) {

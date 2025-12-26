@@ -297,8 +297,8 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
 
             cadreStat.setCadreId(((Number) firstRow.get("cadre_id")).longValue());
             cadreStat.setCadreName((String) firstRow.get("cadre_name"));
-//            cadreStat.setUnitName((String) firstRow.get("unit_name"));
-//            cadreStat.setPostTitle((String) firstRow.get("post_title"));
+            cadreStat.setUnitName((String) firstRow.get("unit_name"));
+            cadreStat.setPostTitle((String) firstRow.get("post_title"));
 
             // 将当前干部的实际得票转为 Map<OptionContent, OptionVote>，方便查找
             // 使用 Content 作为 Key 是因为跨年份统计时 ID 可能不一致，但名称通常一致
