@@ -35,7 +35,7 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
         lqw.like(StringUtils.isNotEmpty(assessmentCadre.getCadreName()), AssessmentCadre::getCadreName, assessmentCadre.getCadreName());
         lqw.like(StringUtils.isNotEmpty(assessmentCadre.getUnitName()), AssessmentCadre::getUnitName, assessmentCadre.getUnitName());
         lqw.like(StringUtils.isNotEmpty(assessmentCadre.getPostTitle()), AssessmentCadre::getPostTitle, assessmentCadre.getPostTitle());
-        lqw.like(StringUtils.isNotEmpty(assessmentCadre.getIdCard()),  AssessmentCadre::getIdCard, assessmentCadre.getIdCard());
+//        lqw.like(StringUtils.isNotEmpty(assessmentCadre.getIdCard()),  AssessmentCadre::getIdCard, assessmentCadre.getIdCard());
         lqw.eq(StringUtils.isNotEmpty(assessmentCadre.getStatus()), AssessmentCadre::getStatus, assessmentCadre.getStatus());
 
         // --- 修改说明 ---
@@ -64,9 +64,9 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
             List<AssessmentCadre> dbList = this.list();
 
             // 建立 ID Card -> ID 的映射
-            Map<String, Long> idCardMap = dbList.stream()
-                    .filter(c -> StringUtils.isNotEmpty(c.getIdCard()))
-                    .collect(Collectors.toMap(AssessmentCadre::getIdCard, AssessmentCadre::getCadreId, (k1, k2) -> k1));
+//            Map<String, Long> idCardMap = dbList.stream()
+//                    .filter(c -> StringUtils.isNotEmpty(c.getIdCard()))
+//                    .collect(Collectors.toMap(AssessmentCadre::getIdCard, AssessmentCadre::getCadreId, (k1, k2) -> k1));
 
             // 建立 Name + Unit -> ID 的映射 (作为兜底)
             // 如果有重名的，toMap 的第三个参数保证取已有的
@@ -86,9 +86,9 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
 
             for (AssessmentCadre cadre : cadreList) {
 
-                if (StringUtils.isEmpty(cadre.getIdCard())) {
-                    cadre.setIdCard(null);
-                }
+//                if (StringUtils.isEmpty(cadre.getIdCard())) {
+//                    cadre.setIdCard(null);
+//                }
 
                 // 设置基础字段
                 cadre.setCreateBy(operName);
@@ -101,9 +101,9 @@ public class AssessmentCadreServiceImpl extends ServiceImpl<AssessmentCadreMappe
 
                 // 优先尝试匹配身份证号
                 Long existId = null;
-                if (StringUtils.isNotEmpty(cadre.getIdCard())) {
-                    existId = idCardMap.get(cadre.getIdCard());
-                }
+//                if (StringUtils.isNotEmpty(cadre.getIdCard())) {
+//                    existId = idCardMap.get(cadre.getIdCard());
+//                }
 
                 // 如果没匹配到，尝试匹配 姓名 + 单位
                 if (existId == null) {

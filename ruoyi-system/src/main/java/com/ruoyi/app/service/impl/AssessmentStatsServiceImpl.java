@@ -158,11 +158,11 @@ public class AssessmentStatsServiceImpl implements IAssessmentStatsService {
         if (source.getCadreStats() == null || source.getCadreStats().isEmpty()) return;
         if (target.getCadreStats() == null) target.setCadreStats(new ArrayList<>());
 
-        Map<Long, AssessmentStatsDTO.CadreStat> targetMap = target.getCadreStats().stream()
-                .collect(Collectors.toMap(AssessmentStatsDTO.CadreStat::getCadreId, c -> c));
+        Map<String, AssessmentStatsDTO.CadreStat> targetMap = target.getCadreStats().stream()
+                .collect(Collectors.toMap(AssessmentStatsDTO.CadreStat::getCadreName, c -> c));
 
         for (AssessmentStatsDTO.CadreStat srcStat : source.getCadreStats()) {
-            AssessmentStatsDTO.CadreStat targetStat = targetMap.get(srcStat.getCadreId());
+            AssessmentStatsDTO.CadreStat targetStat = targetMap.get(srcStat.getCadreName());
             if (targetStat == null) {
                 target.getCadreStats().add(srcStat);
             } else {
