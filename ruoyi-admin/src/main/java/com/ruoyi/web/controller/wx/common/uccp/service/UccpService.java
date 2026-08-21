@@ -8,8 +8,7 @@ import com.ruoyi.web.controller.wx.common.uccp.util.HttpUtil;
 import com.ruoyi.web.controller.wx.common.uccp.util.SignUtil;
 import com.ruoyi.web.controller.wx.common.uccp.util.Signature;
 import com.ruoyi.web.controller.wx.common.uccp.vo.UserUnitDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +20,9 @@ import java.util.Map;
 /**
  * UCCP统一认证及一体化里约网关服务
  */
+@Slf4j
 @Service
 public class UccpService {
-
-    private static final Logger log = LoggerFactory.getLogger(UccpService.class);
 
     @Value("${uccp.client.appCode:test}")
     private String appCode;
