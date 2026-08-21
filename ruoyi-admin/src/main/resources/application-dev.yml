@@ -252,10 +252,22 @@ uccp:
 #    appSecret: 960D6595788173DE66CE0DB8FCA383AE
     appCode: test
     appSecret: 1234567812345678
+  restful:
+    encrypt:
+      switch: true
   userInfo:
     url: /v2/user/getUserInfo
   servic:
      url: http://60.166.52.177:8081/uccp-service
+
+ly:
+  service:
+    url: https://api.idpdev.ahzwfw.gov.cn
+    paasId: pxq_szah_hlwtyrz
+    paasToken: b0ef3c7de6873d984961ec7f67da922d
+  restful:
+    getAuthCode: /ebus/pxq_szah_hlwtyrz/v3/common/getAuthCode
+    getUserInfo: /ebus/pxq_szah_hlwtyrz/v3/user/getUserInfo
 
 #短信
 zhwz:

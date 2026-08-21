@@ -48,12 +48,8 @@
 
     <repositories>
         <repository>
-            <id>iflytek-nexus</id>
-            <name>iflytek-nexus</name>
-            <url>http://maven.iflytek.com:8081/nexus/content/repositories/public/</url>
-        </repository>
-        <repository>
             <id>aliyun-nexus</id>
+            <name>aliyun-nexus</name>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
     </repositories>
@@ -179,24 +175,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!--需先将提供的uccp-cas-client和cas-client-core发布到maven仓库-->
-        <!--注意：该依赖会自动引入cas-client-core以及开源的commons等jar（详情见其.pom），如有冲突可自行处理使用最新版本亦可-->
-        <dependency>
-            <groupId>com.iflytek.sc.ssp</groupId>
-            <artifactId>uccp-cas-client</artifactId>
-            <version>1.3.1-RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jasig.cas.client</groupId>
-            <artifactId>cas-client-core</artifactId>
-            <version>3.4.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.iflytek.wst</groupId>
-            <artifactId>wst-gateway-sdk-java</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>com.google.zxing</groupId>
